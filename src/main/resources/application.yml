@@ -5,7 +5,7 @@ spring:
   datasource:
     driverClassName: org.postgresql.Driver
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://${DB_HOSTNAME:localhost}:5432/upcensus
+    url: jdbc:postgresql://${DB_HOSTNAME:localhost}/upcensus
     username: ${DB_USER}
     password: ${DB_PWD}
   batch:
@@ -17,3 +17,4 @@ spring:
 server:
   servlet:
     contextPath: /api
+  port: ${PORT:8080}
