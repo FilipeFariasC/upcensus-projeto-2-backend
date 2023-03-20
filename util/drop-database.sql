@@ -1,0 +1,3 @@
+DROP SCHEMA IF EXISTS form CASCADE;
+
+DROP TABLE IF EXISTS flyway_schema_history CASCADE;

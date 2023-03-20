@@ -1,4 +1,4 @@
-package br.edu.ifpb.upcensus.domain.shared.repository;
+package br.edu.ifpb.upcensus.infrastructure.persistence.repository;
 
 import java.io.Serializable;
 

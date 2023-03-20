@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -14,7 +13,8 @@ import org.springframework.data.jpa.domain.Specification;
 import br.edu.ifpb.upcensus.domain.shared.exception.InvalidDomainModelException;
 import br.edu.ifpb.upcensus.domain.shared.exception.ResourceNotFoundException;
 import br.edu.ifpb.upcensus.domain.shared.model.DomainModel;
-import br.edu.ifpb.upcensus.domain.shared.repository.DomainRepository;
+import br.edu.ifpb.upcensus.infrastructure.persistence.repository.DomainRepository;
+import br.edu.ifpb.upcensus.infrastructure.util.BeanUtils;
 import br.edu.ifpb.upcensus.infrastructure.util.CollectionUtils;
 import br.edu.ifpb.upcensus.infrastructure.util.ObjectUtils;
 
@@ -27,6 +27,14 @@ public interface DomainService<M extends DomainModel<I>, I extends Serializable>
 		Optional<M> entity = getRepository().findById(id);
 		
 		return entity.orElseThrow(()-> new ResourceNotFoundException(getDomainClass()));
+	}
+	
+	default List<M> findAllById(List<I> ids) {
+		List<M> entities = getRepository().findAllById(ids);
+		
+		if (CollectionUtils.notEmpty(entities)) return entities;
+		
+		throw new ResourceNotFoundException(getDomainClass());
 	}
 	
 	default List<M> findAllById(Collection<I> ids) {
@@ -49,6 +57,15 @@ public interface DomainService<M extends DomainModel<I>, I extends Serializable>
 			.findOne(Specification.where((root, query, builder) -> builder.equal(root.get(property), value)));
 			
 		return entity.orElseThrow(()->new ResourceNotFoundException(getDomainClass()));
+	}
+
+	default List<M> findAllByProperty(final String property, final Collection<? extends Object> value) {
+		List<M> entities = getRepository()
+			.findAll(Specification.where((root, query, builder) -> builder.equal(root.get(property), value)));
+		
+		if (entities.isEmpty()) throw new ResourceNotFoundException(getDomainClass());
+		
+		return entities;
 	}
 	
 	default Page<M> findAll(Pageable pageable) {
@@ -86,14 +103,9 @@ public interface DomainService<M extends DomainModel<I>, I extends Serializable>
 	}
 	
 	default M update(I id, M entity) {
-		M updated = copy(id, entity);
-		return save(updated);
-	}
-	
-	default M copy(I id, M entity) {
 		M saved = findById(id);
-		BeanUtils.copyProperties(saved, entity);
-		return saved;
+		M updated = BeanUtils.copyProperties(entity, saved);
+		return save(updated);
 	}
 	
 	default void validate(M entity) {

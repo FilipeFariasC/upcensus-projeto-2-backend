@@ -40,6 +40,12 @@ public abstract class DomainModel <I extends Serializable> implements Serializab
 	public LocalDateTime getCreationTime() {
 		return this.creationTime;
 	}
+	
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(getId(), creationTime);
+	}
 
 	@Override
 	public boolean equals(Object obj) {
@@ -50,7 +56,7 @@ public abstract class DomainModel <I extends Serializable> implements Serializab
 		if (getClass() != obj.getClass())
 			return false;
 		DomainModel other = (DomainModel) obj;
-		return Objects.equals(getCreationTime(), other.getCreationTime()) && Objects.equals(getId(), other.getId());
+		return Objects.equals(getId(), other.getId()) && Objects.equals(getCreationTime(), other.getCreationTime());
 	}
 	
 	
