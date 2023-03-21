@@ -1,12 +1,15 @@
 package br.edu.ifpb.upcensus.infrastructure.util;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collector;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class CollectionUtils {
@@ -24,6 +27,8 @@ public class CollectionUtils {
             return ((Map<?, ?>) obj).isEmpty();
         if (obj instanceof Iterator)
             return !((Iterator<?>) obj).hasNext();
+        if (obj instanceof Iterable)
+            return !((Iterable<?>) obj).iterator().hasNext();
         return true;
     }
 
@@ -44,5 +49,22 @@ public class CollectionUtils {
         if(isEmpty(collection)) return;
         collection.forEach(consumer);
     }
+    
+    public static <T> List<T> emptyList() {
+    	return new ArrayList<>();
+    }
 
+    public static <C extends Collection<E>, E> C append(
+    		C collection, 
+    		Collection<? extends E> append,
+    		Collector<E, ?, C> collector
+    		) {
+    	System.out.println("collection: "+ collection);
+    	System.out.println("append: "+ append);
+    	if (isEmpty(collection)) {
+    		return append.stream().collect(collector);
+    	}
+    	collection.addAll(append);
+    	return collection;
+    }
 }

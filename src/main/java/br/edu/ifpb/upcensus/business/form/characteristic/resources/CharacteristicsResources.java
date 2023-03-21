@@ -61,7 +61,7 @@ public class CharacteristicsResources {
 		return ResponseEntity.ok(response);
 	}
 	@PutMapping("/{id}")
-	public ResponseEntity<CharacteristicResponse> register(@PathVariable Long id, @RequestBody CharacteristicRequest request) {
+	public ResponseEntity<CharacteristicResponse> update(@PathVariable Long id, @RequestBody CharacteristicRequest request) {
 		Characteristic characteristic = characteristicMapper.requestToModel(request);
 		Characteristic registered = characteristicService.update(id, characteristic);
 		CharacteristicResponse response = characteristicMapper.modelToResponse(registered);

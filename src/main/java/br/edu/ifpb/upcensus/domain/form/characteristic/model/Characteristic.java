@@ -95,7 +95,7 @@ public class Characteristic extends DomainModel<Long> {
 
 	@Override
 	public String toString() {
-		return String.format("{id: %s, attribute: %s, value: %s, description: %s, getCreationTime(): %s}", id,
+		return String.format("{id: %s, attribute: %s, value: %s, description: %s, creation_time(): %s}", id,
 				attribute, value, description, getCreationTime());
 	}
 	

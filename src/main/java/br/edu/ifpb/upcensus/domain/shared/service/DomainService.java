@@ -29,15 +29,8 @@ public interface DomainService<M extends DomainModel<I>, I extends Serializable>
 		return entity.orElseThrow(()-> new ResourceNotFoundException(getDomainClass()));
 	}
 	
-	default List<M> findAllById(List<I> ids) {
-		List<M> entities = getRepository().findAllById(ids);
-		
-		if (CollectionUtils.notEmpty(entities)) return entities;
-		
-		throw new ResourceNotFoundException(getDomainClass());
-	}
-	
 	default List<M> findAllById(Collection<I> ids) {
+		if (CollectionUtils.isEmpty(ids)) return CollectionUtils.emptyList();
 		List<M> entities = getRepository().findAllById(ids);
 		
 		if (CollectionUtils.notEmpty(entities)) return entities;
@@ -45,6 +38,7 @@ public interface DomainService<M extends DomainModel<I>, I extends Serializable>
 		throw new ResourceNotFoundException(getDomainClass());
 	}
 	default List<M> findAllById(Iterable<I> ids) {
+		if (CollectionUtils.isEmpty(ids)) return CollectionUtils.emptyList();
 		List<M> entities = getRepository().findAllById(ids);
 		
 		if (CollectionUtils.notEmpty(entities)) return entities;
@@ -60,6 +54,8 @@ public interface DomainService<M extends DomainModel<I>, I extends Serializable>
 	}
 
 	default List<M> findAllByProperty(final String property, final Collection<? extends Object> value) {
+		if (CollectionUtils.isEmpty(value)) return CollectionUtils.emptyList();
+		
 		List<M> entities = getRepository()
 			.findAll(Specification.where((root, query, builder) -> builder.equal(root.get(property), value)));
 		
@@ -90,7 +86,7 @@ public interface DomainService<M extends DomainModel<I>, I extends Serializable>
 		return getRepository().saveAndFlush(entity);
 	}
 	default List<M> saveAll(Collection<M> entities) {
-		CollectionUtils.forEach(entities, this::validate);
+		validateAll(entities);
 		return getRepository().saveAll(entities);
 	}
 	
@@ -113,5 +109,8 @@ public interface DomainService<M extends DomainModel<I>, I extends Serializable>
 			throw new InvalidDomainModelException(getDomainClass());
 		}
 		entity.validate();
+	}
+	default void validateAll(Collection<M> entities) {
+		CollectionUtils.forEach(entities, this::validate);
 	}
 }
