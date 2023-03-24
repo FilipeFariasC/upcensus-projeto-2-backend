@@ -11,6 +11,7 @@ CREATE TABLE form.t_field (
   	CONSTRAINT min_t_field_code CHECK (char_length(code) >= 3),
   	CONSTRAINT ne_t_field_code CHECK (TRIM(BOTH FROM code) <> ''),
   	CONSTRAINT max_t_field_code CHECK (char_length(code) <= 128),
+  	CONSTRAINT uk_t_field_code UNIQUE (code),
   	CONSTRAINT min_t_field_name CHECK (char_length(name) >= 3),
   	CONSTRAINT ne_t_field_name CHECK (TRIM(BOTH FROM name) <> ''),
   	CONSTRAINT max_t_field_name CHECK (char_length(name) <= 128)
@@ -36,11 +37,9 @@ CREATE TABLE form.t_field_characteristic (
 	id_field BIGINT,
 	id_characteristic BIGINT,
 	
-	
   	CONSTRAINT pk_t_field_characteristic PRIMARY KEY (id_field, id_characteristic),
   	CONSTRAINT fk_t_field_characteristic_id_field FOREIGN KEY (id_field) REFERENCES form.t_field (id),
   	CONSTRAINT fk_t_field_characteristic_id_characteristic FOREIGN KEY (id_characteristic) REFERENCES form.t_characteristic (id)
-  	
 );
 
 

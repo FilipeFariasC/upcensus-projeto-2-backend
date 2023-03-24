@@ -59,10 +59,24 @@ public class CollectionUtils {
     		Collection<? extends E> append,
     		Collector<E, ?, C> collector
     		) {
-    	System.out.println("collection: "+ collection);
-    	System.out.println("append: "+ append);
+    	if (isEmpty(append)) {
+    		return collection;
+    	}
     	if (isEmpty(collection)) {
     		return append.stream().collect(collector);
+    	}
+    	collection.addAll(append);
+    	return collection;
+    }
+    public static <C extends Collection<E>, E> C append(
+    		C collection, 
+    		C append
+    		) {
+    	if (isEmpty(append)) {
+    		return collection;
+    	}
+    	if (isEmpty(collection)) {
+    		return append;
     	}
     	collection.addAll(append);
     	return collection;

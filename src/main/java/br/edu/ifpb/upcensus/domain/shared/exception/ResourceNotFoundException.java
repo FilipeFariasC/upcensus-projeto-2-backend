@@ -14,8 +14,8 @@ public class ResourceNotFoundException extends DomainModelException {
 
 	private static final long serialVersionUID = 1L;
 
-	public ResourceNotFoundException(Class<? extends DomainModel<?>> domainClass) {
-		super(domainClass);
+	public ResourceNotFoundException(Class<? extends DomainModel<?>> domainClass, Object... params) {
+		super(domainClass, params);
 	}
 
 }

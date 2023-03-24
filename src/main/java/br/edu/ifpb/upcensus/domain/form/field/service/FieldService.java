@@ -34,7 +34,7 @@ public interface FieldService extends DomainService<Field, Long> {
 		
 		List<Characteristic> filtered = field.getCharacteristics()
 			.stream()
-			.filter(characteristicsIds::contains)
+			.filter((n)->characteristicsIds.contains(n.getId()))
 			.collect(Collectors.toList());
 		field.setCharacteristics(filtered);
 		save(field);
