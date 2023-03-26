@@ -18,3 +18,9 @@ server:
   servlet:
     contextPath: /api
   port: ${PORT:8080}
+  
+
+cors:
+  allowedOrigins:
+    - http://localhost:4200
+  allowCredentials: true

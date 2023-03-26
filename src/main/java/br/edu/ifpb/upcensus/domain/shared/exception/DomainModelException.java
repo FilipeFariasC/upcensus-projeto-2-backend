@@ -3,34 +3,22 @@ package br.edu.ifpb.upcensus.domain.shared.exception;
 import java.util.Arrays;
 
 import br.edu.ifpb.upcensus.domain.shared.model.DomainModel;
+import br.edu.ifpb.upcensus.infrastructure.exception.DomainException;
 
-public class DomainModelException extends RuntimeException {
+public class DomainModelException extends DomainException {
 
 	private static final long serialVersionUID = 1L;
-
-	private final Class<? extends DomainModel<?>> domainClass;
-	private final Object[] exceptionParams;
 	
 	public DomainModelException(
 		final Class<? extends DomainModel<?>> domainClass,
 		final Object... exceptionParams
 	) {
-		super();
-		this.domainClass = domainClass;
-		this.exceptionParams = exceptionParams;
-	}
-
-	public Class<? extends DomainModel<?>> getDomainClass() {
-		return domainClass;
-	}
-
-	public Object[] getExceptionParams() {
-		return exceptionParams;
+		super(domainClass, exceptionParams);
 	}
 
 	@Override
 	public String toString() {
-		return String.format("{domainClass: %s, exceptionParams: %s}", domainClass, Arrays.toString(exceptionParams));
+		return String.format("{domain_class: %s, exception_params: %s}", getClassObject(), Arrays.toString(getParams()));
 	}
 
 

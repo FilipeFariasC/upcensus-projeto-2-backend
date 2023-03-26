@@ -43,15 +43,15 @@ public class ApplicationExceptionHandler extends ResponseEntityExceptionHandler 
 		super();
 		this.messageSourceService = messageSourceService;
 	}
-	@ExceptionHandler({ DomainModelException.class })
-    public ResponseEntity<Object> handleDomainModelException(DomainModelException exception, WebRequest request) {
+	@ExceptionHandler({ br.edu.ifpb.upcensus.infrastructure.exception.DomainException.class })
+    public ResponseEntity<Object> handleDomainModelException(br.edu.ifpb.upcensus.infrastructure.exception.DomainException exception, WebRequest request) {
 		DomainException domainException = AnnotationUtils.findAnnotation(exception.getClass(), DomainException.class);
 		
-		Class<?> domainClass = exception.getDomainClass();
+		Class<?> domainClass = exception.getClassObject();
 		DomainDescriptor domainDescriptor = AnnotationUtils.findAnnotation(domainClass, DomainDescriptor.class);
 		String className = ObjectUtils.nonNull(domainDescriptor) ? domainDescriptor.name() : domainClass.getSimpleName();
 		
-		Object[] params = Stream.concat(Stream.of(className), Arrays.stream(exception.getExceptionParams())).toArray();
+		Object[] params = Stream.concat(Stream.of(className), Arrays.stream(exception.getParams())).toArray();
 		
 		return handleDomainException(exception, request, domainException, params);
 	}

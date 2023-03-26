@@ -2,9 +2,15 @@ package br.edu.ifpb.upcensus.business.form.characteristic.resources;
 
 import static br.edu.ifpb.upcensus.business.form.characteristic.resources.CharacteristicsEndpoints.CHARACTERISTIC;
 import static br.edu.ifpb.upcensus.business.form.characteristic.resources.CharacteristicsEndpoints.CHARACTERISTICS;
+import static br.edu.ifpb.upcensus.business.form.characteristic.resources.CharacteristicsEndpoints.ATTRIBUTES;
+import static br.edu.ifpb.upcensus.business.form.characteristic.resources.CharacteristicsEndpoints.ATTRIBUTES_NAME;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.NO_CONTENT;
 import static org.springframework.http.HttpStatus.OK;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -19,8 +25,10 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.edu.ifpb.upcensus.business.form.characteristic.service.CharacteristicServiceImpl;
+import br.edu.ifpb.upcensus.domain.form.characteristic.model.Attribute;
 import br.edu.ifpb.upcensus.domain.form.characteristic.model.Characteristic;
 import br.edu.ifpb.upcensus.domain.form.characteristic.service.CharacteristicService;
+import br.edu.ifpb.upcensus.infrastructure.domain.EnumOption;
 import br.edu.ifpb.upcensus.infrastructure.http.response.service.ResponseService;
 import br.edu.ifpb.upcensus.infrastructure.http.response.service.ResponseServiceImpl;
 import br.edu.ifpb.upcensus.presentation.characteristic.mapper.CharacteristicMapper;
@@ -63,6 +71,23 @@ public class CharacteristicsResources {
 		CharacteristicResponse response = characteristicMapper.modelToResponse(characteristic);
 		
 		return responseService.buildResponse(response, OK);
+	}
+	
+	@GetMapping(ATTRIBUTES)
+	@ResponseStatus(OK)
+	public Response<List<EnumOption<Attribute>>> listAttribute() {
+		List<EnumOption<Attribute>> attributes = Arrays.stream(Attribute.values())
+			.map(EnumOption::new)
+			.collect(Collectors.toList());
+		
+		return responseService.buildResponse(attributes, OK);
+	}
+	@GetMapping(ATTRIBUTES_NAME)
+	@ResponseStatus(OK)
+	public Response<EnumOption<Attribute>> getAttributeByName(@PathVariable String name) {
+		Attribute attribute = Attribute.from(name);
+		
+		return responseService.buildResponse(new EnumOption<>(attribute), OK);
 	}
 	
 	@PostMapping

@@ -26,7 +26,7 @@ public interface DomainService<M extends DomainModel<I>, I extends Serializable>
 	default M findById(I id) {
 		Optional<M> entity = getRepository().findById(id);
 		
-		return entity.orElseThrow(()-> new ResourceNotFoundException(getDomainClass()));
+		return entity.orElseThrow(()-> new ResourceNotFoundException(getDomainClass(), "id", id));
 	}
 	
 	default List<M> findAllById(Collection<I> ids) {
@@ -35,7 +35,7 @@ public interface DomainService<M extends DomainModel<I>, I extends Serializable>
 		
 		if (CollectionUtils.notEmpty(entities)) return entities;
 		
-		throw new ResourceNotFoundException(getDomainClass(), "id", ids);
+		throw new ResourceNotFoundException(getDomainClass(), "id(s)", ids);
 	}
 	default List<M> findAllById(Iterable<I> ids) {
 		if (CollectionUtils.isEmpty(ids)) return CollectionUtils.emptyList();
@@ -43,7 +43,7 @@ public interface DomainService<M extends DomainModel<I>, I extends Serializable>
 		
 		if (CollectionUtils.notEmpty(entities)) return entities;
 		
-		throw new ResourceNotFoundException(getDomainClass(), "id", ids);
+		throw new ResourceNotFoundException(getDomainClass(), "id(s)", ids);
 	}
 	
 	default M findByProperty(final String property, final Object value) {
