@@ -1,9 +1,6 @@
 package br.edu.ifpb.upcensus.presentation.characteristic.response;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 import br.edu.ifpb.upcensus.domain.form.characteristic.model.Attribute;
 import br.edu.ifpb.upcensus.presentation.shared.response.DomainModelResponse;

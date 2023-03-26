@@ -5,13 +5,13 @@ import static br.edu.ifpb.upcensus.business.form.field.resources.FieldEndpoints.
 import static br.edu.ifpb.upcensus.business.form.field.resources.FieldEndpoints.FIELD_CHARACTERISTICS;
 import static br.edu.ifpb.upcensus.business.form.field.resources.FieldEndpoints.FIELD_CHARACTERISTICS_ADD;
 import static br.edu.ifpb.upcensus.business.form.field.resources.FieldEndpoints.FIELD_CHARACTERISTICS_REMOVE;
-import static org.springframework.http.HttpStatus.*;
+import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.HttpStatus.OK;
 
 import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
