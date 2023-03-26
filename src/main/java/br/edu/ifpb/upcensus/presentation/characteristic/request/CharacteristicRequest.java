@@ -1,7 +1,6 @@
 package br.edu.ifpb.upcensus.presentation.characteristic.request;
 
 import java.io.Serializable;
-import java.util.List;
 
 import br.edu.ifpb.upcensus.domain.form.characteristic.model.Attribute;
 

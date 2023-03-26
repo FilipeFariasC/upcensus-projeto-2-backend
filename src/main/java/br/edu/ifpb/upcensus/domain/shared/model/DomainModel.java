@@ -48,6 +48,7 @@ public abstract class DomainModel <I extends Serializable> implements Serializab
 	}
 
 	@Override
+	@SuppressWarnings("unchecked")
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
@@ -55,7 +56,7 @@ public abstract class DomainModel <I extends Serializable> implements Serializab
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		DomainModel other = (DomainModel) obj;
+		DomainModel<I> other = (DomainModel<I>) obj;
 		return Objects.equals(getId(), other.getId()) && Objects.equals(getCreationTime(), other.getCreationTime());
 	}
 	

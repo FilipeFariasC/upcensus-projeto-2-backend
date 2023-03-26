@@ -4,6 +4,7 @@ package br.edu.ifpb.upcensus.business.shared.exception.handler;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
 import java.text.MessageFormat;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -50,7 +51,7 @@ public class ApplicationExceptionHandler extends ResponseEntityExceptionHandler 
 		DomainDescriptor domainDescriptor = AnnotationUtils.findAnnotation(domainClass, DomainDescriptor.class);
 		String className = ObjectUtils.nonNull(domainDescriptor) ? domainDescriptor.name() : domainClass.getSimpleName();
 		
-		Object[] params = Stream.concat(Stream.of(className), Stream.of(exception.getExceptionParams())).toArray();
+		Object[] params = Stream.concat(Stream.of(className), Arrays.stream(exception.getExceptionParams())).toArray();
 		
 		return handleDomainException(exception, request, domainException, params);
 	}

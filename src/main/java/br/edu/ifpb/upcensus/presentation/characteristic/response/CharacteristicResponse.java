@@ -1,26 +1,22 @@
 package br.edu.ifpb.upcensus.presentation.characteristic.response;
 
 import java.io.Serializable;
-import java.util.List;
+import java.time.LocalDateTime;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import br.edu.ifpb.upcensus.domain.form.characteristic.model.Attribute;
+import br.edu.ifpb.upcensus.presentation.shared.response.DomainModelResponse;
 
-public class CharacteristicResponse implements Serializable {
+public class CharacteristicResponse extends DomainModelResponse implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
-	private Long id;
 	private Attribute attribute;
 	private String value;
 	private String description;
 	
-	public Long getId() {
-		return id;
-	}
-	public void setId(Long id) {
-		this.id = id;
-	}
-	
+
 	public Attribute getAttribute() {
 		return attribute;
 	}
@@ -42,9 +38,11 @@ public class CharacteristicResponse implements Serializable {
 		this.description = description;
 	}
 	
+	
 	@Override
 	public String toString() {
-		return String.format("{id: %s, attribute: %s, value: %s, description: %s}", id, attribute, value, description);
+		return String.format("{id: %s, creation_time: %s, attribute: %s, value: %s, description: %s}", getId(), getCreationTime(),
+				attribute, value, description);
 	}
 	
 

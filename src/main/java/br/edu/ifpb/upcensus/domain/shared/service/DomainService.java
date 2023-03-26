@@ -113,4 +113,12 @@ public interface DomainService<M extends DomainModel<I>, I extends Serializable>
 	default void validateAll(Collection<M> entities) {
 		CollectionUtils.forEach(entities, this::validate);
 	}
+	
+	default void deleteById(I id) {
+		getRepository().deleteById(id);
+	}
+
+	default void deleteAllById(Collection<I> ids) {
+		getRepository().deleteAllById(ids);
+	}
 }

@@ -6,5 +6,7 @@ import br.edu.ifpb.upcensus.business.shared.ApiEndpoints;
 public interface CharacteristicsEndpoints {
 	public static final String PREFIX = "/characteristics";
 	public static final String CHARACTERISTICS = FormEndpoints.FORM + PREFIX;
-	public static final String CHARACTERISTIC = CHARACTERISTICS + ApiEndpoints.ID;
+	public static final String CHARACTERISTIC_ABSOLUTE = CHARACTERISTICS + ApiEndpoints.ID;
+	
+	public static final String CHARACTERISTIC = ApiEndpoints.ID;
 }

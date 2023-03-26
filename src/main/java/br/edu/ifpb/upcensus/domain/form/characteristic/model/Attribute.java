@@ -2,8 +2,6 @@ package br.edu.ifpb.upcensus.domain.form.characteristic.model;
 
 import java.util.stream.Stream;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-
 import br.edu.ifpb.upcensus.domain.shared.model.DomainEnum;
 import br.edu.ifpb.upcensus.infrastructure.annotation.DomainDescriptor;
 import br.edu.ifpb.upcensus.infrastructure.exception.ElementNotFoundException;

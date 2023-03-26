@@ -1,7 +1,10 @@
 package br.edu.ifpb.upcensus.presentation.field.response;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import br.edu.ifpb.upcensus.presentation.characteristic.response.CharacteristicResponse;
 
@@ -10,6 +13,8 @@ public class FieldResponse implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	private Long id;
+	@JsonProperty("creation_time")
+	private LocalDateTime creationTime;
 	private String code;
 	private String name;
 	private String description;
@@ -21,6 +26,13 @@ public class FieldResponse implements Serializable {
 	}
 	public void setId(Long id) {
 		this.id = id;
+	}
+	
+	public LocalDateTime getCreationTime() {
+		return creationTime;
+	}
+	public void setCreationTime(LocalDateTime creationTime) {
+		this.creationTime = creationTime;
 	}
 	
 	public String getCode() {
@@ -51,12 +63,12 @@ public class FieldResponse implements Serializable {
 		this.characteristics = characteristics;
 	}
 	
+	
 	@Override
 	public String toString() {
-		return String.format("{code: %s, name: %s, description: %s, characteristics: %s}", code, name, description,
-				characteristics);
+		return String.format("{id: %s, creation_time: %s, code: %s, name: %s, description: %s, characteristics: %s}", id,
+				creationTime, code, name, description, characteristics);
 	}
-	
-	
 
+	
 }

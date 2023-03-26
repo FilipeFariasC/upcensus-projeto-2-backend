@@ -9,6 +9,8 @@ import java.util.Date;
 public class DateUtils {
 	
 	private DateUtils() {}
+	
+	public static final String TIMESTAMP = "yyyy-MM-dd HH:mm:ss.SSSSSS";
 	public static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss-SSSSSS");
 	
 	public static String toString(LocalDate localDate) {
