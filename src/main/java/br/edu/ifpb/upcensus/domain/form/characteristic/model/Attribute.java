@@ -2,6 +2,8 @@ package br.edu.ifpb.upcensus.domain.form.characteristic.model;
 
 import java.util.stream.Stream;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+
 import br.edu.ifpb.upcensus.domain.shared.model.DomainEnum;
 import br.edu.ifpb.upcensus.infrastructure.annotation.DomainDescriptor;
 import br.edu.ifpb.upcensus.infrastructure.exception.ElementNotFoundException;
@@ -32,6 +34,7 @@ public enum Attribute implements DomainEnum<Attribute> {
 		return this;
 	}
 	
+	@JsonCreator
 	public static Attribute from(String attribute) {
 		return Stream.of(Attribute.values())
 			.filter(attr-> attr.name().equals(attribute))

@@ -17,9 +17,9 @@ import br.edu.ifpb.upcensus.presentation.shared.response.ResponseBuilder;
 @Service
 @RequestScope
 public class ResponseServiceImpl implements ResponseService {
-	
-	private final HttpServletResponse httpResponse;
+
 	private final HttpServletRequest httpRequest;
+	private final HttpServletResponse httpResponse;
 	
 	public ResponseServiceImpl(
 			final HttpServletResponse httpResponse, 

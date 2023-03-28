@@ -9,4 +9,5 @@ public class StringUtils {
     public static Boolean notEmpty(String str) {
         return ObjectUtils.nonNull(str) && !str.isEmpty();
     }
+    
 }

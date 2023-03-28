@@ -21,4 +21,6 @@ public class WebConfiguration implements WebMvcConfigurer {
 			.allowCredentials(corsProperties.getAllowCredentials())
 			.allowedOrigins(corsProperties.getAllowedOrigins().toArray(new String[] {}));
 	}
+	
+	
 }

@@ -33,5 +33,4 @@ public class CorsProperties {
 		return String.format("{allowed_origins: %s, allow_credentials: %s}", allowedOrigins, allowCredentials);
 	}
 	
-	
 }
