@@ -20,6 +20,7 @@
 		<org.json.version>20230227</org.json.version>
 		<org.yaml.version>1.33</org.yaml.version>
     	<org.mapstruct.version>1.5.3.Final</org.mapstruct.version>
+    	<jackson-datatype-jsr310.version>2.14.2</jackson-datatype-jsr310.version>
     	<maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
 	</properties>
 	<dependencies>
@@ -139,6 +140,13 @@
 	    	<artifactId>spring-boot-configuration-processor</artifactId>
 	    	<optional>true</optional>
 	    </dependency>
+	    
+	    <!-- jackson -->
+	    <dependency>
+		    <groupId>com.fasterxml.jackson.datatype</groupId>
+		    <artifactId>jackson-datatype-jsr310</artifactId>
+		    <version>${jackson-datatype-jsr310.version}</version>
+		</dependency> 
 	</dependencies>
 	<dependencyManagement>
 		<dependencies>
