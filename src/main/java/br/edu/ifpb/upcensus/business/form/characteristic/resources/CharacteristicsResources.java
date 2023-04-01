@@ -1,30 +1,22 @@
 package br.edu.ifpb.upcensus.business.form.characteristic.resources;
 
-import static br.edu.ifpb.upcensus.business.form.characteristic.resources.CharacteristicsEndpoints.CHARACTERISTIC;
-import static br.edu.ifpb.upcensus.business.form.characteristic.resources.CharacteristicsEndpoints.CHARACTERISTICS;
 import static br.edu.ifpb.upcensus.business.form.characteristic.resources.CharacteristicsEndpoints.ATTRIBUTES;
 import static br.edu.ifpb.upcensus.business.form.characteristic.resources.CharacteristicsEndpoints.ATTRIBUTES_NAME;
-import static org.springframework.http.HttpStatus.CREATED;
-import static org.springframework.http.HttpStatus.NO_CONTENT;
+import static br.edu.ifpb.upcensus.business.form.characteristic.resources.CharacteristicsEndpoints.CHARACTERISTICS;
 import static org.springframework.http.HttpStatus.OK;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.edu.ifpb.upcensus.business.form.characteristic.service.CharacteristicServiceImpl;
+import br.edu.ifpb.upcensus.business.shared.BaseCrudEndpoints;
 import br.edu.ifpb.upcensus.domain.form.characteristic.model.Attribute;
 import br.edu.ifpb.upcensus.domain.form.characteristic.model.Characteristic;
 import br.edu.ifpb.upcensus.domain.form.characteristic.service.CharacteristicService;
@@ -38,7 +30,7 @@ import br.edu.ifpb.upcensus.presentation.shared.response.Response;
 
 @RestController
 @RequestMapping(CHARACTERISTICS)
-public class CharacteristicsResources {
+public class CharacteristicsResources extends BaseCrudEndpoints<Characteristic, Long, CharacteristicRequest, CharacteristicResponse>{
 	
 	private final CharacteristicService characteristicService;
 	private final CharacteristicMapper characteristicMapper;
@@ -55,24 +47,6 @@ public class CharacteristicsResources {
 		this.responseService = responseService;
 	}
 
-	@GetMapping
-	@ResponseStatus(OK)
-	public Response<Page<CharacteristicResponse>> findAll(Pageable pageable) {
-		Page<Characteristic> characteristics = characteristicService.findAll(pageable);
-		Page<CharacteristicResponse> responses = characteristics.map(characteristicMapper::modelToResponse);
-		
-		return responseService.buildResponse(responses, OK);
-	}
-	
-	@GetMapping(CHARACTERISTIC)
-	@ResponseStatus(OK)
-	public Response<CharacteristicResponse> findById(@PathVariable Long id) {
-		Characteristic characteristic = characteristicService.findById(id);
-		CharacteristicResponse response = characteristicMapper.modelToResponse(characteristic);
-		
-		return responseService.buildResponse(response, OK);
-	}
-	
 	@GetMapping(ATTRIBUTES)
 	@ResponseStatus(OK)
 	public Response<List<EnumOption<Attribute>>> listAttribute() {
@@ -89,33 +63,22 @@ public class CharacteristicsResources {
 		
 		return responseService.buildResponse(new EnumOption<>(attribute), OK);
 	}
-	
-	@PostMapping
-	@ResponseStatus(CREATED)
-	public Response<CharacteristicResponse> register(@RequestBody CharacteristicRequest request) {
-		Characteristic characteristic = characteristicMapper.requestToModel(request);
-		Characteristic registered = characteristicService.register(characteristic);
-		CharacteristicResponse response = characteristicMapper.modelToResponse(registered);
-		
-		return responseService.buildResponse(response, CREATED, CHARACTERISTIC, characteristic.getId());
+
+	@Override
+	protected ResponseService getResponseService() {
+		return this.responseService;
+	}
+
+	@Override
+	protected CharacteristicService getModelService() {
+		// TODO Auto-generated method stub
+		return this.characteristicService;
+	}
+
+	@Override
+	protected CharacteristicMapper getDomainMapper() {
+		return this.characteristicMapper;
 	}
 	
-	@PutMapping(CHARACTERISTIC)
-	@ResponseStatus(OK)
-	public Response<CharacteristicResponse> update(@PathVariable Long id, @RequestBody CharacteristicRequest request) {
-		Characteristic characteristic = characteristicMapper.requestToModel(request);
-		Characteristic registered = characteristicService.update(id, characteristic);
-		CharacteristicResponse response = characteristicMapper.modelToResponse(registered);
-		
-		return responseService.buildResponse(response, OK);
-	}
-	
-	@DeleteMapping(CHARACTERISTIC)
-	@ResponseStatus(NO_CONTENT)
-	public Response<?> delete(@PathVariable Long id) {
-		this.characteristicService.deleteById(id);
-		
-		return null;
-	}
 	
 }

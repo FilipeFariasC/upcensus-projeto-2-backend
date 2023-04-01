@@ -1,28 +1,23 @@
 package br.edu.ifpb.upcensus.business.form.field.resources;
 
-import static br.edu.ifpb.upcensus.business.form.field.resources.FieldEndpoints.FIELD;
 import static br.edu.ifpb.upcensus.business.form.field.resources.FieldEndpoints.FIELDS_ABSOLUTE;
 import static br.edu.ifpb.upcensus.business.form.field.resources.FieldEndpoints.FIELD_CHARACTERISTICS;
 import static br.edu.ifpb.upcensus.business.form.field.resources.FieldEndpoints.FIELD_CHARACTERISTICS_ADD;
 import static br.edu.ifpb.upcensus.business.form.field.resources.FieldEndpoints.FIELD_CHARACTERISTICS_REMOVE;
-import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.OK;
 
 import java.util.List;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.edu.ifpb.upcensus.business.form.field.service.FieldServiceImpl;
+import br.edu.ifpb.upcensus.business.shared.BaseCrudEndpoints;
 import br.edu.ifpb.upcensus.domain.form.characteristic.model.Characteristic;
 import br.edu.ifpb.upcensus.domain.form.field.model.Field;
 import br.edu.ifpb.upcensus.domain.form.field.service.FieldService;
@@ -37,7 +32,7 @@ import br.edu.ifpb.upcensus.presentation.shared.response.Response;
 
 @RestController
 @RequestMapping(FIELDS_ABSOLUTE)
-public class FieldResources {
+public class FieldResources extends BaseCrudEndpoints<Field, Long, FieldRequest, FieldResponse>{
 	
 	private final FieldService fieldService;
 	private final FieldMapper fieldMapper;
@@ -55,44 +50,6 @@ public class FieldResources {
 		this.fieldMapper = fieldMapper;
 		this.characteristicMapper = characteristicMapper;
 		this.responseService = responseService;
-	}
-
-	@GetMapping
-	@ResponseStatus(OK)
-	public Response<Page<FieldResponse>> findAll(Pageable pageable) {
-		Page<Field> fields = fieldService.findAll(pageable);
-		Page<FieldResponse> responses = fields.map(fieldMapper::modelToResponse);
-		
-		return responseService.buildResponse(responses, OK);
-	}
-	
-	@GetMapping(FIELD)
-	@ResponseStatus(OK)
-	public Response<FieldResponse> findById(@PathVariable Long id) {
-		Field field = fieldService.findById(id);
-		FieldResponse response = fieldMapper.modelToResponse(field);
-		
-		return responseService.buildResponse(response, OK);
-	}
-	
-	@PostMapping
-	@ResponseStatus(CREATED)
-	public Response<FieldResponse> register(@RequestBody FieldRequest request) {
-		Field field = fieldMapper.requestToModel(request);
-		Field registered = fieldService.register(field);
-		FieldResponse response = fieldMapper.modelToResponse(registered);
-		
-		return responseService.buildResponse(response, CREATED, FIELD, field.getId());
-	}
-	
-	@PutMapping(FIELD)
-	@ResponseStatus(OK)
-	public Response<FieldResponse> update(@PathVariable Long id, @RequestBody FieldRequest request) {
-		Field field = fieldMapper.requestToModel(request);
-		Field registered = fieldService.update(id, field);
-		FieldResponse response = fieldMapper.modelToResponse(registered);
-		
-		return responseService.buildResponse(response, OK);
 	}
 	
 	@GetMapping(FIELD_CHARACTERISTICS)
@@ -129,5 +86,22 @@ public class FieldResources {
 		
 		return responseService.buildResponse(response, OK);
 	}
+
+	@Override
+	protected ResponseService getResponseService() {
+		return this.responseService;
+	}
+
+	@Override
+	protected FieldService getModelService() {
+		return this.fieldService;
+	}
+
+	@Override
+	protected FieldMapper getDomainMapper() {
+		return this.fieldMapper;
+	}
+	
+	
 	
 }

@@ -42,4 +42,36 @@ CREATE TABLE form.t_field_characteristic (
   	CONSTRAINT fk_t_field_characteristic_id_characteristic FOREIGN KEY (id_characteristic) REFERENCES form.t_characteristic (id)
 );
 
+CREATE TABLE form.t_configuration (
+	id SERIAL,
+	code VARCHAR(128) NOT NULL,
+	name VARCHAR(128) NOT NULL,
+  	creation_time TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT NOW(),
+  	
+
+  	CONSTRAINT pk_t_configuration PRIMARY KEY (id),
+  	CONSTRAINT min_t_configuration_code CHECK (char_length(code) >= 3),
+  	CONSTRAINT ne_t_configuration_code CHECK (TRIM(BOTH FROM code) <> ''),
+  	CONSTRAINT max_t_configuration_code CHECK (char_length(code) <= 128),
+  	CONSTRAINT uk_t_configuration_code UNIQUE (code),
+  	CONSTRAINT min_t_configuration_name CHECK (char_length(name) >= 3),
+  	CONSTRAINT ne_t_configuration_name CHECK (TRIM(BOTH FROM name) <> ''),
+  	CONSTRAINT max_t_configuration_name CHECK (char_length(name) <= 128)
+);
+
+CREATE TABLE form.t_configuration_characteristic (
+	id SERIAL,
+  	creation_time TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT NOW(),
+  	id_configuration BIGINT,
+	id_field BIGINT,
+	id_characteristic BIGINT,
+	
+  	CONSTRAINT pk_t_configuration_characteristic PRIMARY KEY (id),
+  	CONSTRAINT fk_t_configuration_characteristic_id_configuration FOREIGN KEY (id_configuration) REFERENCES form.t_configuration (id),
+  	CONSTRAINT fk_t_configuration_characteristic_id_field FOREIGN KEY (id_field) REFERENCES form.t_field (id),
+  	CONSTRAINT fk_t_configuration_characteristic_id_characteristic FOREIGN KEY (id_characteristic) REFERENCES form.t_characteristic (id),
+  	CONSTRAINT uk_t_configuration_characteristic_id_configuration_id_field_id_characteristic UNIQUE (id_configuration, id_field, id_characteristic)
+);
+
+
 

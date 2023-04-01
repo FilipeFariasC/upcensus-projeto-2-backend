@@ -28,7 +28,7 @@ public class CollectionUtils {
             return !((Iterator<?>) obj).hasNext();
         if (obj instanceof Iterable)
             return !((Iterable<?>) obj).iterator().hasNext();
-        return true;
+        return false;
     }
 
     public static Boolean notEmpty(Object obj) {
