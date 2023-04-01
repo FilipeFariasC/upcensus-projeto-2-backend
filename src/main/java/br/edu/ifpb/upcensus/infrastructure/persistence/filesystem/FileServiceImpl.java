@@ -8,13 +8,14 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.text.MessageFormat;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import br.edu.ifpb.upcensus.infrastructure.util.DateUtils;
+import br.edu.ifpb.upcensus.infrastructure.util.TimeUtils;
 import br.edu.ifpb.upcensus.infrastructure.util.FileUtils;
 import br.edu.ifpb.upcensus.infrastructure.util.StringUtils;
 
@@ -87,7 +88,7 @@ public class FileServiceImpl implements FileService{
 	private String filename(String filename, String extension) {
 		return MessageFormat.format("{0}-{1}{2}", 
 			filename, 
-			LocalDateTime.now().format(DateUtils.formatter), 
+			TimeUtils.toString(LocalDateTime.now(), DateTimeFormatter.ofPattern(TimeUtils.FILE_TIMESTAMP)), 
 			StringUtils.isEmpty(extension) ? "" : extension);
 	}
 
