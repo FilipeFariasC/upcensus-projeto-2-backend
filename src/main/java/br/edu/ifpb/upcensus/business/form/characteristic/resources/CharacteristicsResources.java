@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.edu.ifpb.upcensus.business.form.characteristic.service.CharacteristicServiceImpl;
-import br.edu.ifpb.upcensus.business.shared.BaseCrudEndpoints;
+import br.edu.ifpb.upcensus.business.shared.BaseCrudResource;
 import br.edu.ifpb.upcensus.domain.form.characteristic.model.Attribute;
 import br.edu.ifpb.upcensus.domain.form.characteristic.model.Characteristic;
 import br.edu.ifpb.upcensus.domain.form.characteristic.service.CharacteristicService;
@@ -30,7 +30,7 @@ import br.edu.ifpb.upcensus.presentation.shared.response.Response;
 
 @RestController
 @RequestMapping(CHARACTERISTICS)
-public class CharacteristicsResources extends BaseCrudEndpoints<Characteristic, Long, CharacteristicRequest, CharacteristicResponse>{
+public class CharacteristicsResources extends BaseCrudResource<Characteristic, Long, CharacteristicRequest, CharacteristicResponse>{
 	
 	private final CharacteristicService characteristicService;
 	private final CharacteristicMapper characteristicMapper;

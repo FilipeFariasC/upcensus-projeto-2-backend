@@ -43,6 +43,11 @@ public class CollectionUtils {
         if(isEmpty(collection)) return Stream.<T>empty().collect(collector);
         return collection.stream().map(mapper).collect(collector);
     }
+
+    public static <F, R extends Collection<F>> R toCollection(Collection<F> collection, Collector<F, ?, R> collector) {
+        if(isEmpty(collection)) return Stream.<F>empty().collect(collector);
+        return collection.stream().collect(collector);
+    }
     
     public static <F> void forEach(Collection<F> collection, Consumer<F> consumer) {
         if(isEmpty(collection)) return;

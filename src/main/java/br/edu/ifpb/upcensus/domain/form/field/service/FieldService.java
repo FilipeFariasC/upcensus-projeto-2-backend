@@ -2,6 +2,7 @@ package br.edu.ifpb.upcensus.domain.form.field.service;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import br.edu.ifpb.upcensus.domain.form.characteristic.model.Characteristic;
@@ -14,28 +15,28 @@ public interface FieldService extends DomainService<Field, Long> {
 	
 	CharacteristicService getCharacteristicService();
 	
-	default List<Characteristic> addFieldCharacteristics(Long id, Collection<Long> characteristicsIds) {
+	default Set<Characteristic> addFieldCharacteristics(Long id, Collection<Long> characteristicsIds) {
 		Field field = findById(id);
 		
 		if (CollectionUtils.isEmpty(characteristicsIds)) return field.getCharacteristics();
 		List<Characteristic> characteristics = getCharacteristicService().findAllById(characteristicsIds);
 		
-		List<Characteristic> appended = CollectionUtils.append(field.getCharacteristics(), characteristics, Collectors.toList());
+		Set<Characteristic> appended = CollectionUtils.append(field.getCharacteristics(), characteristics, Collectors.toSet());
 		field.setCharacteristics(appended);
 		save(field);
 		
 		return field.getCharacteristics();
 	}
 	
-	default List<Characteristic> removeFieldCharacteristics(Long id, Collection<Long> characteristicsIds) {
+	default Set<Characteristic> removeFieldCharacteristics(Long id, Collection<Long> characteristicsIds) {
 		Field field = findById(id);
 		
 		if (CollectionUtils.isEmpty(characteristicsIds) || CollectionUtils.isEmpty(field.getCharacteristics())) return field.getCharacteristics();
 		
-		List<Characteristic> filtered = field.getCharacteristics()
-			.stream()
-			.filter((n)->!characteristicsIds.contains(n.getId()))
-			.collect(Collectors.toList());
+		Set<Characteristic> filtered = CollectionUtils.filter(
+			field.getCharacteristics(),
+			(n)->!characteristicsIds.contains(n.getId()),
+			Collectors.toSet());
 		field.setCharacteristics(filtered);
 		save(field);
 		

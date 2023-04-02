@@ -7,6 +7,7 @@ import static br.edu.ifpb.upcensus.business.form.field.resources.FieldEndpoints.
 import static org.springframework.http.HttpStatus.OK;
 
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -17,7 +18,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.edu.ifpb.upcensus.business.form.field.service.FieldServiceImpl;
-import br.edu.ifpb.upcensus.business.shared.BaseCrudEndpoints;
+import br.edu.ifpb.upcensus.business.shared.BaseCrudResource;
 import br.edu.ifpb.upcensus.domain.form.characteristic.model.Characteristic;
 import br.edu.ifpb.upcensus.domain.form.field.model.Field;
 import br.edu.ifpb.upcensus.domain.form.field.service.FieldService;
@@ -32,7 +33,7 @@ import br.edu.ifpb.upcensus.presentation.shared.response.Response;
 
 @RestController
 @RequestMapping(FIELDS_ABSOLUTE)
-public class FieldResources extends BaseCrudEndpoints<Field, Long, FieldRequest, FieldResponse>{
+public class FieldResources extends BaseCrudResource<Field, Long, FieldRequest, FieldResponse>{
 	
 	private final FieldService fieldService;
 	private final FieldMapper fieldMapper;
@@ -54,35 +55,35 @@ public class FieldResources extends BaseCrudEndpoints<Field, Long, FieldRequest,
 	
 	@GetMapping(FIELD_CHARACTERISTICS)
 	@ResponseStatus(OK)
-	public Response<List<CharacteristicResponse>> getFieldCharacteristics(
+	public Response<Set<CharacteristicResponse>> getFieldCharacteristics(
 			@PathVariable Long id
 		) {
 		Field registered = fieldService.findById(id);
-		List<CharacteristicResponse> response = characteristicMapper.modelListToResponseList(registered.getCharacteristics());
+		Set<CharacteristicResponse> response = characteristicMapper.modelSetToResponseSet(registered.getCharacteristics());
 		
 		return responseService.buildResponse(response, OK);
 	}
 	
 	@PatchMapping(FIELD_CHARACTERISTICS_ADD)
 	@ResponseStatus(OK)
-	public Response<List<CharacteristicResponse>> addFieldCharacteristics(
+	public Response<Set<CharacteristicResponse>> addFieldCharacteristics(
 			@PathVariable Long id, 
 			@RequestBody List<Long> ids
 		) {
-		List<Characteristic> characteristics= fieldService.addFieldCharacteristics(id, ids);
-		List<CharacteristicResponse> response = characteristicMapper.modelListToResponseList(characteristics);
+		Set<Characteristic> characteristics= fieldService.addFieldCharacteristics(id, ids);
+		Set<CharacteristicResponse> response = characteristicMapper.modelSetToResponseSet(characteristics);
 		
 		return responseService.buildResponse(response, OK);
 	}
 	
 	@PatchMapping(FIELD_CHARACTERISTICS_REMOVE)
 	@ResponseStatus(OK)
-	public Response<List<CharacteristicResponse>> removeFieldCharacteristics(
+	public Response<Set<CharacteristicResponse>> removeFieldCharacteristics(
 			@PathVariable Long id, 
 			@RequestBody List<Long> ids
 		) {
-		List<Characteristic> characteristics= fieldService.removeFieldCharacteristics(id, ids);
-		List<CharacteristicResponse> response = characteristicMapper.modelListToResponseList(characteristics);
+		Set<Characteristic> characteristics= fieldService.removeFieldCharacteristics(id, ids);
+		Set<CharacteristicResponse> response = characteristicMapper.modelSetToResponseSet(characteristics);
 		
 		return responseService.buildResponse(response, OK);
 	}

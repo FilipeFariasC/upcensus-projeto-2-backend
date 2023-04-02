@@ -59,19 +59,25 @@ CREATE TABLE form.t_configuration (
   	CONSTRAINT max_t_configuration_name CHECK (char_length(name) <= 128)
 );
 
-CREATE TABLE form.t_configuration_characteristic (
+CREATE TABLE form.t_configuration_field (
 	id SERIAL,
-  	creation_time TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT NOW(),
   	id_configuration BIGINT,
 	id_field BIGINT,
-	id_characteristic BIGINT,
 	
-  	CONSTRAINT pk_t_configuration_characteristic PRIMARY KEY (id),
-  	CONSTRAINT fk_t_configuration_characteristic_id_configuration FOREIGN KEY (id_configuration) REFERENCES form.t_configuration (id),
-  	CONSTRAINT fk_t_configuration_characteristic_id_field FOREIGN KEY (id_field) REFERENCES form.t_field (id),
-  	CONSTRAINT fk_t_configuration_characteristic_id_characteristic FOREIGN KEY (id_characteristic) REFERENCES form.t_characteristic (id),
-  	CONSTRAINT uk_t_configuration_characteristic_id_configuration_id_field_id_characteristic UNIQUE (id_configuration, id_field, id_characteristic)
+  	CONSTRAINT pk_t_configuration_field PRIMARY KEY (id),
+  	CONSTRAINT fk_t_configuration_field_id_configuration FOREIGN KEY (id_configuration) REFERENCES form.t_configuration (id),
+  	CONSTRAINT fk_t_configuration_field_id_field FOREIGN KEY (id_field) REFERENCES form.t_field (id),
+  	CONSTRAINT uk_t_configuration_field_id_configuration_id_field UNIQUE (id_configuration, id_field)
 );
 
+CREATE TABLE form.t_configuration_field_characteristic (
+  	id_configuration_field BIGINT,
+	id_characteristic BIGINT,
+	
+  	CONSTRAINT pk_t_configuration_field_characteristic PRIMARY KEY (id_configuration_field, id_characteristic),
+  	CONSTRAINT fk_t_configuration_field_characteristic_id_configuration_field FOREIGN KEY (id_configuration_field) REFERENCES form.t_configuration_field (id),
+  	CONSTRAINT fk_t_configuration_field_characteristic_id_characteristic FOREIGN KEY (id_characteristic) REFERENCES form.t_characteristic (id),
+  	CONSTRAINT uk_t_configuration_field_characteristic_id_configuration_field_id_characteristic UNIQUE (id_configuration_field, id_characteristic)
+);
 
 

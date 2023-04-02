@@ -22,7 +22,7 @@ import br.edu.ifpb.upcensus.infrastructure.http.response.service.ResponseService
 import br.edu.ifpb.upcensus.infrastructure.mapper.BaseMapper;
 import br.edu.ifpb.upcensus.presentation.shared.response.Response;
 
-public abstract class BaseCrudEndpoints<M extends DomainModel<K>, K extends Serializable, I, O> {
+public abstract class BaseCrudResource<M extends DomainModel<K>, K extends Serializable, I, O> {
 	
 	protected abstract ResponseService getResponseService();
 	protected abstract DomainService<M, K> getModelService();
