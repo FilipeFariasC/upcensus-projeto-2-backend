@@ -7,9 +7,9 @@ import br.edu.ifpb.upcensus.business.shared.BaseCrudResource;
 import br.edu.ifpb.upcensus.domain.form.configuration.model.Configuration;
 import br.edu.ifpb.upcensus.domain.form.configuration.service.ConfigurationService;
 import br.edu.ifpb.upcensus.infrastructure.http.response.service.ResponseService;
-import br.edu.ifpb.upcensus.presentation.configuration.mapper.ConfigurationMapper;
-import br.edu.ifpb.upcensus.presentation.configuration.request.ConfigurationRequest;
-import br.edu.ifpb.upcensus.presentation.configuration.response.ConfigurationResponse;
+import br.edu.ifpb.upcensus.presentation.form.configuration.mapper.ConfigurationMapper;
+import br.edu.ifpb.upcensus.presentation.form.configuration.request.ConfigurationRequest;
+import br.edu.ifpb.upcensus.presentation.form.configuration.response.ConfigurationResponse;
 
 
 @RestController

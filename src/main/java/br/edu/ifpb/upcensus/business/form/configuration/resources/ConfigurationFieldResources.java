@@ -14,13 +14,12 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.edu.ifpb.upcensus.business.shared.ApiEndpoints;
-import br.edu.ifpb.upcensus.domain.form.configuration.model.Configuration;
 import br.edu.ifpb.upcensus.domain.form.configuration.model.ConfigurationField;
 import br.edu.ifpb.upcensus.domain.form.configuration.service.ConfigurationService;
 import br.edu.ifpb.upcensus.infrastructure.http.response.service.ResponseService;
-import br.edu.ifpb.upcensus.presentation.configuration.mapper.ConfigurationFieldMapper;
-import br.edu.ifpb.upcensus.presentation.configuration.request.ConfigurationFieldRequest;
-import br.edu.ifpb.upcensus.presentation.configuration.response.ConfigurationConfigurationFieldResponse;
+import br.edu.ifpb.upcensus.presentation.form.configuration.mapper.ConfigurationFieldMapper;
+import br.edu.ifpb.upcensus.presentation.form.configuration.request.ConfigurationFieldRequest;
+import br.edu.ifpb.upcensus.presentation.form.configuration.response.ConfigurationConfigurationFieldResponse;
 import br.edu.ifpb.upcensus.presentation.shared.response.Response;
 
 
@@ -49,8 +48,8 @@ public class ConfigurationFieldResources {
 	public Response<Set<ConfigurationConfigurationFieldResponse>> getFieldConfigurationFields(
 			@PathVariable Long id
 		) {
-		Configuration registered = configurationService.findById(id);
-		Set<ConfigurationConfigurationFieldResponse> response = configurationFieldMapper.modelSetToConfigurationResponseSet(registered.getFields());
+		Set<ConfigurationField> fields = configurationService.findAllConfigurationFieldByConfigurationId(id);
+		Set<ConfigurationConfigurationFieldResponse> response = configurationFieldMapper.modelSetToConfigurationResponseSet(fields);
 		
 		return responseService.buildResponse(response, OK);
 	}
