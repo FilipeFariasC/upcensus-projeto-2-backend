@@ -53,6 +53,21 @@ public class FileServiceImpl implements FileService{
 	}
 
 	@Override
+	public String save(String type,MultipartFile file) {
+		String renamed = type+"_"+filename(file);
+		Path path = FileUtils.UPLOAD_PATH.resolve(renamed);
+		File filePath = path.toFile();
+		try {
+			if (filePath.exists()) {
+				return null;
+			}
+			Files.copy(file.getInputStream(), path);
+			return path.getFileName().toString();
+		} catch (IOException exception) {
+			throw new UncheckedIOException(exception);
+		}
+	}
+	@Override
 	public Resource load(String filename) {
 		try {
 			Path path = FileUtils.UPLOAD_PATH.resolve(filename);
@@ -92,4 +107,6 @@ public class FileServiceImpl implements FileService{
 			StringUtils.isEmpty(extension) ? "" : extension);
 	}
 
+	
+	
 }

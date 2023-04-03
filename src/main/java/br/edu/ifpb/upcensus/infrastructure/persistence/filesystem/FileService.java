@@ -44,5 +44,7 @@ public interface FileService {
 	default void deleteAll(Collection<String> filenames) {
 		filenames.forEach(this::delete);
 	}
+
+	String save(String type, MultipartFile file);
 	
 }
