@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.edu.ifpb.upcensus.business.shared.ApiEndpoints;
 import br.edu.ifpb.upcensus.domain.form.characteristic.model.Characteristic;
-import br.edu.ifpb.upcensus.domain.form.characteristic.service.CharacteristicService;
 import br.edu.ifpb.upcensus.domain.form.configuration.service.ConfigurationService;
 import br.edu.ifpb.upcensus.infrastructure.http.response.service.ResponseService;
 import br.edu.ifpb.upcensus.presentation.form.characteristic.mapper.CharacteristicMapper;
@@ -30,19 +29,16 @@ public class ConfigurationFieldCharacteristicsResources {
 	private final ResponseService responseService;
 	private final ConfigurationService configurationService;
 	private final CharacteristicMapper characteristicMapper;
-	private final CharacteristicService characteristicService;
 	
 	
 	public ConfigurationFieldCharacteristicsResources(
 		final ResponseService responseService,
 		final ConfigurationService configurationService,
-		final CharacteristicMapper characteristicMapper,
-		final CharacteristicService characteristicService
+		final CharacteristicMapper characteristicMapper
 	) {
 		this.responseService = responseService;
 		this.configurationService = configurationService;
-		this.characteristicMapper = characteristicMapper;
-		this.characteristicService = characteristicService;
+		this.characteristicMapper = characteristicMapper;	
 	}
 	
 

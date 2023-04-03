@@ -22,7 +22,6 @@ import br.edu.ifpb.upcensus.presentation.form.field.response.FieldResponse;
 )
 public interface FieldMapper extends BaseMapper<Field, FieldRequest, FieldResponse>
 {
-	@Override
 	@Mapping(target = "characteristics", source = "request.characteristics")
 	Field requestToModel(FieldRequest request);
 	

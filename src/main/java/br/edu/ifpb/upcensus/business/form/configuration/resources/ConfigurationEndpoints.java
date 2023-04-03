@@ -4,7 +4,6 @@ import br.edu.ifpb.upcensus.business.form.characteristic.resources.Characteristi
 import br.edu.ifpb.upcensus.business.form.field.resources.FieldEndpoints;
 import br.edu.ifpb.upcensus.business.form.shared.FormEndpoints;
 import br.edu.ifpb.upcensus.business.shared.ApiEndpoints;
-import br.edu.ifpb.upcensus.domain.form.characteristic.model.Characteristic;
 
 public interface ConfigurationEndpoints {
 	public static final String CONFIGURATION_PREFIX =  "/configurations";

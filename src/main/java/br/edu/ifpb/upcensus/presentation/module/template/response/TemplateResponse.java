@@ -5,7 +5,6 @@ import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import br.edu.ifpb.upcensus.infrastructure.util.FileType;
-import br.edu.ifpb.upcensus.presentation.form.field.response.FieldResponse;
 import br.edu.ifpb.upcensus.presentation.shared.response.DomainModelResponse;
 
 public class TemplateResponse extends DomainModelResponse {
