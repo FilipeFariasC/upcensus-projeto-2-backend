@@ -1,6 +1,7 @@
 package br.edu.ifpb.upcensus.domain.module.template.model;
 
 import java.util.Map;
+import java.util.Objects;
 
 import javax.persistence.CollectionTable;
 import javax.persistence.Column;
@@ -81,5 +82,35 @@ public class Template extends DomainModel<Long> {
 	public void setFileType(FileType fileType) {
 		this.fileType = fileType;
 	}
+
+
+	@Override
+	public String toString() {
+		return String.format("{id: %s, creation_time: %s, mappings: %s, fileType: %s}", id, 
+				getCreationTime(), mappings, fileType);
+	}
+
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + Objects.hash(fileType, id, mappings);
+		return result;
+	}
+
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Template other = (Template) obj;
+		return Objects.equals(id, other.id) && fileType == other.fileType && Objects.equals(mappings, other.mappings);
+	}
+	
 	
 }

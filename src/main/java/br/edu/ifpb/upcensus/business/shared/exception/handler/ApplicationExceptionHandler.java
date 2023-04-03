@@ -6,6 +6,7 @@ import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -48,7 +49,9 @@ public class ApplicationExceptionHandler extends ResponseEntityExceptionHandler 
 		
 		Class<?> domainClass = exception.getClassObject();
 		DomainDescriptor domainDescriptor = AnnotationUtils.findAnnotation(domainClass, DomainDescriptor.class);
-		String className = ObjectUtils.nonNull(domainDescriptor) ? domainDescriptor.name() : domainClass.getSimpleName();
+		String className = Optional.ofNullable(domainDescriptor)
+			.map(DomainDescriptor::name)
+			.orElse(domainClass.getSimpleName());
 		
 		Object[] params = Stream.concat(Stream.of(className), Arrays.stream(exception.getParams())).toArray();
 		

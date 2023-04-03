@@ -8,7 +8,7 @@ public interface MessageSourceService {
 	String getMessage(String key, Object... params);
 	@Nullable
     default String getMessage(String key) {
-    	return getMessage(key, new Object[] {});
+    	return getMessage(key, new Object[0]);
     }
 
      String getMessage(FieldError fieldError);

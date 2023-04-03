@@ -74,7 +74,6 @@ public class ConfigurationFieldCharacteristicsResources {
 			@PathVariable Long idField,
 			@RequestBody List<Long> ids
 		) {
-		System.out.println(ids);
 		Set<Characteristic> configurationFields= configurationService.removeConfigurationFieldCharacteristics(id, idField, ids);
 		Set<CharacteristicResponse> response = characteristicMapper.modelSetToResponseSet(configurationFields);
 		
