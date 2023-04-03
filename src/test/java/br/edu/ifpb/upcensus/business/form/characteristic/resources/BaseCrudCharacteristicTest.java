@@ -18,6 +18,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MvcResult;
 
 import br.edu.ifpb.upcensus.business.form.TestAplicationBaseCrud;
+import br.edu.ifpb.upcensus.business.form.field.resources.FieldEndpoints;
 import br.edu.ifpb.upcensus.domain.form.characteristic.model.Attribute;
 import br.edu.ifpb.upcensus.presentation.characteristic.request.CharacteristicRequest;
 import br.edu.ifpb.upcensus.util.SeveralUtilities;
@@ -32,7 +33,7 @@ public class BaseCrudCharacteristicTest extends TestAplicationBaseCrud{
 	protected Random random = new Random();
 	
 	@BeforeEach
-	public void setup() throws Exception{
+	public void reset() throws Exception{
 		
 		characteristicRequest.setAttribute(Attribute.MIN_VALUE);
 		characteristicRequest.setValue(""+random.nextInt(11));
@@ -64,21 +65,22 @@ public class BaseCrudCharacteristicTest extends TestAplicationBaseCrud{
 				.contentType("application/json")
 				.content(objectMapper.writeValueAsString("")))
 				.andExpect(status().isNoContent());
-		//perguntar se é pra retornar 204
+
 	}
 	
 	@Test
 	public void happy_flux_update_test() throws Exception{
 		
-		characteristicRequest.setAttribute(Attribute.TYPE);
-		characteristicRequest.setValue("5");
-		characteristicRequest.setDescription("valor teste update");
 		
 		MvcResult resultado =mockMvc.perform(post(CharacteristicsEndpoints.CHARACTERISTICS)
 				.contentType("application/json")
 				.content(objectMapper.writeValueAsString(characteristicRequest)))
 				.andExpect(status().isCreated())
 				.andReturn();
+		
+		characteristicRequest.setAttribute(Attribute.TYPE);
+		characteristicRequest.setValue("5");
+		characteristicRequest.setDescription("valor teste update");
 		
 		int idUp = Integer.parseInt(resultado.getResponse().getRedirectedUrl().replaceAll("http://localhost/form/characteristics/", ""));
 		
@@ -264,7 +266,20 @@ public class BaseCrudCharacteristicTest extends TestAplicationBaseCrud{
 				.andExpect(status().isCreated());
 	}
 	
+	@Test 
+	public void test_repeat() throws Exception{
+	  
+		mockMvc.perform(post(CharacteristicsEndpoints.CHARACTERISTICS)
+				.contentType("application/json")
+				.content(objectMapper.writeValueAsString(characteristicRequest)))
+				.andExpect(status().isCreated());
 	
+		mockMvc.perform(post(CharacteristicsEndpoints.CHARACTERISTICS)
+				.contentType("application/json")
+				.content(objectMapper.writeValueAsString(characteristicRequest)))
+				.andExpect(status().isCreated());
+	
+	}
 	
 	
 	
