@@ -21,6 +21,7 @@ import javax.validation.constraints.NotNull;
 import br.edu.ifpb.upcensus.domain.form.characteristic.model.Characteristic;
 import br.edu.ifpb.upcensus.domain.form.field.model.Field;
 import br.edu.ifpb.upcensus.infrastructure.annotation.DomainDescriptor;
+import br.edu.ifpb.upcensus.infrastructure.util.CollectionUtils;
 
 @Entity
 @Table(
@@ -86,9 +87,19 @@ public class ConfigurationField implements Serializable {
 		return characteristics;
 	}
 	public void setCharacteristics(Set<Characteristic> characteristics) {
-		this.characteristics = characteristics;
+		getCharacteristics().clear();
+		if (CollectionUtils.notEmpty(characteristics)) {
+			getCharacteristics().retainAll(characteristics);
+			getCharacteristics().addAll(characteristics);
+		}
 	}
 	
+	public void addCharacteristic(Characteristic characteristic) {
+		getCharacteristics().add(characteristic);
+	}
+	public void removeCharacteristic(Characteristic characteristic) {
+		getCharacteristics().remove(characteristic);
+	}
 	
 	@Override
 	public String toString() {

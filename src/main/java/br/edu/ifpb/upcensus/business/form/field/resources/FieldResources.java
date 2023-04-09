@@ -24,11 +24,11 @@ import br.edu.ifpb.upcensus.domain.form.field.model.Field;
 import br.edu.ifpb.upcensus.domain.form.field.service.FieldService;
 import br.edu.ifpb.upcensus.infrastructure.http.response.service.ResponseService;
 import br.edu.ifpb.upcensus.infrastructure.http.response.service.ResponseServiceImpl;
-import br.edu.ifpb.upcensus.presentation.characteristic.mapper.CharacteristicMapper;
-import br.edu.ifpb.upcensus.presentation.characteristic.response.CharacteristicResponse;
-import br.edu.ifpb.upcensus.presentation.field.mapper.FieldMapper;
-import br.edu.ifpb.upcensus.presentation.field.request.FieldRequest;
-import br.edu.ifpb.upcensus.presentation.field.response.FieldResponse;
+import br.edu.ifpb.upcensus.presentation.form.characteristic.mapper.CharacteristicMapper;
+import br.edu.ifpb.upcensus.presentation.form.characteristic.response.CharacteristicResponse;
+import br.edu.ifpb.upcensus.presentation.form.field.mapper.FieldMapper;
+import br.edu.ifpb.upcensus.presentation.form.field.request.FieldRequest;
+import br.edu.ifpb.upcensus.presentation.form.field.response.FieldResponse;
 import br.edu.ifpb.upcensus.presentation.shared.response.Response;
 
 @RestController

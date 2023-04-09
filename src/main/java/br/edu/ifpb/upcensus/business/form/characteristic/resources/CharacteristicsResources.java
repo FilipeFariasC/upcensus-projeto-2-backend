@@ -23,9 +23,9 @@ import br.edu.ifpb.upcensus.domain.form.characteristic.service.CharacteristicSer
 import br.edu.ifpb.upcensus.infrastructure.domain.EnumOption;
 import br.edu.ifpb.upcensus.infrastructure.http.response.service.ResponseService;
 import br.edu.ifpb.upcensus.infrastructure.http.response.service.ResponseServiceImpl;
-import br.edu.ifpb.upcensus.presentation.characteristic.mapper.CharacteristicMapper;
-import br.edu.ifpb.upcensus.presentation.characteristic.request.CharacteristicRequest;
-import br.edu.ifpb.upcensus.presentation.characteristic.response.CharacteristicResponse;
+import br.edu.ifpb.upcensus.presentation.form.characteristic.mapper.CharacteristicMapper;
+import br.edu.ifpb.upcensus.presentation.form.characteristic.request.CharacteristicRequest;
+import br.edu.ifpb.upcensus.presentation.form.characteristic.response.CharacteristicResponse;
 import br.edu.ifpb.upcensus.presentation.shared.response.Response;
 
 @RestController
