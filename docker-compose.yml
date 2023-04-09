@@ -29,5 +29,3 @@ services:
             - ./target/:/services
         links:
             - upcensus-db
-            
-            

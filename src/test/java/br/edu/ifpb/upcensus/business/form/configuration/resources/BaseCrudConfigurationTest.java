@@ -1,4 +1,4 @@
-package br.edu.ifpb.upcensus.domain.configuration;
+package br.edu.ifpb.upcensus.business.form.configuration.resources;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
