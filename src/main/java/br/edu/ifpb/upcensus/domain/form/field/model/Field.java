@@ -1,6 +1,6 @@
 package br.edu.ifpb.upcensus.domain.form.field.model;
 
-import java.util.List;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -51,7 +51,7 @@ public class Field extends DomainModel<Long> {
     	joinColumns = @JoinColumn(name = "id_field"),
     	inverseJoinColumns = @JoinColumn(name = "id_characteristic")
     )
-    private List<Characteristic> characteristics;
+    private Set<Characteristic> characteristics;
     
 
 	@Override
@@ -90,24 +90,29 @@ public class Field extends DomainModel<Long> {
 	}
 
 	
-	public List<Characteristic> getCharacteristics() {
+	public Set<Characteristic> getCharacteristics() {
 		return characteristics;
 	}
 	
-	public void setCharacteristics(List<Characteristic> characteristics) {
+	public void setCharacteristics(Set<Characteristic> characteristics) {
 		this.characteristics = characteristics;
 	}
+	
+	public void addCharacteristic(Characteristic characteristic) {
+		getCharacteristics().add(characteristic);
+	}
 
+	public void removeCharacteristic(Characteristic characteristic) {
+		getCharacteristics().remove(characteristic);
+	}
+
+	
 	@Override
 	public String toString() {
 		return String.format(
-				"{id: %s, code: %s, name: %s, description: %s, characteristics: %s, creationTime: %s}", id, code,
+				"{id: %s, code: %s, name: %s, description: %s, characteristics: %s, creation_time: %s}", id, code,
 				name, description, characteristics, getCreationTime());
 	}
-
-	
-	
-	
 	
 
 }

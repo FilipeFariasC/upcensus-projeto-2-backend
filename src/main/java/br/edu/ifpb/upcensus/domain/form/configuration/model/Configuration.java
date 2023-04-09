@@ -1,7 +1,9 @@
 package br.edu.ifpb.upcensus.domain.form.configuration.model;
 
+import java.util.Objects;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -16,6 +18,7 @@ import javax.validation.constraints.Size;
 
 import br.edu.ifpb.upcensus.domain.shared.model.DomainModel;
 import br.edu.ifpb.upcensus.infrastructure.annotation.DomainDescriptor;
+import br.edu.ifpb.upcensus.infrastructure.util.ObjectUtils;
 
 @Entity
 @Table(name = "t_configuration", schema = "form")
@@ -38,8 +41,13 @@ public class Configuration extends DomainModel<Long> {
     @Size(min = 3, max = 128)
     private String name;
     
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "configuration")
-    private Set<ConfigurationCharacteristic> characteristics;
+    @OneToMany(
+    	fetch = FetchType.LAZY, 
+    	mappedBy = "configuration", 
+    	cascade = CascadeType.ALL,//{CascadeType.PERSIST, CascadeType.MERGE},
+    	orphanRemoval = true
+	)
+    private Set<ConfigurationField> fields;
     
 
 	@Override
@@ -67,18 +75,49 @@ public class Configuration extends DomainModel<Long> {
 	}
 
 
-	public Set<ConfigurationCharacteristic> getCharacteristics() {
-		return characteristics;
+	public Set<ConfigurationField> getFields() {
+		return fields;
 	}
-	public void setCharacteristics(Set<ConfigurationCharacteristic> characteristics) {
-		this.characteristics = characteristics;
+	public void addField(ConfigurationField field) {
+		getFields().add(field);
+		field.setConfiguration(this);
+	}
+	public void removeField(ConfigurationField field) {
+		field.setConfiguration(null);	
+		getFields().remove(field);
 	}
 	
-	
+	public void setFields(Set<ConfigurationField> fields) {
+		getFields().clear();
+		if (ObjectUtils.nonNull(fields)) {
+			getFields().retainAll(fields);
+			getFields().addAll(fields);
+			System.out.println("???");
+		}
+	}
 	
 	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + Objects.hash(code, id, name);
+		return result;
+	}
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Configuration other = (Configuration) obj;
+		return Objects.equals(code, other.code)
+				&& Objects.equals(id, other.id) && Objects.equals(name, other.name);
+	}
+	@Override
 	public String toString() {
-		return String.format("{id: %s, code: %s, name: %s, characteristics: %s}", id, code, name, characteristics);
+		return String.format("{id: %s, code: %s, name: %s, fields: %s}", id, code, name, fields);
 	}
 	
 
