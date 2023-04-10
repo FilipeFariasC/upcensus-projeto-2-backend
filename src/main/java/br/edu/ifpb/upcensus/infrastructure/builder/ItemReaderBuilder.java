@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.Comparator;
 import java.util.Map;
 
+import org.hibernate.Hibernate;
 import org.springframework.batch.extensions.excel.poi.PoiItemReader;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.file.FlatFileItemReader;
@@ -12,6 +13,7 @@ import org.springframework.batch.item.file.transform.DelimitedLineTokenizer;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.web.multipart.MultipartFile;
 
+import br.edu.ifpb.upcensus.domain.form.field.model.Field;
 import br.edu.ifpb.upcensus.domain.module.template.model.Template;
 import br.edu.ifpb.upcensus.infrastructure.domain.job.reader.CsvFieldMapper;
 import br.edu.ifpb.upcensus.infrastructure.domain.job.reader.XlsxFieldMapper;
@@ -46,22 +48,16 @@ public class ItemReaderBuilder {
 		reader.setLinesToSkip(hasHeaderRows ? 1 : 0);
 		reader.setRowMapper(new XlsxFieldMapper(template));
 		
-		DelimitedLineTokenizer tokenizer = new DelimitedLineTokenizer();
-		tokenizer.setNames(getTokens(template));
-		
-        DefaultLineMapper<Map<String, String>> lineMapper = new DefaultLineMapper<>();
-        
-        lineMapper.setFieldSetMapper(new CsvFieldMapper(template));
-        lineMapper.setLineTokenizer(tokenizer);
-		
 		return reader;
 	}
 	
 	private String[] getTokens(Template template) {
+		
 		return template.getMappings()
 			.entrySet()
 			.stream()
 			.sorted(Comparator.comparingInt(mapping -> NumberUtils.convertToInteger(mapping.getValue())))
+			.map(entry -> entry.getKey().getCode())
 			.toArray(String[]::new);
 	}
 }

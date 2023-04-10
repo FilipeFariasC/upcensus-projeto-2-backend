@@ -1,6 +1,7 @@
 package br.edu.ifpb.upcensus.domain.form.configuration.service;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -75,8 +76,6 @@ public interface ConfigurationService extends DomainService<Configuration, Long>
 			.filter(f -> f.getId().equals(idField))
 			.findFirst()
 			.orElseThrow(() -> new ElementNotFoundException(ConfigurationField.class, idField));
-
-		System.out.println();
 		if (CollectionUtils.isEmpty(characteristicIds)) return field.getCharacteristics();
 		
 		Set<Characteristic> characteristics = CollectionUtils.toCollection(getCharacteristicService().findAllById(characteristicIds), Collectors.toSet());
@@ -85,5 +84,11 @@ public interface ConfigurationService extends DomainService<Configuration, Long>
 		
 		return getConfigurationFieldRepository().saveAndFlush(field).getCharacteristics();
 	}
-	
+
+	default Configuration findByCode(String code) {
+		return findByProperty("code", code);
+	}
+	default List<Configuration> findAllByCode(Collection<String> codes) {
+		return findAllByProperty("code", codes);
+	}
 }

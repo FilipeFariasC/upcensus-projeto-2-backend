@@ -9,6 +9,7 @@ import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -17,6 +18,7 @@ import javax.persistence.MapKeyJoinColumn;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import br.edu.ifpb.upcensus.domain.form.field.model.Field;
 import br.edu.ifpb.upcensus.domain.shared.model.DomainModel;
@@ -35,7 +37,17 @@ public class Template extends DomainModel<Long> {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "t_template_id_seq")
 	private Long id;
-	@ElementCollection
+    
+    @NotNull
+    @Column(name = "code", unique = true)
+    @Size(min = 3, max = 128)
+    private String code;
+    
+    @NotNull
+    @Size(min = 3, max = 128)
+    private String name;
+    
+	@ElementCollection(fetch = FetchType.EAGER)
 	@CollectionTable(
 		name = "t_template_mapping",
 		schema = "module",
@@ -62,14 +74,23 @@ public class Template extends DomainModel<Long> {
 		this.id = id;
 	}
 
-	public Template(FileType fileType) {
-		this.fileType = fileType;
+	public String getCode() {
+		return code;
 	}
-
+	public void setCode(String code) {
+		this.code = code;
+	}
+	
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	
 	public Map<Field, String> getMappings() {
 		return mappings;
 	}
-
 	public void setMappings(Map<Field, String> mappings) {
 		this.mappings = mappings;
 	}
@@ -77,8 +98,6 @@ public class Template extends DomainModel<Long> {
 	public FileType getFileType() {
 		return fileType;
 	}
-
-
 	public void setFileType(FileType fileType) {
 		this.fileType = fileType;
 	}

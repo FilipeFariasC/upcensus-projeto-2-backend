@@ -99,7 +99,6 @@ public class Configuration extends DomainModel<Long> {
 			setupFields(fields);
 			getFields().retainAll(fields);
 			getFields().addAll(fields);
-			System.out.println("???");
 		}
 	}
 	

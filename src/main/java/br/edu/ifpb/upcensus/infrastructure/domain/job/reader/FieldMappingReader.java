@@ -19,19 +19,19 @@ public abstract class FieldMappingReader<R> {
 		super();
 		this.template = template;
 		this.fieldMapper = fieldMapper;
-			this.mappings = template.getMappings()
-				.entrySet()
-				.stream()
-				.collect(Collectors.toMap(
-					entry -> entry.getKey(),
-					entry -> {
-						String index = entry.getValue();
-						if (!NumberUtils.isPositiveDecimal(index)) {
-							throw new IllegalTemplateArgumentException(entry.getKey().getCode(), entry.getValue());
-						}
-						return fieldMapper.apply(index);
+		this.mappings = template.getMappings()
+			.entrySet()
+			.stream()
+			.collect(Collectors.toMap(
+				entry -> entry.getKey(),
+				entry -> {
+					String index = entry.getValue();
+					if (!NumberUtils.isPositiveDecimal(index)) {
+						throw new IllegalTemplateArgumentException(entry.getKey().getCode(), entry.getValue());
 					}
-				));
+					return fieldMapper.apply(index);
+				}
+			));
 	}
 	
 	public Map<Field, R> getMappings() {

@@ -18,6 +18,8 @@ public class CsvFieldMapper extends FieldMappingReader<Integer> implements Field
 
 	@Override
 	public Map<String, String> mapFieldSet(FieldSet fieldSet) throws BindException {
+		getMappings().entrySet()
+			.forEach(entry -> System.out.println(entry.getKey().getCode() + " " + entry.getValue()));
 		return getMappings().entrySet()
 			.stream()
 			.collect(
@@ -26,9 +28,9 @@ public class CsvFieldMapper extends FieldMappingReader<Integer> implements Field
 	}
 	
 	private String getFieldValue(final FieldSet fieldSet, final Integer index) {
-		if (index >= fieldSet.getFieldCount()) return null;
+		if (index > fieldSet.getFieldCount()) return "";
 		
-		return fieldSet.readString(index);
+		return fieldSet.readString(index-1);
 	}
 
 }
