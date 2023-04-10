@@ -4,7 +4,7 @@ import org.springframework.stereotype.Service;
 
 import br.edu.ifpb.upcensus.domain.module.template.model.Template;
 import br.edu.ifpb.upcensus.domain.module.template.service.TemplateService;
-import br.edu.ifpb.upcensus.infrastructure.persistence.repository.form.TemplateRepository;
+import br.edu.ifpb.upcensus.infrastructure.persistence.repository.module.TemplateRepository;
 
 @Service
 public class TemplateServiceImpl implements TemplateService {
