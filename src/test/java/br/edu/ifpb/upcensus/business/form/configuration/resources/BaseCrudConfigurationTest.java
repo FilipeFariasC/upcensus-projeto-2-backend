@@ -1,13 +1,14 @@
 package br.edu.ifpb.upcensus.business.form.configuration.resources;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 
-import org.hibernate.mapping.Set;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -25,7 +26,6 @@ import br.edu.ifpb.upcensus.presentation.form.characteristic.request.Characteris
 import br.edu.ifpb.upcensus.presentation.form.configuration.request.ConfigurationFieldRequest;
 import br.edu.ifpb.upcensus.presentation.form.configuration.request.ConfigurationRequest;
 import br.edu.ifpb.upcensus.presentation.form.field.request.FieldRequest;
-import br.edu.ifpb.upcensus.util.SeveralUtilities;
 
 @TestInstance(Lifecycle.PER_CLASS)
 @SpringBootTest
@@ -80,7 +80,7 @@ public class BaseCrudConfigurationTest extends TestAplicationBaseCrud{
 	}
 	
 	@Test
-	public void happy_flux_test() throws Exception{
+	public void happy_flux_test_post() throws Exception{
 		
 		mockMvc.perform(post(ConfigurationEndpoints.CONFIGURATIONS)
 				.contentType("application/json")
@@ -88,5 +88,89 @@ public class BaseCrudConfigurationTest extends TestAplicationBaseCrud{
 				.andExpect(status().isCreated());
 		
 	}
+	
+	@Test
+	public void happy_flux_test_get() throws Exception{
+		
+		MvcResult resultado = mockMvc.perform(post(ConfigurationEndpoints.CONFIGURATIONS)
+				.contentType("application/json")
+				.content(objectMapper.writeValueAsString(configurationRequest)))
+				.andExpect(status().isCreated())
+				.andReturn();;
+		
+		String id = resultado.getResponse().getRedirectedUrl().replaceAll("http://localhost/form/configurations/", "");
+
+		mockMvc.perform(get(ConfigurationEndpoints.CONFIGURATIONS+id)
+				.contentType("application/json")
+				.content(objectMapper.writeValueAsString(configurationRequest)))
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("$.data.code").value(configurationRequest.getCode()))
+				.andExpect(jsonPath("$.data.name").value(configurationRequest.getName()));
+	}
+	
+	
+	
+	@Test
+	public void happy_flux_test_delete() throws Exception{
+		
+		MvcResult resultado = mockMvc.perform(post(ConfigurationEndpoints.CONFIGURATIONS)
+				.contentType("application/json")
+				.content(objectMapper.writeValueAsString(configurationRequest)))
+				.andExpect(status().isCreated())
+				.andReturn();;
+		
+		String id = resultado.getResponse().getRedirectedUrl().replaceAll("http://localhost/form/configurations/", "");
+
+		mockMvc.perform(delete(ConfigurationEndpoints.CONFIGURATIONS+id)
+				.contentType("application/json")
+				.content(objectMapper.writeValueAsString(configurationRequest)))
+				.andExpect(status().isNoContent());
+		
+	}
+	
+	@Test
+	public void happy_flux_test_patch() throws Exception{
+		
+		MvcResult resultado = mockMvc.perform(post(ConfigurationEndpoints.CONFIGURATIONS)
+				.contentType("application/json")
+				.content(objectMapper.writeValueAsString(configurationRequest)))
+				.andExpect(status().isCreated())
+				.andReturn();;
+		
+		String id = resultado.getResponse().getRedirectedUrl().replaceAll("http://localhost/form/configurations/", "");
+		
+		configurationFieldRequest.setFieldCode("teste_teste_patch");
+		
+		mockMvc.perform(patch(ConfigurationEndpoints.CONFIGURATIONS+id+"fields/add")
+				.contentType("application/json")
+				.content(objectMapper.writeValueAsString(configurationRequest)))
+				.andExpect(status().isCreated());
+	}
+	
+	@Test
+	public void test_null_code() throws Exception{
+		
+		configurationRequest.setCode(null);
+		
+		mockMvc.perform(post(ConfigurationEndpoints.CONFIGURATIONS)
+				.contentType("application/json")
+				.content(objectMapper.writeValueAsString(configurationRequest)))
+				.andExpect(status().isBadRequest());
+		
+	}
+	
+	@Test
+	public void test_null_fields() throws Exception{
+		
+		configurationRequest.setFields(null);
+		
+		mockMvc.perform(post(ConfigurationEndpoints.CONFIGURATIONS)
+				.contentType("application/json")
+				.content(objectMapper.writeValueAsString(configurationRequest)))
+				.andExpect(status().isBadRequest());
+		
+	}
+	
+	
 	
 }
