@@ -3,7 +3,9 @@ package br.edu.ifpb.upcensus.domain.module.module.model;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
+import javax.persistence.CollectionTable;
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -45,7 +47,13 @@ public class Module extends DomainModel<Long> {
     private String name;
     
     @NotEmpty
-    @Size(min = 3, max = 128)
+    @ElementCollection
+    @CollectionTable(
+    		name = "t_module_tags",
+        	schema = "module",
+        	joinColumns = @JoinColumn(name = "id_module")
+    )
+    @Column(name = "tag")
     private Set<String> tags;
     
     
