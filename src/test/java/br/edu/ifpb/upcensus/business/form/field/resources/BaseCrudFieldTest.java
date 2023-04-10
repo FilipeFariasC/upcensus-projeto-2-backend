@@ -23,8 +23,8 @@ import org.springframework.test.web.servlet.MvcResult;
 import br.edu.ifpb.upcensus.business.form.TestAplicationBaseCrud;
 import br.edu.ifpb.upcensus.business.form.characteristic.resources.CharacteristicsEndpoints;
 import br.edu.ifpb.upcensus.domain.form.characteristic.model.Attribute;
-import br.edu.ifpb.upcensus.presentation.characteristic.request.CharacteristicRequest;
-import br.edu.ifpb.upcensus.presentation.field.request.FieldRequest;
+import br.edu.ifpb.upcensus.presentation.form.characteristic.request.CharacteristicRequest;
+import br.edu.ifpb.upcensus.presentation.form.field.request.FieldRequest;
 import br.edu.ifpb.upcensus.util.SeveralUtilities;
 
 @TestInstance(Lifecycle.PER_CLASS)
