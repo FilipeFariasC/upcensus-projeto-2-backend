@@ -1,4 +1,4 @@
-package br.edu.ifpb.upcensus.infrastructure.util;
+package br.edu.ifpb.upcensus.infrastructure.domain;
 
 import java.util.Arrays;
 import java.util.regex.Matcher;
@@ -11,6 +11,7 @@ import br.edu.ifpb.upcensus.domain.shared.model.DomainEnum;
 import br.edu.ifpb.upcensus.infrastructure.annotation.DomainDescriptor;
 import br.edu.ifpb.upcensus.infrastructure.exception.ElementNotFoundException;
 import br.edu.ifpb.upcensus.infrastructure.exception.UnsupportedFileFormatException;
+import br.edu.ifpb.upcensus.infrastructure.util.StringUtils;
 
 
 @DomainDescriptor(name = "Tipo de Arquivo")

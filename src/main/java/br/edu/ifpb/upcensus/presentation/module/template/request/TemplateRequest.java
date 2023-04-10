@@ -5,7 +5,7 @@ import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import br.edu.ifpb.upcensus.infrastructure.util.FileType;
+import br.edu.ifpb.upcensus.infrastructure.domain.FileType;
 
 public class TemplateRequest implements Serializable{
 

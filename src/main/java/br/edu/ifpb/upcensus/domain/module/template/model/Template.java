@@ -21,7 +21,7 @@ import javax.validation.constraints.NotNull;
 import br.edu.ifpb.upcensus.domain.form.field.model.Field;
 import br.edu.ifpb.upcensus.domain.shared.model.DomainModel;
 import br.edu.ifpb.upcensus.infrastructure.annotation.DomainDescriptor;
-import br.edu.ifpb.upcensus.infrastructure.util.FileType;
+import br.edu.ifpb.upcensus.infrastructure.domain.FileType;
 
 
 @Entity

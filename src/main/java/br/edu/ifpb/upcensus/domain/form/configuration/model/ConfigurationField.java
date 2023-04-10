@@ -1,8 +1,8 @@
 package br.edu.ifpb.upcensus.domain.form.configuration.model;
 
 import java.io.Serializable;
-import java.util.Objects;
 import java.util.Set;
+import java.util.Objects;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -87,6 +87,10 @@ public class ConfigurationField implements Serializable {
 		return characteristics;
 	}
 	public void setCharacteristics(Set<Characteristic> characteristics) {
+		if (CollectionUtils.isEmpty(getCharacteristics())) {
+			this.characteristics = characteristics;
+			return;
+		}
 		getCharacteristics().clear();
 		if (CollectionUtils.notEmpty(characteristics)) {
 			getCharacteristics().retainAll(characteristics);

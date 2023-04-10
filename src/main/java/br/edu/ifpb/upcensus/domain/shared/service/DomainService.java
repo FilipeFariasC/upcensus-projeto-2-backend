@@ -18,7 +18,7 @@ import br.edu.ifpb.upcensus.infrastructure.util.BeanUtils;
 import br.edu.ifpb.upcensus.infrastructure.util.CollectionUtils;
 import br.edu.ifpb.upcensus.infrastructure.util.ObjectUtils;
 
-public interface DomainService<M extends DomainModel<I>, I extends Serializable> {
+public interface DomainService <M extends DomainModel<I>, I extends Serializable> {
 
 	DomainRepository<M, I> getRepository();
 	Class<M> getDomainClass();

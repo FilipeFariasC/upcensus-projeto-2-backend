@@ -143,6 +143,7 @@ public class ApplicationExceptionHandler extends ResponseEntityExceptionHandler 
 		String message = StringUtils.notEmpty(key) ? messageSourceService.getMessage(key) : null;
 		
 		System.out.println(exception);
+		exception.printStackTrace();
 		
 		return handleExceptionInternal(
 			exception, 

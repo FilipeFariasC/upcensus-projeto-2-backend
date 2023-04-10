@@ -22,6 +22,8 @@
     	<org.mapstruct.version>1.5.3.Final</org.mapstruct.version>
     	<jackson-datatype-jsr310.version>2.14.2</jackson-datatype-jsr310.version>
     	<maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
+    	<spring-batch-excel.version>0.1.1</spring-batch-excel.version>
+    	<apache-poi.version>5.2.3</apache-poi.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -147,6 +149,20 @@
 		    <artifactId>jackson-datatype-jsr310</artifactId>
 		    <version>${jackson-datatype-jsr310.version}</version>
 		</dependency> 
+		
+		<!-- XLSX Excel -->
+		<dependency>
+		    <groupId>org.springframework.batch.extensions</groupId>
+		    <artifactId>spring-batch-excel</artifactId>
+		    <version>${spring-batch-excel.version}</version>
+		</dependency>
+		
+		<!-- Apache POI -->
+		<dependency>
+		    <groupId>org.apache.poi</groupId>
+		    <artifactId>poi</artifactId>
+		    <version>${apache-poi.version}</version>
+		</dependency>
 	</dependencies>
 	<dependencyManagement>
 		<dependencies>
