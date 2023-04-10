@@ -71,7 +71,6 @@ public class CharacteristicsResources extends BaseCrudResource<Characteristic, L
 
 	@Override
 	protected CharacteristicService getModelService() {
-		// TODO Auto-generated method stub
 		return this.characteristicService;
 	}
 
