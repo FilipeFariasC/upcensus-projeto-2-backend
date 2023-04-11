@@ -5,7 +5,7 @@ import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import br.edu.ifpb.upcensus.infrastructure.util.FileType;
+import br.edu.ifpb.upcensus.infrastructure.domain.FileType;
 
 public class TemplateRequest implements Serializable{
 
@@ -13,6 +13,8 @@ public class TemplateRequest implements Serializable{
 	
 	@JsonProperty("file_type")
 	private FileType fileType;
+	private String code;
+    private String name;
 	private Map<String, String> mappings;
 	
 	
@@ -22,18 +24,31 @@ public class TemplateRequest implements Serializable{
 	public void setFileType(FileType fileType) {
 		this.fileType = fileType;
 	}
+
+	public String getCode() {
+		return code;
+	}
+	public void setCode(String code) {
+		this.code = code;
+	}
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
 	public Map<String, String> getMappings() {
 		return mappings;
 	}
 	public void setMappings(Map<String, String> mappings) {
 		this.mappings = mappings;
 	}
-	
-	
 	@Override
 	public String toString() {
-		return String.format("{fileType: %s, mappings: %s}", fileType, mappings);
+		return String.format("{file_type: %s, code: %s, name: %s, mappings: %s}", fileType, code, name, mappings);
 	}
+	
+	
 	
 
 }

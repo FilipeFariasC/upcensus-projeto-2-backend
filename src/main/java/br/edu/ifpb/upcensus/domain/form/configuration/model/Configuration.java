@@ -1,7 +1,7 @@
 package br.edu.ifpb.upcensus.domain.form.configuration.model;
 
-import java.util.Objects;
 import java.util.Set;
+import java.util.Objects;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -18,6 +18,7 @@ import javax.validation.constraints.Size;
 
 import br.edu.ifpb.upcensus.domain.shared.model.DomainModel;
 import br.edu.ifpb.upcensus.infrastructure.annotation.DomainDescriptor;
+import br.edu.ifpb.upcensus.infrastructure.util.CollectionUtils;
 import br.edu.ifpb.upcensus.infrastructure.util.ObjectUtils;
 
 @Entity
@@ -88,12 +89,21 @@ public class Configuration extends DomainModel<Long> {
 	}
 	
 	public void setFields(Set<ConfigurationField> fields) {
+		if (CollectionUtils.isEmpty(getFields())) {
+			setupFields(fields);
+			this.fields = fields;
+			return;
+		}
 		getFields().clear();
 		if (ObjectUtils.nonNull(fields)) {
+			setupFields(fields);
 			getFields().retainAll(fields);
 			getFields().addAll(fields);
-			System.out.println("???");
 		}
+	}
+	
+	private void setupFields(Set<ConfigurationField> fields) {
+		fields.forEach(field -> field.setConfiguration(this));
 	}
 	
 	@Override

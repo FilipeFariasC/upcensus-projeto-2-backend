@@ -23,7 +23,9 @@ public class TimeUtils {
 	public static String toString(LocalDate localDate) {
 		return toString(localDate, DEFAULT_FORMATTER);
 	}
-	
+	public static String toString(LocalDateTime localDateTime, String format) {
+		return toString(localDateTime, DateTimeFormatter.ofPattern(format));
+	}
 	public static String toString(LocalDateTime localDateTime, DateTimeFormatter formatter) {
 		return localDateTime.format(formatter);
 	}

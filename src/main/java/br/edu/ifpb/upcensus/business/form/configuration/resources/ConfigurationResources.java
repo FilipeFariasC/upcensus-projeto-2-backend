@@ -14,7 +14,7 @@ import br.edu.ifpb.upcensus.presentation.form.configuration.response.Configurati
 
 @RestController
 @RequestMapping(ConfigurationEndpoints.CONFIGURATIONS)
-public class ConfigurationResources extends BaseCrudResource<Configuration, Long, ConfigurationRequest, ConfigurationResponse>{
+public class ConfigurationResources extends BaseCrudResource <Configuration, Long, ConfigurationRequest, ConfigurationResponse> {
 
 	private final ResponseService responseService;
 	private final ConfigurationService configurationService;

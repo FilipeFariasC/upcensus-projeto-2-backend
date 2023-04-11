@@ -7,11 +7,13 @@ import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
@@ -21,8 +23,10 @@ import javax.validation.constraints.Size;
 
 import br.edu.ifpb.upcensus.domain.form.configuration.model.Configuration;
 import br.edu.ifpb.upcensus.domain.module.template.model.Template;
+import br.edu.ifpb.upcensus.domain.shared.exception.ResourceNotFoundException;
 import br.edu.ifpb.upcensus.domain.shared.model.DomainModel;
 import br.edu.ifpb.upcensus.infrastructure.annotation.DomainDescriptor;
+import br.edu.ifpb.upcensus.infrastructure.domain.FileType;
 import br.edu.ifpb.upcensus.infrastructure.util.CollectionUtils;
 
 @Entity
@@ -57,7 +61,9 @@ public class Module extends DomainModel<Long> {
     private Set<String> tags;
     
     
-    @JoinColumn(name = "id_configuration")
+    @NotNull
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_configuration", referencedColumnName = "id")
     private Configuration configuration;
     
     @OneToMany(cascade = CascadeType.ALL)
@@ -69,19 +75,6 @@ public class Module extends DomainModel<Long> {
     )
     private Set<Template> templates;
     
-    
-    
-    
-    public Set<Template> getTemplates() {
-		return templates;
-	}
-	public void setTemplates(Set<Template> templates) {
-		getTemplates().clear();
-		if (CollectionUtils.notEmpty(templates)) {
-			getTemplates().retainAll(templates);
-			getTemplates().addAll(templates);
-		}
-	}
     
 	@Override
 	public Long getId() {
@@ -111,6 +104,43 @@ public class Module extends DomainModel<Long> {
 	public void setTags(Set<String> tags) {
 		this.tags = tags;
 	}
+
+    public Configuration getConfiguration() {
+		return configuration;
+	}
+	public void setConfiguration(Configuration configuration) {
+		this.configuration = configuration;
+	}
+	public Set<Template> getTemplates() {
+		return templates;
+	}
+	public void setTemplates(Set<Template> templates) {
+		if (CollectionUtils.isEmpty(getTemplates())) {
+			this.templates = templates;
+			return;
+		}
+		getTemplates().clear();
+		if (CollectionUtils.notEmpty(templates)) {
+			getTemplates().retainAll(templates);
+			getTemplates().addAll(templates);
+		}
+	}
+	
+	public Template getTemplateByFileType(final FileType fileType) {
+		return getTemplates()
+			.stream()
+			.filter(template -> template.getFileType().equals(fileType))
+			.findFirst()
+			.orElseThrow(() -> new ResourceNotFoundException(Template.class, "file_type", fileType));
+	}
+	
+	
+	@Override
+	public String toString() {
+		return String.format("{id: %s, code: %s, name: %s, tags: %s, configuration: %s, templates: %s}", id, code, name,
+				tags, configuration, templates);
+	}
+    
 	
 	
 }

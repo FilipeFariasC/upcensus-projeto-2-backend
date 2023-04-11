@@ -13,9 +13,9 @@ public class ModuleRequest implements Serializable{
     
     private Set<String> tags;
     
-    private Long configuration;
+    private String configuration;
     
-    private Set<Long> templates;
+    private Set<String> templates;
 
     
     
@@ -45,19 +45,19 @@ public class ModuleRequest implements Serializable{
 	}
 
 	
-	public Long getConfiguration() {
+	public String getConfiguration() {
 		return configuration;
 	}
 
-	public void setConfiguration(Long configuration) {
+	public void setConfiguration(String configuration) {
 		this.configuration = configuration;
 	}
 
-	public Set<Long> getTemplates() {
+	public Set<String> getTemplates() {
 		return templates;
 	}
 
-	public void setTemplates(Set<Long> templates) {
+	public void setTemplates(Set<String> templates) {
 		this.templates = templates;
 	}
 

@@ -141,8 +141,7 @@ public class ApplicationExceptionHandler extends ResponseEntityExceptionHandler 
 	
 	public ResponseEntity<Object> handleException(Exception exception, HttpStatus status, WebRequest request, String key) {
 		String message = StringUtils.notEmpty(key) ? messageSourceService.getMessage(key) : null;
-		
-		System.out.println(exception);
+		exception.printStackTrace();
 		
 		return handleExceptionInternal(
 			exception, 

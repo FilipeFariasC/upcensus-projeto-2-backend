@@ -21,7 +21,15 @@ import br.edu.ifpb.upcensus.domain.shared.service.DomainService;
 import br.edu.ifpb.upcensus.infrastructure.http.response.service.ResponseService;
 import br.edu.ifpb.upcensus.infrastructure.mapper.BaseMapper;
 import br.edu.ifpb.upcensus.presentation.shared.response.Response;
-
+/**
+ * 
+ * @author filipefariasc
+ *
+ * @param <M> Entidade do Domínio
+ * @param <K> Tipo do identificador da entidade
+ * @param <I> Request da entidade
+ * @param <O> Response da entidade
+ */
 public abstract class BaseCrudResource<M extends DomainModel<K>, K extends Serializable, I, O> {
 	
 	protected abstract ResponseService getResponseService();
