@@ -1,5 +1,6 @@
 package br.edu.ifpb.upcensus.domain.form.field.model;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -17,8 +18,10 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import br.edu.ifpb.upcensus.domain.form.characteristic.model.Characteristic;
+import br.edu.ifpb.upcensus.domain.shared.exception.InvalidDomainModelException;
 import br.edu.ifpb.upcensus.domain.shared.model.DomainModel;
 import br.edu.ifpb.upcensus.infrastructure.annotation.DomainDescriptor;
+import br.edu.ifpb.upcensus.infrastructure.util.CollectionUtils;
 
 @Entity
 @Table(name = "t_field", schema = "form")
@@ -53,6 +56,15 @@ public class Field extends DomainModel<Long> {
     )
     private Set<Characteristic> characteristics;
     
+
+	@Override
+	public void initialize() throws InvalidDomainModelException {
+		initializeCharacteristics();
+	}
+	private void initializeCharacteristics() {
+		if (CollectionUtils.isEmpty(characteristics))
+			this.characteristics = new HashSet<>();
+	}
 
 	@Override
 	public Long getId() {
@@ -110,7 +122,7 @@ public class Field extends DomainModel<Long> {
 	@Override
 	public String toString() {
 		return String.format(
-				"{id: %s, code: %s, name: %s, description: %s, characteristics: %s, creation_time: %s}", id, code,
+				"{id: %s, code: \"%s\", name: \"%s\", description: \"%s\", characteristics: %s, creation_time: \"%s\"}", id, code,
 				name, description, characteristics, getCreationTime());
 	}
 	

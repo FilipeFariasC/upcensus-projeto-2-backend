@@ -19,7 +19,7 @@ import br.edu.ifpb.upcensus.infrastructure.domain.job.reader.XlsxFieldMapper;
 import br.edu.ifpb.upcensus.infrastructure.util.NumberUtils;
 import br.edu.ifpb.upcensus.infrastructure.util.StringUtils;
 
-public class ItemReaderBuilder {
+public class ItemProcessorBuilder {
 	
 	private static final String CSV_DELIMITER = ",";
 	

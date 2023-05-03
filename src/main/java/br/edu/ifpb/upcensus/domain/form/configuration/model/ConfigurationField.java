@@ -1,8 +1,8 @@
 package br.edu.ifpb.upcensus.domain.form.configuration.model;
 
 import java.io.Serializable;
-import java.util.Set;
 import java.util.Objects;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;

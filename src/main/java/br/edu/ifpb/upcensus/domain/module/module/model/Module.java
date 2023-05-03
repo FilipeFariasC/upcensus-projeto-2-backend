@@ -1,6 +1,10 @@
 package br.edu.ifpb.upcensus.domain.module.module.model;
 
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
 import javax.persistence.CollectionTable;
@@ -28,6 +32,8 @@ import br.edu.ifpb.upcensus.domain.shared.model.DomainModel;
 import br.edu.ifpb.upcensus.infrastructure.annotation.DomainDescriptor;
 import br.edu.ifpb.upcensus.infrastructure.domain.FileType;
 import br.edu.ifpb.upcensus.infrastructure.util.CollectionUtils;
+import br.edu.ifpb.upcensus.infrastructure.util.JsonUtils;
+import br.edu.ifpb.upcensus.infrastructure.util.ObjectUtils;
 
 @Entity
 @Table(name = "t_module", schema = "module")
@@ -60,10 +66,9 @@ public class Module extends DomainModel<Long> {
     @Column(name = "tag")
     private Set<String> tags;
     
-    
-    @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_configuration", referencedColumnName = "id")
+    @NotNull
     private Configuration configuration;
     
     @OneToMany(cascade = CascadeType.ALL)
@@ -74,7 +79,30 @@ public class Module extends DomainModel<Long> {
         	inverseJoinColumns = @JoinColumn(name = "id_template")
     )
     private Set<Template> templates;
+
+    @OneToMany(mappedBy = "module", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Answer> answers;
     
+    
+    @Override
+    public void initialize() {
+    	initializeTemplates();
+    	initializeTags();
+    	initializeAnswers();
+    }
+    
+    private void initializeTemplates() {
+    	if (CollectionUtils.isEmpty(getTemplates()))
+    		this.templates = new HashSet<>();
+    }
+    private void initializeTags() {
+    	if (CollectionUtils.isEmpty(getTags()))
+    		this.tags = new HashSet<>();
+    }
+    private void initializeAnswers() {
+    	if (CollectionUtils.isEmpty(getAnswers()))
+    		this.answers = new HashSet<>();
+    }
     
 	@Override
 	public Long getId() {
@@ -127,6 +155,8 @@ public class Module extends DomainModel<Long> {
 	}
 	
 	public Template getTemplateByFileType(final FileType fileType) {
+		if (CollectionUtils.isEmpty(getTemplates()))
+			throw new ResourceNotFoundException(Template.class, "file_type", fileType);
 		return getTemplates()
 			.stream()
 			.filter(template -> template.getFileType().equals(fileType))
@@ -135,12 +165,79 @@ public class Module extends DomainModel<Long> {
 	}
 	
 	
+	public Set<Answer> getAnswers() {
+		return answers;
+	}
+	public Set<Answer> getAnswers(Long idTemplate) {
+		if (CollectionUtils.isEmpty(getAnswers()))
+			return Collections.emptySet();
+		
+		return getAnswers()
+			.stream()
+			.filter(answer-> answer.getTemplate().getId().equals(idTemplate))
+			.collect(Collectors.toSet());
+	}
+	
+	public void clearAnswers() {
+		setAnswers(new HashSet<>());
+	}
+	
+	public void removeAnswers(Template template) {
+		Set<Answer> remove = getAnswers()
+			.stream()
+			.filter(answer -> answer.getTemplate().equals(template))
+			.collect(Collectors.toSet());
+		
+//		setupRemoveAnswers(remove);
+		getAnswers().removeAll(remove);
+	}
+	public void setAnswers(Set<Answer> answers) {
+		if (ObjectUtils.isNull(getAnswers())) {
+			setupAddAnswers(answers);
+			this.answers = answers;
+			return;
+		}
+		getAnswers().clear();
+		if (ObjectUtils.nonNull(answers)) {
+			setupAddAnswers(answers);
+			getAnswers().retainAll(answers);
+			getAnswers().addAll(answers);
+		}
+	}
+	
+	private void setupAddAnswers(Set<Answer> answers) {
+		CollectionUtils.forEach(answers, answer->answer.setModule(this));
+	}
+	private void setupRemoveAnswers(Set<Answer> answers) {
+		CollectionUtils.forEach(answers, answer->answer.setModule(null));
+	}
+	
+	public void addAllAnswers(Set<Answer> answers) {
+		setupAddAnswers(answers);
+		getAnswers().addAll(answers);
+	}
+	public void removeAllAnswers(Set<Answer> answers) {
+		setupRemoveAnswers(answers);
+		getAnswers().removeAll(answers);
+	}
+	
+	
+	public Optional<Template> getTemplateById(Long id) {
+		if (CollectionUtils.isEmpty(getTemplates()))
+			return Optional.empty();
+		return getTemplates()
+			.stream()
+			.filter(template -> template.getId().equals(id))
+			.findFirst();
+	}
+	
+	
+	
 	@Override
 	public String toString() {
-		return String.format("{id: %s, code: %s, name: %s, tags: %s, configuration: %s, templates: %s}", id, code, name,
-				tags, configuration, templates);
+		return String.format("{id: %s, code: \"%s\", name: \"%s\", tags: %s, configuration: %s, templates: %s, answer: \"%s\"}", id,
+				code, name, JsonUtils.stringListToJsonString(tags), configuration, templates, answers);
 	}
-    
 	
 	
 }

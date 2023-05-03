@@ -1,7 +1,8 @@
 package br.edu.ifpb.upcensus.domain.form.configuration.model;
 
-import java.util.Set;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -49,8 +50,16 @@ public class Configuration extends DomainModel<Long> {
     	orphanRemoval = true
 	)
     private Set<ConfigurationField> fields;
-    
-
+ 
+	@Override
+	public void initialize() {
+		initializeFields();
+	}
+	private void initializeFields() {
+		if (CollectionUtils.isEmpty(getFields()))
+			this.fields = new HashSet<>();
+	}
+	
 	@Override
 	public Long getId() {
 		return id;
@@ -89,11 +98,12 @@ public class Configuration extends DomainModel<Long> {
 	}
 	
 	public void setFields(Set<ConfigurationField> fields) {
-		if (CollectionUtils.isEmpty(getFields())) {
-			setupFields(fields);
+		if (CollectionUtils.isEmpty(fields)) {
+			this.setupFields(fields);
 			this.fields = fields;
 			return;
 		}
+			
 		getFields().clear();
 		if (ObjectUtils.nonNull(fields)) {
 			setupFields(fields);
