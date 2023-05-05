@@ -40,7 +40,7 @@ public class ModuleResources extends BaseCrudResource<Module, Long, ModuleReques
 	@PostMapping(ApiEndpoints.ID+"/upload")
 	@ResponseStatus(CREATED)
 	public Response<?> uploadFileToModule(@PathVariable Long id, FileRequest request){
-		moduleService.uploadFile(id, request.getFile(), request.isIgnoreHeaderRow(), request.getFileType());
+		moduleService.uploadFile(id, request.getFile(), request.isIgnoreHeaderRow(), request.getFileType(), request.getDelimiter());
 		
 		
 		return null;

@@ -1,7 +1,9 @@
 package br.edu.ifpb.upcensus.domain.form.configuration.model;
 
-import java.util.Set;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -16,6 +18,10 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import br.edu.ifpb.upcensus.domain.form.characteristic.model.Attribute;
+import br.edu.ifpb.upcensus.domain.form.characteristic.model.Characteristic;
+import br.edu.ifpb.upcensus.domain.form.characteristic.model.Type;
+import br.edu.ifpb.upcensus.domain.form.field.model.Field;
 import br.edu.ifpb.upcensus.domain.shared.model.DomainModel;
 import br.edu.ifpb.upcensus.infrastructure.annotation.DomainDescriptor;
 import br.edu.ifpb.upcensus.infrastructure.util.CollectionUtils;
@@ -49,8 +55,16 @@ public class Configuration extends DomainModel<Long> {
     	orphanRemoval = true
 	)
     private Set<ConfigurationField> fields;
-    
-
+ 
+	@Override
+	public void initialize() {
+		initializeFields();
+	}
+	private void initializeFields() {
+		if (CollectionUtils.isEmpty(getFields()))
+			this.fields = new HashSet<>();
+	}
+	
 	@Override
 	public Long getId() {
 		return id;
@@ -89,11 +103,12 @@ public class Configuration extends DomainModel<Long> {
 	}
 	
 	public void setFields(Set<ConfigurationField> fields) {
-		if (CollectionUtils.isEmpty(getFields())) {
-			setupFields(fields);
+		if (CollectionUtils.isEmpty(fields)) {
+			this.setupFields(fields);
 			this.fields = fields;
 			return;
 		}
+			
 		getFields().clear();
 		if (ObjectUtils.nonNull(fields)) {
 			setupFields(fields);
@@ -105,6 +120,24 @@ public class Configuration extends DomainModel<Long> {
 	private void setupFields(Set<ConfigurationField> fields) {
 		fields.forEach(field -> field.setConfiguration(this));
 	}
+	
+	
+	public Optional<Characteristic> getAttribute(Field field, Attribute attribute) {
+		return getFields()
+			.stream()
+			.filter(configurationField -> configurationField.getField().equals(field))
+			.findFirst()
+			.flatMap(configurationField -> configurationField.getCharacteristic(attribute));
+	}
+	
+	public Optional<Type> getType(Field field) {
+		return getFields()
+				.stream()
+				.filter(configurationField -> configurationField.getField().equals(field))
+				.map(ConfigurationField::getType)
+				.findFirst();
+	}
+	
 	
 	@Override
 	public int hashCode() {

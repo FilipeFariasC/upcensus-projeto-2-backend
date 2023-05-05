@@ -1,5 +1,7 @@
 package br.edu.ifpb.upcensus.business.module.module.service;
 
+import javax.annotation.PostConstruct;
+
 import org.springframework.stereotype.Service;
 
 import br.edu.ifpb.upcensus.business.job.JobService;
@@ -34,5 +36,9 @@ public class ModuleServiceImpl implements ModuleService {
 		return jobService;
 	}
 
+	@PostConstruct
+	private void setup() {
+		this.jobService.setModuleService(this);
+	}
 
 }

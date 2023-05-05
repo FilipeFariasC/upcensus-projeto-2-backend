@@ -10,6 +10,7 @@ import br.edu.ifpb.upcensus.infrastructure.exception.ElementNotFoundException;
 
 @DomainDescriptor(name = "Atributo")
 public enum Attribute implements DomainEnum<Attribute> {
+	
 	TYPE("Tipo"),
 	REQUIRED("Obrigatoriedade"),
 	MIN_LENGTH("Tamanho mínimo"),

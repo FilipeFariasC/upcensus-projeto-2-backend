@@ -1,8 +1,10 @@
 package br.edu.ifpb.upcensus.domain.module.template.model;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+import javax.persistence.CascadeType;
 import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
@@ -14,6 +16,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.MapKeyJoinColumn;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
@@ -24,6 +27,9 @@ import br.edu.ifpb.upcensus.domain.form.field.model.Field;
 import br.edu.ifpb.upcensus.domain.shared.model.DomainModel;
 import br.edu.ifpb.upcensus.infrastructure.annotation.DomainDescriptor;
 import br.edu.ifpb.upcensus.infrastructure.domain.FileType;
+import br.edu.ifpb.upcensus.infrastructure.exception.ElementNotFoundException;
+import br.edu.ifpb.upcensus.infrastructure.util.CollectionUtils;
+import br.edu.ifpb.upcensus.infrastructure.util.JsonUtils;
 
 
 @Entity
@@ -61,10 +67,31 @@ public class Template extends DomainModel<Long> {
 	@NotNull
 	@Column(name = "file_type")
 	private FileType fileType;
+	
+	@NotNull
+	@ManyToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = "id_field_identifier")
+	private Field fieldIdentifier;
 
 	public Template() { }
 	
 	
+	
+	
+	@Override
+	public void initialize() {
+    	initializeMappings();
+	}
+	
+
+    private void initializeMappings() {
+    	if (CollectionUtils.isEmpty(getMappings()))
+    		this.mappings = new HashMap<>();
+    }
+
+
+
+
 	@Override
 	public Long getId() {
 		return id;
@@ -101,23 +128,39 @@ public class Template extends DomainModel<Long> {
 	public void setFileType(FileType fileType) {
 		this.fileType = fileType;
 	}
+	
+	public Field getFieldIdentifier() {
+		return fieldIdentifier;
+	}
+	public void setFieldIdentifier(Field fieldIdentifier) {
+		this.fieldIdentifier = fieldIdentifier;
+	}
+	
+	public Field getFieldFromCode(String code) {
+		return getMappings()
+			.keySet()
+			.stream()
+			.filter(field -> field.getCode().equals(code))
+			.findFirst()
+			.orElseThrow(()-> new ElementNotFoundException(Field.class, code));
+	}
 
 
 	@Override
 	public String toString() {
-		return String.format("{id: %s, creation_time: %s, mappings: %s, fileType: %s}", id, 
-				getCreationTime(), mappings, fileType);
+		return String.format("{id: %s, code: \"%s\", name: \"%s\", mappings: %s, file_type: %s, field_identifier: \"%s\"}", id, code, name, JsonUtils.mapToString(mappings, Field::getCode),
+				fileType, fieldIdentifier);
 	}
+	
 
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = super.hashCode();
-		result = prime * result + Objects.hash(fileType, id, mappings);
+		result = prime * result + Objects.hash(code, fieldIdentifier, fileType, id, mappings, name);
 		return result;
 	}
-
 
 	@Override
 	public boolean equals(Object obj) {
@@ -128,8 +171,13 @@ public class Template extends DomainModel<Long> {
 		if (getClass() != obj.getClass())
 			return false;
 		Template other = (Template) obj;
-		return Objects.equals(id, other.id) && fileType == other.fileType && Objects.equals(mappings, other.mappings);
+		return Objects.equals(code, other.code) && Objects.equals(fieldIdentifier, other.fieldIdentifier)
+				&& fileType == other.fileType && Objects.equals(id, other.id)
+				&& Objects.equals(mappings, other.mappings) && Objects.equals(name, other.name);
 	}
+
+
+	
 	
 	
 }

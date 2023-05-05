@@ -45,4 +45,22 @@ public class TimeUtils {
 	            .replaceAll("(\\d[HMS])(?!$)", "$1 ")
 	            .toLowerCase();
 	}
+	
+	public static boolean isValidDate(String date) {
+		try {
+			LocalDate.parse(date);
+		} catch(RuntimeException exception) {
+			return false;
+		}
+		return true;
+	}
+	
+	public static boolean isValidTimestamp(String timestamp) {
+		try {
+			LocalDateTime.parse(timestamp);
+		} catch(RuntimeException exception) {
+			return false;
+		}
+		return true;
+	}
 }

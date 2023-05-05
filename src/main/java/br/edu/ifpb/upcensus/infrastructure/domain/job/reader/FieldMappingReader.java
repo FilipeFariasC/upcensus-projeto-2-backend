@@ -27,7 +27,7 @@ public abstract class FieldMappingReader<R> {
 				entry -> {
 					String index = entry.getValue();
 					if (!NumberUtils.isPositiveDecimal(index)) {
-						throw new IllegalTemplateArgumentException(entry.getKey().getCode(), entry.getValue());
+						throw new IllegalTemplateArgumentException(entry.getKey().getCode(), entry.getValue(), template.getCode());
 					}
 					return fieldMapper.apply(index);
 				}

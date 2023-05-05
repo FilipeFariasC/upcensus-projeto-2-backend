@@ -1,8 +1,12 @@
 package br.edu.ifpb.upcensus.domain.form.configuration.model;
 
 import java.io.Serializable;
-import java.util.Set;
+import java.util.Comparator;
 import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -18,7 +22,11 @@ import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 
+import br.edu.ifpb.upcensus.business.form.shared.exception.FieldTypeBadConfiguredException;
+import br.edu.ifpb.upcensus.business.form.shared.exception.FieldTypeNotConfiguredException;
+import br.edu.ifpb.upcensus.domain.form.characteristic.model.Attribute;
 import br.edu.ifpb.upcensus.domain.form.characteristic.model.Characteristic;
+import br.edu.ifpb.upcensus.domain.form.characteristic.model.Type;
 import br.edu.ifpb.upcensus.domain.form.field.model.Field;
 import br.edu.ifpb.upcensus.infrastructure.annotation.DomainDescriptor;
 import br.edu.ifpb.upcensus.infrastructure.util.CollectionUtils;
@@ -104,6 +112,59 @@ public class ConfigurationField implements Serializable {
 	public void removeCharacteristic(Characteristic characteristic) {
 		getCharacteristics().remove(characteristic);
 	}
+	
+	public Set<Characteristic> getAllCharacteristics() {
+		
+		Stream<Characteristic> configurationCharacteristics = filterCharacteristics(getCharacteristics());
+		Set<Attribute> attributes = getAttributes(getCharacteristics());
+		Stream<Characteristic> fieldCharacteristics = filterCharacteristics(field.getCharacteristics())
+				.filter(characteristic -> !attributes.contains(characteristic.getAttribute()));
+		
+		return Stream
+			.concat(fieldCharacteristics, configurationCharacteristics)
+			.collect(Collectors.toSet());
+	}
+	
+	private Stream<Characteristic> filterCharacteristics(Set<Characteristic> characteristics) {
+		return characteristics
+			.stream()
+			.collect(Collectors.groupingBy(Characteristic::getAttribute))
+			.values()
+			.stream()
+			.map(list -> list.get(0));
+	}
+	
+	private Set<Attribute> getAttributes(Set<Characteristic> characteristics) {
+		return characteristics
+			.stream()
+			.map(Characteristic::getAttribute)
+			.collect(Collectors.toSet());
+	}
+	
+
+	
+	public Optional<Characteristic> getCharacteristic(Attribute attribute) {
+		return getAllCharacteristics()
+			.stream()
+			.filter(characteristic -> characteristic.getAttribute().equals(attribute))
+			.min(Comparator.comparingLong(Characteristic::getId));
+	}
+	
+	public Type getType() {
+		return getAllCharacteristics()
+			.stream()
+			.filter(characteristic -> characteristic.getAttribute().equals(Attribute.TYPE))
+			.findFirst()
+			.map(characteristic ->{
+				try {
+					return Enum.valueOf(Type.class, characteristic.getValue());
+				} catch (IllegalArgumentException exception) {
+					throw new FieldTypeBadConfiguredException(characteristic.getDescription());
+				}
+			})
+			.orElseThrow(()-> new FieldTypeNotConfiguredException());
+	}
+	
 	
 	@Override
 	public String toString() {

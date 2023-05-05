@@ -1,6 +1,9 @@
 package br.edu.ifpb.upcensus.domain.form.characteristic.model;
 
+import java.math.BigDecimal;
 import java.util.Objects;
+import java.util.function.Function;
+import java.util.regex.Pattern;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -77,6 +80,32 @@ public class Characteristic extends DomainModel<Long> {
 		this.description = description;
 	}
 
+	private <T> T getMappedValue(Function<String, T> mapper) {
+		try {
+			return mapper.apply(getValue());
+		} catch (Exception exception) {
+			throw new IllegalStateException(exception);
+		}
+	}
+	
+	public Boolean getValueAsBoolean() {
+		return getMappedValue(Boolean::valueOf);
+	}
+	public Integer getValueAsInteger() {
+		return getMappedValue(Integer::valueOf);
+	}
+	public Double getValueAsDouble() {
+		return getMappedValue(Double::valueOf);
+	}
+	public BigDecimal getValueAsBigDecimal() {
+		return getMappedValue(BigDecimal::new);
+	}
+	public Pattern getValueAsPattern() {
+		return getMappedValue(Pattern::compile);
+	}
+	
+	
+	
 	@Override
 	public int hashCode() {
 		return Objects.hash(id, attribute, value, description);
