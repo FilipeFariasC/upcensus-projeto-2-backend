@@ -1,6 +1,8 @@
 package br.edu.ifpb.upcensus.domain.form.field.model;
 
+import java.util.Comparator;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -17,7 +19,11 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import br.edu.ifpb.upcensus.business.form.shared.exception.FieldTypeBadConfiguredException;
+import br.edu.ifpb.upcensus.business.form.shared.exception.FieldTypeNotConfiguredException;
+import br.edu.ifpb.upcensus.domain.form.characteristic.model.Attribute;
 import br.edu.ifpb.upcensus.domain.form.characteristic.model.Characteristic;
+import br.edu.ifpb.upcensus.domain.form.characteristic.model.Type;
 import br.edu.ifpb.upcensus.domain.shared.exception.InvalidDomainModelException;
 import br.edu.ifpb.upcensus.domain.shared.model.DomainModel;
 import br.edu.ifpb.upcensus.infrastructure.annotation.DomainDescriptor;
@@ -118,6 +124,24 @@ public class Field extends DomainModel<Long> {
 		getCharacteristics().remove(characteristic);
 	}
 
+	public Optional<Characteristic> getCharacteristic(Attribute attribute) {
+		return getCharacteristics()
+			.stream()
+			.filter(characteristic -> characteristic.getAttribute().equals(attribute))
+			.min(Comparator.comparingLong(Characteristic::getId));
+	}
+	
+	public Type getType() {
+		return getCharacteristic(Attribute.TYPE)
+			.map(characteristic ->{
+				try {
+					return Enum.valueOf(Type.class, characteristic.getValue());
+				} catch (IllegalArgumentException exception) {
+					throw new FieldTypeBadConfiguredException(characteristic.getDescription());
+				}
+			})
+			.orElseThrow(FieldTypeNotConfiguredException::new);
+	}
 	
 	@Override
 	public String toString() {

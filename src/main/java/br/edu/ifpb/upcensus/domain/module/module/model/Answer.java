@@ -1,13 +1,22 @@
 package br.edu.ifpb.upcensus.domain.module.module.model;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
+import java.util.function.Function;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
@@ -16,10 +25,16 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import br.edu.ifpb.upcensus.domain.form.characteristic.model.Attribute;
+import br.edu.ifpb.upcensus.domain.form.characteristic.model.Characteristic;
+import br.edu.ifpb.upcensus.domain.form.characteristic.model.Type;
 import br.edu.ifpb.upcensus.domain.form.field.model.Field;
+import br.edu.ifpb.upcensus.domain.module.error.model.AnswerError;
+import br.edu.ifpb.upcensus.domain.module.error.model.AnswerError.Motive;
 import br.edu.ifpb.upcensus.domain.module.template.model.Template;
 import br.edu.ifpb.upcensus.domain.shared.model.DomainModel;
 import br.edu.ifpb.upcensus.infrastructure.annotation.DomainDescriptor;
+import br.edu.ifpb.upcensus.infrastructure.util.CollectionUtils;
 
 @Entity
 @Table(
@@ -65,6 +80,9 @@ public class Answer extends DomainModel<Long> {
 	@NotNull
 	@Size(max = 2048)
 	private String value;
+	
+    @OneToMany(mappedBy = "answer", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<AnswerError> errors;
 
 	public static Answer of(final Module module, final Template template, final Field field, final String identifier, final String value) {
 		final Answer answer = new Answer();
@@ -76,6 +94,16 @@ public class Answer extends DomainModel<Long> {
 		answer.setValue(value);
 		
 		return answer;
+	}
+	@Override
+	public void initialize() {
+		super.initialize();
+		initializeErrors();
+	}
+	
+	private void initializeErrors() {
+		if (CollectionUtils.isEmpty(errors))
+			this.errors = new ArrayList<>();
 	}
 	
 	@Override
@@ -120,6 +148,78 @@ public class Answer extends DomainModel<Long> {
 	public void setValue(String value) {
 		this.value = value;
 	}
+	
+	public List<AnswerError> getErrors() {
+		return errors;
+	}
+
+	public void setErrors(List<AnswerError> errors) {
+		this.errors = errors;
+	}
+	
+	public void addError(AnswerError error) {
+		initializeErrors();
+		error.register();
+		getErrors().add(error);
+	}
+	public void addError(Motive motive, String description) {
+		addError(AnswerError.of(this, motive, description));
+	}
+	public void addError(Motive motive) {
+		addError(AnswerError.of(this, motive, null));
+	}
+	
+
+	public Type getType() {
+		Optional<Type> opt = getModule().getType(getField());
+		
+		return opt.orElseGet(getField()::getType);
+	}
+	
+	public Optional<Characteristic> getCharacteristic(Attribute attribute) {
+		Optional<Characteristic> opt = getModule().getCharacteristic(field, attribute);
+		if (opt.isPresent())
+			return opt;
+		return field.getCharacteristic(attribute);
+	}
+	
+	
+	private <T> T getMappedValue(Function<String, T> mapper) {
+		try {
+			return mapper.apply(getValue());
+		} catch (Exception exception) {
+			throw new IllegalStateException(exception);
+		}
+	}
+	
+	/*
+	 * 
+	 */
+	
+	public LocalDate getValueAsDate() {
+		return getMappedValue(LocalDate::parse);
+	}
+	
+	public LocalDateTime getValueAsTimestamp() {
+		return getMappedValue(LocalDateTime::parse);
+	}
+	
+	public Boolean getValueAsBoolean() {
+		return getMappedValue(Boolean::valueOf);
+	}
+	
+	public Integer getValueAsInteger() {
+		return getMappedValue(Integer::valueOf);
+	}
+	
+	public Double getValueAsDouble() {
+		return getMappedValue(Double::valueOf);
+	}
+	public BigDecimal getValueAsBigDecimal() {
+		return getMappedValue(BigDecimal::new);
+	}
+	
+	
 
 	@Override
 	public String toString() {

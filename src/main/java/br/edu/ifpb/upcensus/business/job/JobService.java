@@ -7,9 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import javax.validation.Validation;
 
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobParameters;
@@ -21,18 +18,20 @@ import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.batch.core.repository.JobExecutionAlreadyRunningException;
 import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteException;
 import org.springframework.batch.core.repository.JobRestartException;
-import org.springframework.batch.core.step.job.JobStep;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+
+import br.edu.ifpb.upcensus.business.form.shared.pipeline.AnswerValidator;
+import br.edu.ifpb.upcensus.business.form.shared.pipeline.ValidationPipeline;
 import br.edu.ifpb.upcensus.domain.form.field.model.Field;
-import br.edu.ifpb.upcensus.domain.form.field.service.FieldService;
 import br.edu.ifpb.upcensus.domain.module.module.model.Answer;
 import br.edu.ifpb.upcensus.domain.module.module.model.Module;
 import br.edu.ifpb.upcensus.domain.module.module.service.ModuleService;
 import br.edu.ifpb.upcensus.domain.module.template.model.Template;
+import br.edu.ifpb.upcensus.infrastructure.builder.AnswerItemProcessor;
 import br.edu.ifpb.upcensus.infrastructure.builder.AnswerItemReader;
 import br.edu.ifpb.upcensus.infrastructure.builder.ItemReaderBuilder;
 import br.edu.ifpb.upcensus.infrastructure.domain.FileType;
@@ -48,13 +47,19 @@ public class JobService {
 
 	private final JobLauncher jobLauncher;
 	private ModuleService moduleService;
+	private final ValidationPipeline pipeline;
 
-	public JobService(final JobBuilderFactory jobFactory, final StepBuilderFactory stepBuilderFactory,
-			final JobLauncher jobLauncher) {
+	public JobService(
+		final JobBuilderFactory jobFactory, 
+		final StepBuilderFactory stepBuilderFactory,
+		final JobLauncher jobLauncher,
+		final ValidationPipeline pipeline
+	) {
 		super();
 		this.jobFactory = jobFactory;
 		this.stepBuilderFactory = stepBuilderFactory;
 		this.jobLauncher = jobLauncher;
+		this.pipeline = pipeline;
 	}
 
 	public void runFileJob(MultipartFile file, Module module, boolean ignoreHeaderRow, FileType fileType,
@@ -75,8 +80,10 @@ public class JobService {
 
 	public Step readFileStep(MultipartFile file, Module module, Template template, boolean ignoreHeaderRow,
 			String delimiter) throws IOException {
-		return stepBuilderFactory.get("readFileSaveInDatabase").<Map<String, String>, Map<String, String>>chunk(1)
-				.reader(getFileReader(file, template, ignoreHeaderRow, delimiter)).processor(validator())
+		return stepBuilderFactory.get("readFileSaveInDatabase")
+				.<Map<String, String>, Set<Answer>>chunk(1)
+				.reader(getFileReader(file, template, ignoreHeaderRow, delimiter))
+				.processor(validator(module, template))
 				.writer(writeToDatabase(module, template)).build();
 	}
 
@@ -94,16 +101,16 @@ public class JobService {
 	}
 
 	public Step readAnswerStep(List<Map<String, String>> answers, Module module, Template template) throws IOException {
-		return stepBuilderFactory.get("readAnswersSaveInDatabase").<Map<String, String>, Map<String, String>>chunk(1)
+		return stepBuilderFactory.get("readAnswersSaveInDatabase")
+				.<Map<String, String>, Set<Answer>>chunk(1)
 				.reader(getAnswerReader(answers))
-				.processor(validator())
+				.processor(validator(module, template))
 				.writer(writeToDatabase(module, template))
 				.build();
 	}
 
 	private ItemReader<Map<String, String>> getFileReader(MultipartFile file, Template template,
 			boolean ignoreHeaderRow, String delimiter) throws IOException {
-		System.out.println("???");
 		switch (template.getFileType()) {
 		case CSV:
 			return new ItemReaderBuilder().buildCsvReader(file, template, ignoreHeaderRow, delimiter);
@@ -118,21 +125,11 @@ public class JobService {
 		return new AnswerItemReader(answers);
 	}
 
-	private ItemWriter<Map<String, String>> writeToDatabase(Module module, Template template) {
-		System.out.println("???");
+	private ItemWriter<Set<Answer>> writeToDatabase(Module module, Template template) {
 		return (item) -> {
-			System.out.println(item);
-			final String codeIdentifier = template.getFieldIdentifier().getCode();
-
-			Set<Answer> answers = item.stream().flatMap(map -> {
-				final String identifier = map.get(codeIdentifier);
-				return map.entrySet().stream().map(entry -> {
-					final Field field = template.getFieldFromCode(entry.getKey());
-					final Answer answer = Answer.of(module, template, field, identifier, entry.getValue());
-					answer.register();
-					return answer;
-				});
-			}).collect(Collectors.toSet());
+			Set<Answer> answers = item.stream()
+				.flatMap(answer -> answer.stream())
+				.collect(Collectors.toSet());
 			module.addAllAnswers(answers);
 			moduleService.save(module);
 		};
@@ -142,8 +139,7 @@ public class JobService {
 		this.moduleService = moduleService;
 	}
 
-	private ItemProcessor<Map<String, String>, Map<String, String>> validator() {
-		System.out.println("???");
-		return (item) -> item;
+	private ItemProcessor<Map<String, String>, Set<Answer>> validator(final Module module, final Template template) {
+		return new AnswerItemProcessor(module, template, pipeline);
 	}
 }

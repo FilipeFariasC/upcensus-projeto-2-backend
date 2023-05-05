@@ -16,7 +16,6 @@ import br.edu.ifpb.upcensus.domain.module.module.model.Answer;
 import br.edu.ifpb.upcensus.domain.module.module.service.ModuleService;
 import br.edu.ifpb.upcensus.infrastructure.http.response.service.ResponseService;
 import br.edu.ifpb.upcensus.presentation.module.module.mapper.AnswerMapper;
-import br.edu.ifpb.upcensus.presentation.module.module.mapper.ModuleMapper;
 import br.edu.ifpb.upcensus.presentation.module.module.request.AnswerRequest;
 import br.edu.ifpb.upcensus.presentation.module.module.response.AnswerResponse;
 import br.edu.ifpb.upcensus.presentation.shared.response.Response;

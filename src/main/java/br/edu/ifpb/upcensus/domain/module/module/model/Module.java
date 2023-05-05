@@ -25,7 +25,11 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import br.edu.ifpb.upcensus.domain.form.characteristic.model.Attribute;
+import br.edu.ifpb.upcensus.domain.form.characteristic.model.Characteristic;
+import br.edu.ifpb.upcensus.domain.form.characteristic.model.Type;
 import br.edu.ifpb.upcensus.domain.form.configuration.model.Configuration;
+import br.edu.ifpb.upcensus.domain.form.field.model.Field;
 import br.edu.ifpb.upcensus.domain.module.template.model.Template;
 import br.edu.ifpb.upcensus.domain.shared.exception.ResourceNotFoundException;
 import br.edu.ifpb.upcensus.domain.shared.model.DomainModel;
@@ -102,6 +106,14 @@ public class Module extends DomainModel<Long> {
     private void initializeAnswers() {
     	if (CollectionUtils.isEmpty(getAnswers()))
     		this.answers = new HashSet<>();
+    }
+    
+    public Optional<Characteristic> getCharacteristic(Field field, Attribute attribute) {
+    	return getConfiguration().getAttribute(field, attribute);
+    }
+    
+    public Optional<Type> getType(Field field) {
+    	return getConfiguration().getType(field);
     }
     
 	@Override
@@ -188,7 +200,6 @@ public class Module extends DomainModel<Long> {
 			.filter(answer -> answer.getTemplate().equals(template))
 			.collect(Collectors.toSet());
 		
-//		setupRemoveAnswers(remove);
 		getAnswers().removeAll(remove);
 	}
 	public void setAnswers(Set<Answer> answers) {

@@ -23,7 +23,6 @@ public interface ModuleService extends DomainService<Module, Long> {
 	default void uploadFile(Long id, MultipartFile file, boolean ignoreHeaderRow, FileType fileType, String delimiter) {
 		
 		Module module = findById(id);
-		Set<Answer> backup = module.getAnswers();
 		module.clearAnswers();
 		getJobService().runFileJob(file, saveAndFlush(module), ignoreHeaderRow, fileType, delimiter);
 		
@@ -39,9 +38,7 @@ public interface ModuleService extends DomainService<Module, Long> {
 		
 		Template template = opt.orElseThrow(()->new ElementNotFoundException(Template.class, idTemplate));
 		
-		Set<Answer> backup = module.getAnswers(template.getId());
-		module.removeAnswers(template);
-//		module.clearAnswers();
+		module.clearAnswers();
 		getJobService().runAnswerJob(
 			saveAndFlush(module), 
 			template, 
