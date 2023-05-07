@@ -6,6 +6,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest
 class UpcensusApplicationTests {
 
+	
 	@Test
 	void contextLoads() {
 	}
