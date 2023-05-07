@@ -41,7 +41,7 @@ public class BaseCrudCharacteristicTest extends TestAplicationBaseCrud{
 	}
 	
 	@Test
-	public void happy_flux_test() throws Exception{
+	public void happy_flux_test_post() throws Exception{
 		
 		mockMvc.perform(post(CharacteristicsEndpoints.CHARACTERISTICS)
 				.contentType("application/json")
@@ -50,7 +50,7 @@ public class BaseCrudCharacteristicTest extends TestAplicationBaseCrud{
 	}
 	
 	@Test
-	public void happy_flux_delete_test() throws Exception{
+	public void happy_flux_test_delete() throws Exception{
 		
 		MvcResult resultado =mockMvc.perform(post(CharacteristicsEndpoints.CHARACTERISTICS)
 				.contentType("application/json")
@@ -65,11 +65,16 @@ public class BaseCrudCharacteristicTest extends TestAplicationBaseCrud{
 				.contentType("application/json")
 				.content(objectMapper.writeValueAsString("")))
 				.andExpect(status().isNoContent());
+		
+		mockMvc.perform(get(CharacteristicsEndpoints.CHARACTERISTICS+"/"+idDelete)
+				.contentType("application/json")
+				.content(objectMapper.writeValueAsString("")))
+				.andExpect(status().isNotFound());
 
 	}
 	
 	@Test
-	public void happy_flux_update_test() throws Exception{
+	public void happy_flux_test_update() throws Exception{
 		
 		
 		MvcResult resultado =mockMvc.perform(post(CharacteristicsEndpoints.CHARACTERISTICS)

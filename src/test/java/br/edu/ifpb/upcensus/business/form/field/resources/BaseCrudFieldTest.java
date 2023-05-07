@@ -63,7 +63,7 @@ public class BaseCrudFieldTest extends TestAplicationBaseCrud{
 	}
 	
 	@Test
-	public void happy_flux_test() throws Exception{
+	public void happy_flux_test_post() throws Exception{
 		
 		mockMvc.perform(post(FieldEndpoints.FIELDS_ABSOLUTE)
 				.contentType("application/json")
