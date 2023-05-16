@@ -1,13 +1,13 @@
 package br.edu.ifpb.upcensus.domain.form.field.model;
 
-import java.util.Comparator;
 import java.util.HashSet;
-import java.util.Optional;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -19,11 +19,8 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-import br.edu.ifpb.upcensus.business.form.shared.exception.FieldTypeBadConfiguredException;
-import br.edu.ifpb.upcensus.business.form.shared.exception.FieldTypeNotConfiguredException;
-import br.edu.ifpb.upcensus.domain.form.characteristic.model.Attribute;
 import br.edu.ifpb.upcensus.domain.form.characteristic.model.Characteristic;
-import br.edu.ifpb.upcensus.domain.form.characteristic.model.Type;
+import br.edu.ifpb.upcensus.domain.form.shared.model.Field;
 import br.edu.ifpb.upcensus.domain.shared.exception.InvalidDomainModelException;
 import br.edu.ifpb.upcensus.domain.shared.model.DomainModel;
 import br.edu.ifpb.upcensus.infrastructure.annotation.DomainDescriptor;
@@ -33,7 +30,7 @@ import br.edu.ifpb.upcensus.infrastructure.util.CollectionUtils;
 @Table(name = "t_field", schema = "form")
 @SequenceGenerator(name = "t_field_id_seq", schema = "form", sequenceName = "t_field_id_seq", allocationSize = 1)
 @DomainDescriptor(name = "Campo")
-public class Field extends DomainModel<Long> {
+public class PlainField extends DomainModel<Long> implements Field {
 	
 	private static final long serialVersionUID = 1L;
 	
@@ -53,6 +50,16 @@ public class Field extends DomainModel<Long> {
     @Size(max = 512)
     private String description;
     
+
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Type type = Type.PLAIN_TEXT;
+    
+    @NotNull
+    @Column(nullable = false)
+    private boolean required = false;
+    
     @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @JoinTable(
     	name = "t_field_characteristic",
@@ -62,7 +69,6 @@ public class Field extends DomainModel<Long> {
     )
     private Set<Characteristic> characteristics;
     
-
 	@Override
 	public void initialize() throws InvalidDomainModelException {
 		initializeCharacteristics();
@@ -116,31 +122,18 @@ public class Field extends DomainModel<Long> {
 		this.characteristics = characteristics;
 	}
 	
-	public void addCharacteristic(Characteristic characteristic) {
-		getCharacteristics().add(characteristic);
+	public boolean isRequired() {
+		return required;
 	}
-
-	public void removeCharacteristic(Characteristic characteristic) {
-		getCharacteristics().remove(characteristic);
+	public void setRequired(boolean required) {
+		this.required = required;
 	}
-
-	public Optional<Characteristic> getCharacteristic(Attribute attribute) {
-		return getCharacteristics()
-			.stream()
-			.filter(characteristic -> characteristic.getAttribute().equals(attribute))
-			.min(Comparator.comparingLong(Characteristic::getId));
+	public void setType(Type type) {
+		this.type = type;
 	}
 	
 	public Type getType() {
-		return getCharacteristic(Attribute.TYPE)
-			.map(characteristic ->{
-				try {
-					return Enum.valueOf(Type.class, characteristic.getValue());
-				} catch (IllegalArgumentException exception) {
-					throw new FieldTypeBadConfiguredException(characteristic.getDescription());
-				}
-			})
-			.orElseThrow(FieldTypeNotConfiguredException::new);
+		return type;
 	}
 	
 	@Override

@@ -4,12 +4,10 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 
 import org.springframework.web.multipart.MultipartFile;
 
 import br.edu.ifpb.upcensus.business.job.JobService;
-import br.edu.ifpb.upcensus.domain.module.module.model.Answer;
 import br.edu.ifpb.upcensus.domain.module.module.model.Module;
 import br.edu.ifpb.upcensus.domain.module.template.model.Template;
 import br.edu.ifpb.upcensus.domain.shared.service.DomainService;

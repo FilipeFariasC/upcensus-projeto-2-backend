@@ -17,8 +17,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.edu.ifpb.upcensus.business.form.characteristic.service.CharacteristicServiceImpl;
 import br.edu.ifpb.upcensus.business.shared.BaseCrudResource;
-import br.edu.ifpb.upcensus.domain.form.characteristic.model.Attribute;
 import br.edu.ifpb.upcensus.domain.form.characteristic.model.Characteristic;
+import br.edu.ifpb.upcensus.domain.form.characteristic.model.Characteristic.Attribute;
 import br.edu.ifpb.upcensus.domain.form.characteristic.service.CharacteristicService;
 import br.edu.ifpb.upcensus.infrastructure.domain.EnumOption;
 import br.edu.ifpb.upcensus.infrastructure.http.response.service.ResponseService;

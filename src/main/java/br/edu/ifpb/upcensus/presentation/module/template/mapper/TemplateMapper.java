@@ -4,7 +4,7 @@ import java.util.Map;
 
 import org.mapstruct.Mapper;
 
-import br.edu.ifpb.upcensus.domain.form.field.model.Field;
+import br.edu.ifpb.upcensus.domain.form.field.model.PlainField;
 import br.edu.ifpb.upcensus.domain.form.field.service.FieldService;
 import br.edu.ifpb.upcensus.domain.module.template.model.Template;
 import br.edu.ifpb.upcensus.infrastructure.mapper.BaseMapper;
@@ -20,6 +20,6 @@ import br.edu.ifpb.upcensus.presentation.module.template.response.TemplateRespon
 	}
 )
 public interface TemplateMapper extends BaseMapper<Template, TemplateRequest, TemplateResponse> {
-	Map<Field, String> fieldCodeMapToFieldMap(Map<String, String> mappings);
-	Map<String, String> fieldMapToFieldResponseMap(Map<Field, String> mappings);
+	Map<PlainField, String> fieldCodeMapToFieldMap(Map<String, String> mappings);
+	Map<String, String> fieldMapToFieldResponseMap(Map<PlainField, String> mappings);
 }

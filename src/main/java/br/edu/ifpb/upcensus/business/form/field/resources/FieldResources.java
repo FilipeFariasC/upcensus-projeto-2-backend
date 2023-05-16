@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import br.edu.ifpb.upcensus.business.form.field.service.FieldServiceImpl;
 import br.edu.ifpb.upcensus.business.shared.BaseCrudResource;
 import br.edu.ifpb.upcensus.domain.form.characteristic.model.Characteristic;
-import br.edu.ifpb.upcensus.domain.form.field.model.Field;
+import br.edu.ifpb.upcensus.domain.form.field.model.PlainField;
 import br.edu.ifpb.upcensus.domain.form.field.service.FieldService;
 import br.edu.ifpb.upcensus.infrastructure.http.response.service.ResponseService;
 import br.edu.ifpb.upcensus.infrastructure.http.response.service.ResponseServiceImpl;
@@ -33,7 +33,7 @@ import br.edu.ifpb.upcensus.presentation.shared.response.Response;
 
 @RestController
 @RequestMapping(FIELDS_ABSOLUTE)
-public class FieldResources extends BaseCrudResource<Field, Long, FieldRequest, FieldResponse>{
+public class FieldResources extends BaseCrudResource<PlainField, Long, FieldRequest, FieldResponse>{
 	
 	private final FieldService fieldService;
 	private final FieldMapper fieldMapper;
@@ -58,7 +58,7 @@ public class FieldResources extends BaseCrudResource<Field, Long, FieldRequest, 
 	public Response<Set<CharacteristicResponse>> getFieldCharacteristics(
 			@PathVariable Long id
 		) {
-		Field registered = fieldService.findById(id);
+		PlainField registered = fieldService.findById(id);
 		Set<CharacteristicResponse> response = characteristicMapper.modelSetToResponseSet(registered.getCharacteristics());
 		
 		return responseService.buildResponse(response, OK);

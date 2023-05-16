@@ -3,8 +3,8 @@ package br.edu.ifpb.upcensus.business.form.shared.pipeline.validators;
 import java.text.MessageFormat;
 
 import br.edu.ifpb.upcensus.business.form.shared.pipeline.AnswerValidator;
-import br.edu.ifpb.upcensus.domain.form.characteristic.model.Attribute;
 import br.edu.ifpb.upcensus.domain.form.characteristic.model.Characteristic;
+import br.edu.ifpb.upcensus.domain.form.characteristic.model.Characteristic.Attribute;
 import br.edu.ifpb.upcensus.domain.module.error.model.AnswerError.Motive;
 import br.edu.ifpb.upcensus.domain.module.module.model.Answer;
 

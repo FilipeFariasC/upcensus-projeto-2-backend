@@ -3,8 +3,6 @@ package br.edu.ifpb.upcensus.presentation.module.module.response;
 import java.io.Serializable;
 import java.util.Map;
 
-import br.edu.ifpb.upcensus.infrastructure.util.JsonUtils;
-
 public class AnswerResponse implements Serializable {
 
 	private static final long serialVersionUID = 1L;

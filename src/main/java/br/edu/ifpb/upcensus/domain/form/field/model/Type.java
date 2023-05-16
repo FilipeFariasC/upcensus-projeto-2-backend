@@ -1,4 +1,4 @@
-package br.edu.ifpb.upcensus.domain.form.characteristic.model;
+package br.edu.ifpb.upcensus.domain.form.field.model;
 
 import java.util.Arrays;
 import java.util.regex.Pattern;
@@ -9,7 +9,7 @@ import br.edu.ifpb.upcensus.infrastructure.annotation.DomainDescriptor;
 @DomainDescriptor(name = "Tipo de campo")
 public enum Type implements DomainEnum<Type>{
 	
-	PLAIN_TEXT(".+", "Texto"),
+	PLAIN_TEXT(".*", "Texto"),
 	INTEGER("^[-+]?\\d+$", "Inteiro"),
 	DECIMAL("^[-+]?\\d+[.,]?\\d+$", "Decimal"),
 	ALPHANUMERIC("^[A-Za-zÀ-ú\\d\\s]+$", "Alfanumérico"),
@@ -54,8 +54,12 @@ public enum Type implements DomainEnum<Type>{
 	public static boolean isValidType(String str) {
 		return Arrays.stream(values())
 			.anyMatch(type->type.name().equals(str));
-			
 	}
+	
+	public Pattern getPattern() {
+		return pattern;
+	}
+	
 	@Override
 	public Type getValue() {
 		return this;
@@ -65,4 +69,3 @@ public enum Type implements DomainEnum<Type>{
 		return label;
 	}
 }
- 

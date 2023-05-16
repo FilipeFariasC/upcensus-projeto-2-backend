@@ -24,9 +24,7 @@ import org.springframework.batch.item.ItemWriter;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import br.edu.ifpb.upcensus.business.form.shared.pipeline.AnswerValidator;
 import br.edu.ifpb.upcensus.business.form.shared.pipeline.ValidationPipeline;
-import br.edu.ifpb.upcensus.domain.form.field.model.Field;
 import br.edu.ifpb.upcensus.domain.module.module.model.Answer;
 import br.edu.ifpb.upcensus.domain.module.module.model.Module;
 import br.edu.ifpb.upcensus.domain.module.module.service.ModuleService;

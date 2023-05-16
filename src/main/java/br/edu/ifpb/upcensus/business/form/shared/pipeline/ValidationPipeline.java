@@ -2,7 +2,6 @@ package br.edu.ifpb.upcensus.business.form.shared.pipeline;
 
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Component;
 
@@ -29,8 +28,9 @@ public class ValidationPipeline {
     
     private void validateAndSetError(Answer answer, AnswerValidator validator) {
     	boolean isValid = validator.validate(answer);
-    	if (!isValid)
+    	if (!isValid) 
     		answer.addError(validator.getMotive(), validator.errorMessage(answer));
+    	
     }
 
 }

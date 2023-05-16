@@ -11,8 +11,8 @@ public class StringUtils {
     }
 
     public static Boolean notBlank(String str) {
-        return notEmpty(str) && str.chars()
+        return notEmpty(str) && str.trim().chars()
         	.mapToObj(n -> (char) n)
-        	.allMatch(n -> !Character.isWhitespace(n));
+        	.anyMatch(n -> !Character.isWhitespace(n));
     }
 }

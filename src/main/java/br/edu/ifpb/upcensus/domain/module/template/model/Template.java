@@ -23,7 +23,7 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-import br.edu.ifpb.upcensus.domain.form.field.model.Field;
+import br.edu.ifpb.upcensus.domain.form.field.model.PlainField;
 import br.edu.ifpb.upcensus.domain.shared.model.DomainModel;
 import br.edu.ifpb.upcensus.infrastructure.annotation.DomainDescriptor;
 import br.edu.ifpb.upcensus.infrastructure.domain.FileType;
@@ -61,7 +61,7 @@ public class Template extends DomainModel<Long> {
 	)
 	@MapKeyJoinColumn(name = "id_field")
 	@Column(name = "config")
-	private Map<Field, String> mappings;
+	private Map<PlainField, String> mappings;
 	
 	@Enumerated(EnumType.STRING)
 	@NotNull
@@ -71,7 +71,7 @@ public class Template extends DomainModel<Long> {
 	@NotNull
 	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "id_field_identifier")
-	private Field fieldIdentifier;
+	private PlainField fieldIdentifier;
 
 	public Template() { }
 	
@@ -115,10 +115,10 @@ public class Template extends DomainModel<Long> {
 		this.name = name;
 	}
 	
-	public Map<Field, String> getMappings() {
+	public Map<PlainField, String> getMappings() {
 		return mappings;
 	}
-	public void setMappings(Map<Field, String> mappings) {
+	public void setMappings(Map<PlainField, String> mappings) {
 		this.mappings = mappings;
 	}
 
@@ -129,26 +129,26 @@ public class Template extends DomainModel<Long> {
 		this.fileType = fileType;
 	}
 	
-	public Field getFieldIdentifier() {
+	public PlainField getFieldIdentifier() {
 		return fieldIdentifier;
 	}
-	public void setFieldIdentifier(Field fieldIdentifier) {
+	public void setFieldIdentifier(PlainField fieldIdentifier) {
 		this.fieldIdentifier = fieldIdentifier;
 	}
 	
-	public Field getFieldFromCode(String code) {
+	public PlainField getFieldFromCode(String code) {
 		return getMappings()
 			.keySet()
 			.stream()
 			.filter(field -> field.getCode().equals(code))
 			.findFirst()
-			.orElseThrow(()-> new ElementNotFoundException(Field.class, code));
+			.orElseThrow(()-> new ElementNotFoundException(PlainField.class, code));
 	}
 
 
 	@Override
 	public String toString() {
-		return String.format("{id: %s, code: \"%s\", name: \"%s\", mappings: %s, file_type: %s, field_identifier: \"%s\"}", id, code, name, JsonUtils.mapToString(mappings, Field::getCode),
+		return String.format("{id: %s, code: \"%s\", name: \"%s\", mappings: %s, file_type: %s, field_identifier: \"%s\"}", id, code, name, JsonUtils.mapToString(mappings, PlainField::getCode),
 				fileType, fieldIdentifier);
 	}
 	

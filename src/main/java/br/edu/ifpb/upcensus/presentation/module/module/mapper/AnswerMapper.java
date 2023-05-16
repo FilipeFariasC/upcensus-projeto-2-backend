@@ -8,7 +8,6 @@ import java.util.stream.Collectors;
 import org.mapstruct.Mapper;
 
 import br.edu.ifpb.upcensus.domain.module.module.model.Answer;
-import br.edu.ifpb.upcensus.domain.module.module.model.Module;
 import br.edu.ifpb.upcensus.domain.module.module.service.ModuleService;
 import br.edu.ifpb.upcensus.domain.module.template.service.TemplateService;
 import br.edu.ifpb.upcensus.infrastructure.mapper.MapStructConfig;

@@ -2,7 +2,7 @@ package br.edu.ifpb.upcensus.presentation.form.characteristic.response;
 
 import java.io.Serializable;
 
-import br.edu.ifpb.upcensus.domain.form.characteristic.model.Attribute;
+import br.edu.ifpb.upcensus.domain.form.characteristic.model.Characteristic.Attribute;
 import br.edu.ifpb.upcensus.presentation.shared.response.DomainModelResponse;
 
 public class CharacteristicResponse extends DomainModelResponse implements Serializable {

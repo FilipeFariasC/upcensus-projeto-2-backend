@@ -3,7 +3,9 @@ CREATE SCHEMA form;
 CREATE TABLE form.t_field (
 	id SERIAL,
 	code VARCHAR(128) NOT NULL,
-	name VARCHAR(128) NOT NULL,
+    name VARCHAR(128) NOT NULL,
+    "type" VARCHAR(128) NOT NULL,
+    required BOOLEAN NOT NULL,
 	description VARCHAR(512),
   	creation_time TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT NOW(),
 
@@ -61,8 +63,10 @@ CREATE TABLE form.t_configuration (
 
 CREATE TABLE form.t_configuration_field (
 	id SERIAL,
-  	id_configuration BIGINT,
-	id_field BIGINT,
+  	id_configuration BIGINT NOT NULL,
+	id_field BIGINT NOT NULL,
+    "type" VARCHAR(128),
+    required BOOLEAN,
 	
   	CONSTRAINT pk_t_configuration_field PRIMARY KEY (id),
   	CONSTRAINT fk_t_configuration_field_id_configuration FOREIGN KEY (id_configuration) REFERENCES form.t_configuration (id),

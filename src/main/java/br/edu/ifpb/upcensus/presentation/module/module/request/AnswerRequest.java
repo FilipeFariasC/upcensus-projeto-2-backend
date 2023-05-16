@@ -4,8 +4,6 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
-import br.edu.ifpb.upcensus.infrastructure.util.JsonUtils;
-
 public class AnswerRequest implements Serializable {
 
 	private static final long serialVersionUID = 1L;

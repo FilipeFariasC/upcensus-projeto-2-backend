@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Function;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -18,10 +19,10 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-import br.edu.ifpb.upcensus.domain.form.characteristic.model.Attribute;
 import br.edu.ifpb.upcensus.domain.form.characteristic.model.Characteristic;
-import br.edu.ifpb.upcensus.domain.form.characteristic.model.Type;
-import br.edu.ifpb.upcensus.domain.form.field.model.Field;
+import br.edu.ifpb.upcensus.domain.form.characteristic.model.Characteristic.Attribute;
+import br.edu.ifpb.upcensus.domain.form.field.model.PlainField;
+import br.edu.ifpb.upcensus.domain.form.field.model.Type;
 import br.edu.ifpb.upcensus.domain.shared.model.DomainModel;
 import br.edu.ifpb.upcensus.infrastructure.annotation.DomainDescriptor;
 import br.edu.ifpb.upcensus.infrastructure.util.CollectionUtils;
@@ -103,7 +104,7 @@ public class Configuration extends DomainModel<Long> {
 	}
 	
 	public void setFields(Set<ConfigurationField> fields) {
-		if (CollectionUtils.isEmpty(fields)) {
+		if (CollectionUtils.isEmpty(getFields())) {
 			this.setupFields(fields);
 			this.fields = fields;
 			return;
@@ -122,7 +123,7 @@ public class Configuration extends DomainModel<Long> {
 	}
 	
 	
-	public Optional<Characteristic> getAttribute(Field field, Attribute attribute) {
+	public Optional<Characteristic> getAttribute(PlainField field, Attribute attribute) {
 		return getFields()
 			.stream()
 			.filter(configurationField -> configurationField.getField().equals(field))
@@ -130,12 +131,40 @@ public class Configuration extends DomainModel<Long> {
 			.flatMap(configurationField -> configurationField.getCharacteristic(attribute));
 	}
 	
-	public Optional<Type> getType(Field field) {
+	public Optional<Type> getType(PlainField field) {
+		if (CollectionUtils.isEmpty(getFields()))
+			return Optional.empty();
+		
 		return getFields()
-				.stream()
-				.filter(configurationField -> configurationField.getField().equals(field))
-				.map(ConfigurationField::getType)
-				.findFirst();
+			.stream()
+			.filter(configurationField -> configurationField.getField().equals(field))
+			.map(ConfigurationField::getType)
+			.map(Optional::ofNullable)
+			.findFirst()
+			.flatMap(Function.identity());
+	}
+	
+	public Optional<Boolean> getRequired(PlainField field) {
+		if (CollectionUtils.isEmpty(getFields()))
+			return Optional.empty();
+		
+		return getFields()
+			.stream()
+			.filter(configurationField -> configurationField.getField().equals(field))
+			.map(ConfigurationField::getRequired)
+			.map(Optional::ofNullable)
+			.findFirst()
+			.flatMap(Function.identity());
+	}
+	
+	public boolean hasCharacteristic(PlainField field, Attribute attribute) {
+		if (CollectionUtils.isEmpty(getFields()))
+			return false;
+		
+		return getFields()
+			.stream()
+			.filter(obj -> obj.getField().equals(field))
+			.anyMatch(obj -> obj.hasCharacteristic(attribute));
 	}
 	
 	

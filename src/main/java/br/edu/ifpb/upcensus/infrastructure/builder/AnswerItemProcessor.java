@@ -6,9 +6,8 @@ import java.util.stream.Collectors;
 
 import org.springframework.batch.item.ItemProcessor;
 
-import br.edu.ifpb.upcensus.business.form.shared.pipeline.AnswerValidator;
 import br.edu.ifpb.upcensus.business.form.shared.pipeline.ValidationPipeline;
-import br.edu.ifpb.upcensus.domain.form.field.model.Field;
+import br.edu.ifpb.upcensus.domain.form.field.model.PlainField;
 import br.edu.ifpb.upcensus.domain.module.module.model.Answer;
 import br.edu.ifpb.upcensus.domain.module.module.model.Module;
 import br.edu.ifpb.upcensus.domain.module.template.model.Template;
@@ -49,7 +48,7 @@ public class AnswerItemProcessor implements ItemProcessor<Map<String, String>, S
 	}
 	
 	private Answer mapToAnswer(String identifier, String key, String value) {
-		final Field field = template.getFieldFromCode(key);
+		final PlainField field = template.getFieldFromCode(key);
 		final Answer answer = Answer.of(module, template, field, identifier, value);
 		answer.register();
 		return answer;

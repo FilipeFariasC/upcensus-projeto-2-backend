@@ -7,16 +7,16 @@ import java.util.stream.Collectors;
 
 import br.edu.ifpb.upcensus.domain.form.characteristic.model.Characteristic;
 import br.edu.ifpb.upcensus.domain.form.characteristic.service.CharacteristicService;
-import br.edu.ifpb.upcensus.domain.form.field.model.Field;
+import br.edu.ifpb.upcensus.domain.form.field.model.PlainField;
 import br.edu.ifpb.upcensus.domain.shared.service.DomainService;
 import br.edu.ifpb.upcensus.infrastructure.util.CollectionUtils;
 
-public interface FieldService extends DomainService<Field, Long> {
+public interface FieldService extends DomainService<PlainField, Long> {
 	
 	CharacteristicService getCharacteristicService();
 	
 	default Set<Characteristic> addFieldCharacteristics(Long id, Collection<Long> characteristicsIds) {
-		Field field = findById(id);
+		PlainField field = findById(id);
 		
 		if (CollectionUtils.isEmpty(characteristicsIds)) return field.getCharacteristics();
 		List<Characteristic> characteristics = getCharacteristicService().findAllById(characteristicsIds);
@@ -29,7 +29,7 @@ public interface FieldService extends DomainService<Field, Long> {
 	}
 	
 	default Set<Characteristic> removeFieldCharacteristics(Long id, Collection<Long> characteristicsIds) {
-		Field field = findById(id);
+		PlainField field = findById(id);
 		
 		if (CollectionUtils.isEmpty(characteristicsIds) || CollectionUtils.isEmpty(field.getCharacteristics())) return field.getCharacteristics();
 		
@@ -43,10 +43,10 @@ public interface FieldService extends DomainService<Field, Long> {
 		return field.getCharacteristics();
 	}
 	
-	default Field findByCode(String code) {
+	default PlainField findByCode(String code) {
 		return findByProperty("code", code);
 	}
-	default List<Field> findAllByCode(Collection<String> codes) {
+	default List<PlainField> findAllByCode(Collection<String> codes) {
 		return findAllByProperty("code", codes);
 	}
 }

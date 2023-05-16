@@ -5,7 +5,7 @@ import java.util.regex.Pattern;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
-import br.edu.ifpb.upcensus.domain.form.characteristic.model.Attribute;
+import br.edu.ifpb.upcensus.domain.form.characteristic.model.Characteristic.Attribute;
 import br.edu.ifpb.upcensus.domain.module.module.model.Answer;
 import br.edu.ifpb.upcensus.infrastructure.util.ObjectUtils;
 import br.edu.ifpb.upcensus.infrastructure.util.StringUtils;

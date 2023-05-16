@@ -3,8 +3,8 @@ package br.edu.ifpb.upcensus.business.form.shared.pipeline.validators;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
-import br.edu.ifpb.upcensus.domain.form.characteristic.model.Attribute;
-import br.edu.ifpb.upcensus.domain.form.characteristic.model.Type;
+import br.edu.ifpb.upcensus.domain.form.characteristic.model.Characteristic.Attribute;
+import br.edu.ifpb.upcensus.domain.form.field.model.Type;
 import br.edu.ifpb.upcensus.domain.module.module.model.Answer;
 import br.edu.ifpb.upcensus.infrastructure.util.ObjectUtils;
 
