@@ -4,7 +4,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
 import br.edu.ifpb.upcensus.domain.form.characteristic.service.CharacteristicService;
-import br.edu.ifpb.upcensus.domain.form.field.model.Field;
+import br.edu.ifpb.upcensus.domain.form.field.model.PlainField;
 import br.edu.ifpb.upcensus.domain.form.field.service.FieldService;
 import br.edu.ifpb.upcensus.infrastructure.mapper.BaseMapper;
 import br.edu.ifpb.upcensus.infrastructure.mapper.MapStructConfig;
@@ -20,12 +20,12 @@ import br.edu.ifpb.upcensus.presentation.form.field.response.FieldResponse;
 		CharacteristicService.class
 	}
 )
-public interface FieldMapper extends BaseMapper<Field, FieldRequest, FieldResponse>
+public interface FieldMapper extends BaseMapper<PlainField, FieldRequest, FieldResponse>
 {
 	@Mapping(target = "characteristics", source = "request.characteristics")
-	Field requestToModel(FieldRequest request);
+	PlainField requestToModel(FieldRequest request);
 	
-	default String modelToCode(Field field) {
+	default String modelToCode(PlainField field) {
 		return field.getCode();
 	}
 }

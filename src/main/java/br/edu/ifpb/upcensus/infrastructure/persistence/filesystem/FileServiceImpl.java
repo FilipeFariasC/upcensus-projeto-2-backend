@@ -15,9 +15,9 @@ import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import br.edu.ifpb.upcensus.infrastructure.util.TimeUtils;
 import br.edu.ifpb.upcensus.infrastructure.util.FileUtils;
 import br.edu.ifpb.upcensus.infrastructure.util.StringUtils;
+import br.edu.ifpb.upcensus.infrastructure.util.TimeUtils;
 
 @Service
 public class FileServiceImpl implements FileService{

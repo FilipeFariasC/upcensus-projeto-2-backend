@@ -14,7 +14,7 @@ import org.springframework.http.HttpStatus;
 public @interface DomainException {
 
 	String key();
-	HttpStatus status();
+	HttpStatus status() default HttpStatus.BAD_REQUEST;
 	boolean append() default false;
 	
 }

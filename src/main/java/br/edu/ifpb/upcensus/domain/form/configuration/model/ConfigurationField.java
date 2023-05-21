@@ -1,11 +1,18 @@
 package br.edu.ifpb.upcensus.domain.form.configuration.model;
 
 import java.io.Serializable;
-import java.util.Set;
+import java.util.Comparator;
 import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -19,7 +26,10 @@ import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 
 import br.edu.ifpb.upcensus.domain.form.characteristic.model.Characteristic;
-import br.edu.ifpb.upcensus.domain.form.field.model.Field;
+import br.edu.ifpb.upcensus.domain.form.characteristic.model.Characteristic.Attribute;
+import br.edu.ifpb.upcensus.domain.form.field.model.PlainField;
+import br.edu.ifpb.upcensus.domain.form.field.model.Type;
+import br.edu.ifpb.upcensus.domain.form.shared.model.Field;
 import br.edu.ifpb.upcensus.infrastructure.annotation.DomainDescriptor;
 import br.edu.ifpb.upcensus.infrastructure.util.CollectionUtils;
 
@@ -34,7 +44,7 @@ import br.edu.ifpb.upcensus.infrastructure.util.CollectionUtils;
 )
 @SequenceGenerator(name = "t_configuration_field_id_seq", schema = "form", sequenceName = "t_configuration_field_id_seq", allocationSize = 1)
 @DomainDescriptor(name = "Campo da Configuração")
-public class ConfigurationField implements Serializable {
+public class ConfigurationField implements Serializable, Field {
 	
 	private static final long serialVersionUID = 1L;
 	
@@ -50,7 +60,14 @@ public class ConfigurationField implements Serializable {
     @NotNull
     @OneToOne
     @JoinColumn(name = "id_field")
-    private Field field;
+    private PlainField field;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "type", nullable = true)
+    private Type type;
+    
+    @Column(name = "required", nullable = true)
+    private Boolean required;
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinTable(
@@ -76,10 +93,10 @@ public class ConfigurationField implements Serializable {
 		this.configuration = configuration;
 	}
 
-	public Field getField() {
+	public PlainField getField() {
 		return field;
 	}
-	public void setField(Field field) {
+	public void setField(PlainField field) {
 		this.field = field;
 	}
 
@@ -98,12 +115,75 @@ public class ConfigurationField implements Serializable {
 		}
 	}
 	
-	public void addCharacteristic(Characteristic characteristic) {
-		getCharacteristics().add(characteristic);
+	public Set<Characteristic> getAllCharacteristics() {
+		
+		Stream<Characteristic> configurationCharacteristics = filterCharacteristics(getCharacteristics());
+		Set<Attribute> attributes = getAttributes(getCharacteristics());
+		Stream<Characteristic> fieldCharacteristics = filterCharacteristics(field.getCharacteristics())
+				.filter(characteristic -> !attributes.contains(characteristic.getAttribute()));
+		
+		return Stream
+			.concat(fieldCharacteristics, configurationCharacteristics)
+			.collect(Collectors.toSet());
 	}
-	public void removeCharacteristic(Characteristic characteristic) {
-		getCharacteristics().remove(characteristic);
+	
+	private Stream<Characteristic> filterCharacteristics(Set<Characteristic> characteristics) {
+		return characteristics
+			.stream()
+			.collect(Collectors.groupingBy(Characteristic::getAttribute))
+			.values()
+			.stream()
+			.map(list -> list.get(0));
 	}
+	
+	private Set<Attribute> getAttributes(Set<Characteristic> characteristics) {
+		return characteristics
+			.stream()
+			.map(Characteristic::getAttribute)
+			.collect(Collectors.toSet());
+	}
+	
+	public boolean isRequired() {
+		return Boolean.TRUE.equals(required);
+	}
+	
+	public Boolean getRequired() {
+		return required;
+	}
+	public void setRequired(Boolean required) {
+		this.required = required;
+	}
+	
+	public Type getType() {
+		return type;
+	}
+	
+	public void setType(Type type) {
+		this.type = type;
+	}
+	
+	public Optional<Characteristic> getCharacteristic(Attribute attribute) {
+		return getAllCharacteristics()
+			.stream()
+			.filter(characteristic -> characteristic.getAttribute().equals(attribute))
+			.min(Comparator.comparingLong(Characteristic::getId));
+	}
+	
+//	public Type getType() {
+//		return getAllCharacteristics()
+//			.stream()
+//			.filter(characteristic -> characteristic.getAttribute().equals(Attribute.TYPE))
+//			.findFirst()
+//			.map(characteristic ->{
+//				try {
+//					return Enum.valueOf(Type.class, characteristic.getValue());
+//				} catch (IllegalArgumentException exception) {
+//					throw new FieldTypeBadConfiguredException(characteristic.getDescription());
+//				}
+//			})
+//			.orElseThrow(()-> new FieldTypeNotConfiguredException());
+//	}
+	
 	
 	@Override
 	public String toString() {
@@ -130,6 +210,5 @@ public class ConfigurationField implements Serializable {
 				&& Objects.equals(configuration, other.configuration) && Objects.equals(field, other.field)
 				&& Objects.equals(id, other.id);
 	}
-	
 	
 }

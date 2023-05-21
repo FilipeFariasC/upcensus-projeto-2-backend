@@ -4,10 +4,7 @@ import java.io.Serializable;
 
 import javax.validation.constraints.NotNull;
 
-import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.multipart.MultipartFile;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 import br.edu.ifpb.upcensus.infrastructure.domain.FileType;
 import br.edu.ifpb.upcensus.infrastructure.util.FileUtils;
@@ -18,49 +15,42 @@ public class FileRequest implements Serializable {
 	
 	@NotNull
 	private MultipartFile file;
-	@JsonProperty("fileType")
 	private FileType fileType;
-	
-	@JsonProperty("ignoreHeaderRow")
 	private boolean ignoreHeaderRow;
+	
+	private String delimiter;
 
 	public FileType getFileType() {
 		return fileType;
 	}
+	public void setFileType(FileType fileType) {
+		this.fileType = fileType;
+	}
 	
-	
-
 	public MultipartFile getFile() {
 		return file;
 	}
-
-
-
 	public void setFile(MultipartFile file) {
 		this.file = file;
-	}
-
-
-
-	@JsonProperty("file_type")
-	public void setFileType(FileType fileType) {
-		this.fileType = fileType;
 	}
 
 	public boolean isIgnoreHeaderRow() {
 		return ignoreHeaderRow;
 	}
-
-	@JsonProperty("file_type")
 	public void setIgnoreHeaderRow(boolean ignoreHeaderRow) {
 		this.ignoreHeaderRow = ignoreHeaderRow;
 	}
 	
-
+	public String getDelimiter() {
+		return delimiter;
+	}
+	public void setDelimiter(String delimiter) {
+		this.delimiter = delimiter;
+	}
 
 	@Override
 	public String toString() {
-		return String.format("{file: %s, file_type: %s, ignore_header_row: %s}", FileUtils.fileToString(file), fileType,ignoreHeaderRow);
+		return String.format("{file: %s, file_type: %s, ignore_header_row: %s, delimiter: %s}", FileUtils.fileToString(file), fileType,ignoreHeaderRow, delimiter);
 	}
 	
 	

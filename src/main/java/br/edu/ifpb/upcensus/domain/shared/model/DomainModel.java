@@ -18,10 +18,11 @@ public abstract class DomainModel <I extends Serializable> implements Serializab
 	@NotNull
     @Column(name = "creation_time", nullable = false)
 	private LocalDateTime creationTime;
-	
+
 	public abstract I getId();
-	
+
 	public void validate() throws InvalidDomainModelException {};
+	public void initialize() {};
 	
 	
 	public void defineCreationTime() {
@@ -30,6 +31,7 @@ public abstract class DomainModel <I extends Serializable> implements Serializab
 	
 	public void register() {
 		defineCreationTime();
+		initialize();
 	}
 	
 	

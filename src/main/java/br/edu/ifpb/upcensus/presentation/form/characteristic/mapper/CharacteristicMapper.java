@@ -2,8 +2,8 @@ package br.edu.ifpb.upcensus.presentation.form.characteristic.mapper;
 
 import org.mapstruct.Mapper;
 
-import br.edu.ifpb.upcensus.domain.form.characteristic.model.Attribute;
 import br.edu.ifpb.upcensus.domain.form.characteristic.model.Characteristic;
+import br.edu.ifpb.upcensus.domain.form.characteristic.model.Characteristic.Attribute;
 import br.edu.ifpb.upcensus.domain.form.characteristic.service.CharacteristicService;
 import br.edu.ifpb.upcensus.infrastructure.mapper.BaseMapper;
 import br.edu.ifpb.upcensus.infrastructure.mapper.MapStructConfig;

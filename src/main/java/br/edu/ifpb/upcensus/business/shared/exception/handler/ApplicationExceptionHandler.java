@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.hibernate.exception.ConstraintViolationException;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpHeaders;
@@ -38,7 +39,8 @@ public class ApplicationExceptionHandler extends ResponseEntityExceptionHandler 
 
 	private final MessageSourceService messageSourceService;
 	public ApplicationExceptionHandler(
-		final MessageSourceService messageSourceService
+		final MessageSourceService messageSourceService,
+		@Value("${logging.runtimeException}") final boolean logRuntimeException
 	) {
 		super();
 		this.messageSourceService = messageSourceService;

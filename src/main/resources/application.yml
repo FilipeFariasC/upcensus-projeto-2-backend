@@ -13,7 +13,9 @@ spring:
       initialize-schema: always
     job:
       enabled: false
-    
+  flyway:
+    baselineOnMigrate: true
+
 server:
   servlet:
     contextPath: /api
@@ -24,3 +26,6 @@ cors:
   allowedOrigins:
     - http://localhost:4200
   allowCredentials: true
+  
+logging:
+  runtimeException: true

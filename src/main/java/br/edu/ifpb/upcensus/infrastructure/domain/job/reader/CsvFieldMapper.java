@@ -18,8 +18,6 @@ public class CsvFieldMapper extends FieldMappingReader<Integer> implements Field
 
 	@Override
 	public Map<String, String> mapFieldSet(FieldSet fieldSet) throws BindException {
-		getMappings().entrySet()
-			.forEach(entry -> System.out.println(entry.getKey().getCode() + " " + entry.getValue()));
 		return getMappings().entrySet()
 			.stream()
 			.collect(

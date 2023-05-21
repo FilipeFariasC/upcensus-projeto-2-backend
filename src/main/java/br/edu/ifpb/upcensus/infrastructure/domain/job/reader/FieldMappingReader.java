@@ -4,7 +4,7 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import br.edu.ifpb.upcensus.domain.form.field.model.Field;
+import br.edu.ifpb.upcensus.domain.form.field.model.PlainField;
 import br.edu.ifpb.upcensus.domain.module.template.exception.IllegalTemplateArgumentException;
 import br.edu.ifpb.upcensus.domain.module.template.model.Template;
 import br.edu.ifpb.upcensus.infrastructure.util.NumberUtils;
@@ -13,7 +13,7 @@ public abstract class FieldMappingReader<R> {
 	private final Template template;
 	private final Function<String, R> fieldMapper;
 	
-	private final Map<Field, R> mappings;
+	private final Map<PlainField, R> mappings;
 
 	public FieldMappingReader(final Template template, final Function<String, R> fieldMapper) {
 		super();
@@ -27,14 +27,14 @@ public abstract class FieldMappingReader<R> {
 				entry -> {
 					String index = entry.getValue();
 					if (!NumberUtils.isPositiveDecimal(index)) {
-						throw new IllegalTemplateArgumentException(entry.getKey().getCode(), entry.getValue());
+						throw new IllegalTemplateArgumentException(entry.getKey().getCode(), entry.getValue(), template.getCode());
 					}
 					return fieldMapper.apply(index);
 				}
 			));
 	}
 	
-	public Map<Field, R> getMappings() {
+	public Map<PlainField, R> getMappings() {
 		return mappings;
 	}
 

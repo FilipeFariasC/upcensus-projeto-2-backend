@@ -85,4 +85,5 @@ public class CollectionUtils {
     	collection.addAll(append);
     	return collection;
     }
+    
 }

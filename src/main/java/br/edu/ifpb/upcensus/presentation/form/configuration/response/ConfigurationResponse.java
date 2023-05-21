@@ -33,8 +33,8 @@ public class ConfigurationResponse extends DomainModelResponse {
 	}
 	@Override
 	public String toString() {
-		return String.format("{id: %s, creation_time: %s, code: %s, name: %s, fields: %s}",
-				getId(), getCreationTime(), code, name, fields);
+		return String.format("{id: %s, code: %s, name: %s, fields: %s, creation_time: %s}",
+				getId(), code, name, fields, getCreationTime());
 	}
 	
 

@@ -1,10 +1,13 @@
 package br.edu.ifpb.upcensus.domain.form.field.model;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -17,14 +20,17 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import br.edu.ifpb.upcensus.domain.form.characteristic.model.Characteristic;
+import br.edu.ifpb.upcensus.domain.form.shared.model.Field;
+import br.edu.ifpb.upcensus.domain.shared.exception.InvalidDomainModelException;
 import br.edu.ifpb.upcensus.domain.shared.model.DomainModel;
 import br.edu.ifpb.upcensus.infrastructure.annotation.DomainDescriptor;
+import br.edu.ifpb.upcensus.infrastructure.util.CollectionUtils;
 
 @Entity
 @Table(name = "t_field", schema = "form")
 @SequenceGenerator(name = "t_field_id_seq", schema = "form", sequenceName = "t_field_id_seq", allocationSize = 1)
 @DomainDescriptor(name = "Campo")
-public class Field extends DomainModel<Long> {
+public class PlainField extends DomainModel<Long> implements Field {
 	
 	private static final long serialVersionUID = 1L;
 	
@@ -44,6 +50,16 @@ public class Field extends DomainModel<Long> {
     @Size(max = 512)
     private String description;
     
+
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Type type = Type.PLAIN_TEXT;
+    
+    @NotNull
+    @Column(nullable = false)
+    private boolean required = false;
+    
     @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @JoinTable(
     	name = "t_field_characteristic",
@@ -53,6 +69,14 @@ public class Field extends DomainModel<Long> {
     )
     private Set<Characteristic> characteristics;
     
+	@Override
+	public void initialize() throws InvalidDomainModelException {
+		initializeCharacteristics();
+	}
+	private void initializeCharacteristics() {
+		if (CollectionUtils.isEmpty(characteristics))
+			this.characteristics = new HashSet<>();
+	}
 
 	@Override
 	public Long getId() {
@@ -98,19 +122,24 @@ public class Field extends DomainModel<Long> {
 		this.characteristics = characteristics;
 	}
 	
-	public void addCharacteristic(Characteristic characteristic) {
-		getCharacteristics().add(characteristic);
+	public boolean isRequired() {
+		return required;
 	}
-
-	public void removeCharacteristic(Characteristic characteristic) {
-		getCharacteristics().remove(characteristic);
+	public void setRequired(boolean required) {
+		this.required = required;
 	}
-
+	public void setType(Type type) {
+		this.type = type;
+	}
+	
+	public Type getType() {
+		return type;
+	}
 	
 	@Override
 	public String toString() {
 		return String.format(
-				"{id: %s, code: %s, name: %s, description: %s, characteristics: %s, creation_time: %s}", id, code,
+				"{id: %s, code: \"%s\", name: \"%s\", description: \"%s\", characteristics: %s, creation_time: \"%s\"}", id, code,
 				name, description, characteristics, getCreationTime());
 	}
 	
