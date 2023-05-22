@@ -148,6 +148,12 @@
 		    <groupId>com.fasterxml.jackson.datatype</groupId>
 		    <artifactId>jackson-datatype-jsr310</artifactId>
 		    <version>${jackson-datatype-jsr310.version}</version>
+		</dependency>
+		<dependency>
+		    <groupId>org.junit.jupiter</groupId>
+		    <artifactId>junit-jupiter-api</artifactId>
+		    <version>5.9.2</version>
+		    <scope>test</scope>
 		</dependency> 
 		
 		<!-- XLSX Excel -->
@@ -163,6 +169,14 @@
 		    <artifactId>poi</artifactId>
 		    <version>${apache-poi.version}</version>
 		</dependency>
+		
+		<!-- https://mvnrepository.com/artifact/com.microsoft.playwright/playwright -->
+		<dependency>
+		    <groupId>com.microsoft.playwright</groupId>
+		    <artifactId>playwright</artifactId>
+		    <version>1.33.0</version>
+		</dependency>
+				
 	</dependencies>
 	<dependencyManagement>
 		<dependencies>
