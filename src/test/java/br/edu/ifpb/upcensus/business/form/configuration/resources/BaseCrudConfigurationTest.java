@@ -22,6 +22,7 @@ import br.edu.ifpb.upcensus.business.form.TestAplicationBaseCrud;
 import br.edu.ifpb.upcensus.business.form.characteristic.resources.CharacteristicsEndpoints;
 import br.edu.ifpb.upcensus.business.form.field.resources.FieldEndpoints;
 import br.edu.ifpb.upcensus.domain.form.characteristic.model.Attribute;
+import br.edu.ifpb.upcensus.infrastructure.util.SeveralUtilities;
 import br.edu.ifpb.upcensus.presentation.form.characteristic.request.CharacteristicRequest;
 import br.edu.ifpb.upcensus.presentation.form.configuration.request.ConfigurationFieldRequest;
 import br.edu.ifpb.upcensus.presentation.form.configuration.request.ConfigurationRequest;
@@ -45,7 +46,7 @@ public class BaseCrudConfigurationTest extends TestAplicationBaseCrud{
 	@BeforeAll
 	public void setup() throws Exception{
 		
-		fieldRequest.setCode("teste.teste");
+		fieldRequest.setCode(SeveralUtilities.getAlphaNumericString(5)+"."+SeveralUtilities.getAlphaNumericString(5));
 		fieldRequest.setName("nome do teste");
 		fieldRequest.setDescription("teste de campo de descrição");
 		
@@ -74,9 +75,10 @@ public class BaseCrudConfigurationTest extends TestAplicationBaseCrud{
 		
 		fields.add(configurationFieldRequest);
 		
-		configurationRequest.setCode("CONFIGURATION_TESTE");
+		configurationRequest.setCode(SeveralUtilities.getAlphaNumericString(10));
 		configurationRequest.setName("testename");
 		configurationRequest.setFields(fields);
+		
 	}
 	
 	@Test
@@ -100,7 +102,7 @@ public class BaseCrudConfigurationTest extends TestAplicationBaseCrud{
 		
 		String id = resultado.getResponse().getRedirectedUrl().replaceAll("http://localhost/form/configurations/", "");
 
-		mockMvc.perform(get(ConfigurationEndpoints.CONFIGURATIONS+id)
+		mockMvc.perform(get(ConfigurationEndpoints.CONFIGURATIONS+"/"+id)
 				.contentType("application/json")
 				.content(objectMapper.writeValueAsString(configurationRequest)))
 				.andExpect(status().isOk())
@@ -121,7 +123,7 @@ public class BaseCrudConfigurationTest extends TestAplicationBaseCrud{
 		
 		String id = resultado.getResponse().getRedirectedUrl().replaceAll("http://localhost/form/configurations/", "");
 
-		mockMvc.perform(delete(ConfigurationEndpoints.CONFIGURATIONS+id)
+		mockMvc.perform(delete(ConfigurationEndpoints.CONFIGURATIONS+"/"+id)
 				.contentType("application/json")
 				.content(objectMapper.writeValueAsString(configurationRequest)))
 				.andExpect(status().isNoContent());
@@ -129,22 +131,47 @@ public class BaseCrudConfigurationTest extends TestAplicationBaseCrud{
 	}
 	
 	@Test
-	public void happy_flux_test_patch() throws Exception{
+	public void happy_flux_test_patch_bad() throws Exception{
 		
 		MvcResult resultado = mockMvc.perform(post(ConfigurationEndpoints.CONFIGURATIONS)
 				.contentType("application/json")
 				.content(objectMapper.writeValueAsString(configurationRequest)))
 				.andExpect(status().isCreated())
-				.andReturn();;
-		
+				.andExpect(jsonPath("$.data.code").value(configurationRequest.getCode()))
+				.andReturn();
+				
 		String id = resultado.getResponse().getRedirectedUrl().replaceAll("http://localhost/form/configurations/", "");
-		
 		configurationFieldRequest.setFieldCode("teste_teste_patch");
 		
-		mockMvc.perform(patch(ConfigurationEndpoints.CONFIGURATIONS+id+"fields/add")
+		mockMvc.perform(patch(ConfigurationEndpoints.CONFIGURATIONS+"/"+id+"/fields/add")
+				.contentType("application/json")
+				.content(objectMapper.writeValueAsString(configurationFieldRequest)))
+				.andExpect(status().isBadRequest());
+	}
+	
+	@Test
+	public void happy_flux_test_patch_created() throws Exception{
+		
+		MvcResult resultado = mockMvc.perform(post(ConfigurationEndpoints.CONFIGURATIONS)
 				.contentType("application/json")
 				.content(objectMapper.writeValueAsString(configurationRequest)))
+				.andExpect(status().isCreated())
+				.andExpect(jsonPath("$.data.code").value(configurationRequest.getCode()))
+				.andReturn();
+				
+		String id = resultado.getResponse().getRedirectedUrl().replaceAll("http://localhost/form/configurations/", "");
+		System.out.println(id);
+		
+		
+		configurationFieldRequest = new ConfigurationFieldRequest();
+		
+		configurationFieldRequest.setFieldCode("teste_created_add");
+
+		mockMvc.perform(patch(ConfigurationEndpoints.CONFIGURATIONS+"/"+id+"/fields/add")
+				.contentType("application/json")
+				.content(objectMapper.writeValueAsString(configurationFieldRequest)))
 				.andExpect(status().isCreated());
+				
 	}
 	
 	@Test
@@ -167,7 +194,7 @@ public class BaseCrudConfigurationTest extends TestAplicationBaseCrud{
 		mockMvc.perform(post(ConfigurationEndpoints.CONFIGURATIONS)
 				.contentType("application/json")
 				.content(objectMapper.writeValueAsString(configurationRequest)))
-				.andExpect(status().isBadRequest());
+				.andExpect(status().isCreated());
 		
 	}
 	

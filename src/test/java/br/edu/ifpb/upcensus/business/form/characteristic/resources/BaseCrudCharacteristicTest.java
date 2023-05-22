@@ -18,10 +18,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MvcResult;
 
 import br.edu.ifpb.upcensus.business.form.TestAplicationBaseCrud;
-import br.edu.ifpb.upcensus.business.form.field.resources.FieldEndpoints;
 import br.edu.ifpb.upcensus.domain.form.characteristic.model.Attribute;
+import br.edu.ifpb.upcensus.infrastructure.util.SeveralUtilities;
 import br.edu.ifpb.upcensus.presentation.form.characteristic.request.CharacteristicRequest;
-import br.edu.ifpb.upcensus.util.SeveralUtilities;
 
 @TestInstance(Lifecycle.PER_CLASS)
 @SpringBootTest

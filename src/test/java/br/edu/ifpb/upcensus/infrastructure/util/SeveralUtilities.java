@@ -1,4 +1,4 @@
-package br.edu.ifpb.upcensus.util;
+package br.edu.ifpb.upcensus.infrastructure.util;
 
 public class SeveralUtilities {
 
