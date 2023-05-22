@@ -6,12 +6,12 @@ import org.mapstruct.Mapper;
 
 import br.edu.ifpb.upcensus.domain.form.field.model.PlainField;
 import br.edu.ifpb.upcensus.domain.form.field.service.FieldService;
-import br.edu.ifpb.upcensus.domain.module.template.model.Template;
+import br.edu.ifpb.upcensus.domain.module.template.model.InputTemplate;
 import br.edu.ifpb.upcensus.infrastructure.mapper.BaseMapper;
 import br.edu.ifpb.upcensus.infrastructure.mapper.MapStructConfig;
 import br.edu.ifpb.upcensus.presentation.form.field.mapper.FieldMapper;
-import br.edu.ifpb.upcensus.presentation.module.template.request.TemplateRequest;
-import br.edu.ifpb.upcensus.presentation.module.template.response.TemplateResponse;
+import br.edu.ifpb.upcensus.presentation.module.template.request.InputTemplateRequest;
+import br.edu.ifpb.upcensus.presentation.module.template.response.InputTemplateResponse;
 @Mapper(
 	config = MapStructConfig.class,
 	uses = {
@@ -19,7 +19,7 @@ import br.edu.ifpb.upcensus.presentation.module.template.response.TemplateRespon
 		FieldMapper.class
 	}
 )
-public interface TemplateMapper extends BaseMapper<Template, TemplateRequest, TemplateResponse> {
+public interface InputTemplateMapper extends BaseMapper<InputTemplate, InputTemplateRequest, InputTemplateResponse> {
 	Map<PlainField, String> fieldCodeMapToFieldMap(Map<String, String> mappings);
 	Map<String, String> fieldMapToFieldResponseMap(Map<PlainField, String> mappings);
 }

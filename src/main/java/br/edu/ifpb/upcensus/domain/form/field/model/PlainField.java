@@ -136,6 +136,10 @@ public class PlainField extends DomainModel<Long> implements Field {
 		return type;
 	}
 	
+	public boolean isFieldCode(String fieldCode) {
+		return getCode().equals(fieldCode);
+	}
+	
 	@Override
 	public String toString() {
 		return String.format(

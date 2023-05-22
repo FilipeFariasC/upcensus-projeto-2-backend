@@ -8,12 +8,12 @@ import java.util.stream.Collectors;
 import org.springframework.batch.extensions.excel.RowMapper;
 import org.springframework.batch.extensions.excel.support.rowset.RowSet;
 
-import br.edu.ifpb.upcensus.domain.module.template.model.Template;
+import br.edu.ifpb.upcensus.domain.module.template.model.InputTemplate;
 import br.edu.ifpb.upcensus.infrastructure.util.NumberUtils;
 
 public class XlsxFieldMapper extends FieldMappingReader<Integer> implements RowMapper<Map<String,String>>{
 
-	public XlsxFieldMapper(final Template template) {
+	public XlsxFieldMapper(final InputTemplate template) {
 		super(template, NumberUtils::convertToInteger);
 	}
 

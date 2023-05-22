@@ -28,7 +28,7 @@ import br.edu.ifpb.upcensus.business.form.shared.pipeline.ValidationPipeline;
 import br.edu.ifpb.upcensus.domain.module.module.model.Answer;
 import br.edu.ifpb.upcensus.domain.module.module.model.Module;
 import br.edu.ifpb.upcensus.domain.module.module.service.ModuleService;
-import br.edu.ifpb.upcensus.domain.module.template.model.Template;
+import br.edu.ifpb.upcensus.domain.module.template.model.InputTemplate;
 import br.edu.ifpb.upcensus.infrastructure.builder.AnswerItemProcessor;
 import br.edu.ifpb.upcensus.infrastructure.builder.AnswerItemReader;
 import br.edu.ifpb.upcensus.infrastructure.builder.ItemReaderBuilder;
@@ -64,7 +64,7 @@ public class JobService {
 			String delimiter) {
 		try {
 
-			Template template = module.getTemplateByFileType(fileType);
+			InputTemplate template = module.getTemplateByFileType(fileType);
 			Job job = jobFactory
 					.get(MessageFormat.format("{0}-{1}__{2}", module.getCode(), template.getCode(),
 							TimeUtils.toString(LocalDateTime.now(), TimeUtils.FILE_TIMESTAMP)))
@@ -76,7 +76,7 @@ public class JobService {
 		}
 	}
 
-	public Step readFileStep(MultipartFile file, Module module, Template template, boolean ignoreHeaderRow,
+	private Step readFileStep(MultipartFile file, Module module, InputTemplate template, boolean ignoreHeaderRow,
 			String delimiter) throws IOException {
 		return stepBuilderFactory.get("readFileSaveInDatabase")
 				.<Map<String, String>, Set<Answer>>chunk(1)
@@ -85,7 +85,7 @@ public class JobService {
 				.writer(writeToDatabase(module, template)).build();
 	}
 
-	public void runAnswerJob(Module module, Template template, List<Map<String, String>> answers) {
+	public void runAnswerJob(Module module, InputTemplate template, List<Map<String, String>> answers) {
 		try {
 			Job job = jobFactory
 					.get(MessageFormat.format("{0}-{1}__{2}", module.getCode(), template.getCode(),
@@ -98,7 +98,7 @@ public class JobService {
 		}
 	}
 
-	public Step readAnswerStep(List<Map<String, String>> answers, Module module, Template template) throws IOException {
+	private Step readAnswerStep(List<Map<String, String>> answers, Module module, InputTemplate template) throws IOException {
 		return stepBuilderFactory.get("readAnswersSaveInDatabase")
 				.<Map<String, String>, Set<Answer>>chunk(1)
 				.reader(getAnswerReader(answers))
@@ -107,9 +107,9 @@ public class JobService {
 				.build();
 	}
 
-	private ItemReader<Map<String, String>> getFileReader(MultipartFile file, Template template,
+	private ItemReader<Map<String, String>> getFileReader(MultipartFile file, InputTemplate template,
 			boolean ignoreHeaderRow, String delimiter) throws IOException {
-		switch (template.getFileType()) {
+		switch (template.getType().getFileType()) {
 		case CSV:
 			return new ItemReaderBuilder().buildCsvReader(file, template, ignoreHeaderRow, delimiter);
 		case XLSX:
@@ -123,7 +123,7 @@ public class JobService {
 		return new AnswerItemReader(answers);
 	}
 
-	private ItemWriter<Set<Answer>> writeToDatabase(Module module, Template template) {
+	private ItemWriter<Set<Answer>> writeToDatabase(Module module, InputTemplate template) {
 		return (item) -> {
 			Set<Answer> answers = item.stream()
 				.flatMap(answer -> answer.stream())
@@ -137,7 +137,7 @@ public class JobService {
 		this.moduleService = moduleService;
 	}
 
-	private ItemProcessor<Map<String, String>, Set<Answer>> validator(final Module module, final Template template) {
+	private ItemProcessor<Map<String, String>, Set<Answer>> validator(final Module module, final InputTemplate template) {
 		return new AnswerItemProcessor(module, template, pipeline);
 	}
 }

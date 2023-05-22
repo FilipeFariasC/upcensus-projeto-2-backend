@@ -16,12 +16,12 @@ import br.edu.ifpb.upcensus.infrastructure.util.StringUtils;
 
 @DomainDescriptor(name = "Tipo de Arquivo")
 public enum FileType implements DomainEnum<FileType> {
-	JSON("\\.json", "application/json"), 
-	XLS("\\.xls", "application/vnd.ms-excel"),
-	ODS("\\.ods", "application/vnd.oasis.opendocument.spreadsheet"),
-	XLSX("\\.xlsx", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"),
 	CSV("\\.csv", "text/csv"),
+	JSON("\\.json", "application/json"), 
+	ODS("\\.ods", "application/vnd.oasis.opendocument.spreadsheet"),
 	TEXT("(\\.[a-zA-Z]{3})?", "text/plain", "Texto"),
+	XLS("\\.xls", "application/vnd.ms-excel"),
+	XLSX("\\.xlsx", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"),
 	YAML("\\.ya?ml", "text/yaml");
 
 	private final Pattern extensionPattern;

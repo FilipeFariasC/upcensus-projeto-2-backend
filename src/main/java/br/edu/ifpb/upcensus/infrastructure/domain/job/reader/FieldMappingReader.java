@@ -6,16 +6,16 @@ import java.util.stream.Collectors;
 
 import br.edu.ifpb.upcensus.domain.form.field.model.PlainField;
 import br.edu.ifpb.upcensus.domain.module.template.exception.IllegalTemplateArgumentException;
-import br.edu.ifpb.upcensus.domain.module.template.model.Template;
+import br.edu.ifpb.upcensus.domain.module.template.model.InputTemplate;
 import br.edu.ifpb.upcensus.infrastructure.util.NumberUtils;
 
 public abstract class FieldMappingReader<R> {
-	private final Template template;
+	private final InputTemplate template;
 	private final Function<String, R> fieldMapper;
 	
 	private final Map<PlainField, R> mappings;
 
-	public FieldMappingReader(final Template template, final Function<String, R> fieldMapper) {
+	public FieldMappingReader(final InputTemplate template, final Function<String, R> fieldMapper) {
 		super();
 		this.template = template;
 		this.fieldMapper = fieldMapper;
@@ -38,7 +38,7 @@ public abstract class FieldMappingReader<R> {
 		return mappings;
 	}
 
-	public Template getTemplate() {
+	public InputTemplate getTemplate() {
 		return template;
 	}
 

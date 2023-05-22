@@ -138,8 +138,7 @@ public class Configuration extends DomainModel<Long> {
 		return getFields()
 			.stream()
 			.filter(configurationField -> configurationField.getField().equals(field))
-			.map(ConfigurationField::getType)
-			.map(Optional::ofNullable)
+			.map(configurationField -> Optional.ofNullable(configurationField.getType()))
 			.findFirst()
 			.flatMap(Function.identity());
 	}
@@ -151,8 +150,7 @@ public class Configuration extends DomainModel<Long> {
 		return getFields()
 			.stream()
 			.filter(configurationField -> configurationField.getField().equals(field))
-			.map(ConfigurationField::getRequired)
-			.map(Optional::ofNullable)
+			.map(configurationField -> Optional.ofNullable(configurationField.getRequired()))
 			.findFirst()
 			.flatMap(Function.identity());
 	}
@@ -163,8 +161,7 @@ public class Configuration extends DomainModel<Long> {
 		
 		return getFields()
 			.stream()
-			.filter(obj -> obj.getField().equals(field))
-			.anyMatch(obj -> obj.hasCharacteristic(attribute));
+			.anyMatch(obj -> obj.isField(field) && obj.hasCharacteristic(attribute));
 	}
 	
 	

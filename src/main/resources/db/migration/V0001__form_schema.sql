@@ -65,8 +65,8 @@ CREATE TABLE form.t_configuration_field (
 	id SERIAL,
   	id_configuration BIGINT NOT NULL,
 	id_field BIGINT NOT NULL,
-    "type" VARCHAR(128),
-    required BOOLEAN,
+    "type" VARCHAR(128) DEFAULT NULL,
+    required BOOLEAN DEFAULT NULL,
 	
   	CONSTRAINT pk_t_configuration_field PRIMARY KEY (id),
   	CONSTRAINT fk_t_configuration_field_id_configuration FOREIGN KEY (id_configuration) REFERENCES form.t_configuration (id),

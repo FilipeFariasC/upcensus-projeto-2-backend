@@ -1,54 +1,47 @@
-package br.edu.ifpb.upcensus.presentation.module.template.request;
+package br.edu.ifpb.upcensus.presentation.module.template.response;
 
-import java.io.Serializable;
 import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import br.edu.ifpb.upcensus.infrastructure.domain.FileType;
-import br.edu.ifpb.upcensus.infrastructure.util.JsonUtils;
+import br.edu.ifpb.upcensus.domain.module.template.model.InputTemplate.Type;
+import br.edu.ifpb.upcensus.presentation.shared.response.DomainModelResponse;
 
-public class TemplateRequest implements Serializable{
+public class InputTemplateResponse extends DomainModelResponse {
 
 	private static final long serialVersionUID = 1L;
 	
-	@JsonProperty("file_type")
-	private FileType fileType;
+	private Type type;
 	private String code;
-    private String name;
+	private String name;
     @JsonProperty("field_identifier")
     private String fieldIdentifier;
 	private Map<String, String> mappings;
 	
-	
-	public FileType getFileType() {
-		return fileType;
+	public Type getType() {
+		return type;
 	}
-	public void setFileType(FileType fileType) {
-		this.fileType = fileType;
+	public void setType(Type type) {
+		this.type = type;
 	}
-
 	public String getCode() {
 		return code;
 	}
 	public void setCode(String code) {
 		this.code = code;
 	}
-	
 	public String getName() {
 		return name;
 	}
 	public void setName(String name) {
 		this.name = name;
 	}
-	
 	public String getFieldIdentifier() {
 		return fieldIdentifier;
 	}
 	public void setFieldIdentifier(String fieldIdentifier) {
 		this.fieldIdentifier = fieldIdentifier;
 	}
-	
 	public Map<String, String> getMappings() {
 		return mappings;
 	}
@@ -58,8 +51,11 @@ public class TemplateRequest implements Serializable{
 	
 	@Override
 	public String toString() {
-		return String.format("{fileType: \"%s\", code: \"%s\", name: \"%s\", fieldIdentifier: \"%s\", mappings: %s}", fileType, code,
-				name, fieldIdentifier, JsonUtils.mapToString(mappings));
+		return String.format(
+				"{id: %s, creation_time: %s, type: %s, code: %s, name: %s, field_identifier: %s, mappings: %s}", getId(), getCreationTime(),
+				type, code, name, fieldIdentifier, mappings);
 	}
+	
+	
 
 }

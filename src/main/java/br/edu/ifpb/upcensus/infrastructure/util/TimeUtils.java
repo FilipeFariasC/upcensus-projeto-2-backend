@@ -9,6 +9,8 @@ import java.util.Date;
 
 public class TimeUtils {
 	
+	private static final TimeUtils instance = new TimeUtils();
+	
 	private TimeUtils() {}
 	public static final String ISO_8601 = "yyyy-MM-dd'T'HH:mm:ss.SSSSSS'Z'";
 	
@@ -16,6 +18,7 @@ public class TimeUtils {
 	
 	public static final String TIMESTAMP_FORMAT = "yyyy-MM-dd HH:mm:ss.SSSSSS";
 	public static final DateTimeFormatter DEFAULT_FORMATTER = DateTimeFormatter.ofPattern(TIMESTAMP_FORMAT);
+	public static final DateTimeFormatter TIMESTAMP_FORMATTER = DateTimeFormatter.ofPattern(FILE_TIMESTAMP);
 	
 	public static String toString(LocalDate localDate, DateTimeFormatter formatter) {
 		return localDate.format(formatter);
@@ -62,5 +65,9 @@ public class TimeUtils {
 			return false;
 		}
 		return true;
+	}
+	
+	public static TimeUtils getInstance() {
+		return instance;
 	}
 }
