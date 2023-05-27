@@ -16,6 +16,22 @@ spring:
   flyway:
     baselineOnMigrate: true
 
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            clientId: <your-client-id>
+            clientSecret: <your-client-secret>
+
+app:
+  auth:
+    tokenSecret: 926D96C90030DD58429D2751AC1BDBBC
+    tokenExpirationMsec: 864000000
+    oauth2:
+      authorizedRedirectUris: http://localhost:8081/oauth2/redirect,myandroidapp://oauth2/redirect,myiosapp://oauth2/redirect
+
+
 server:
   servlet:
     contextPath: /api
