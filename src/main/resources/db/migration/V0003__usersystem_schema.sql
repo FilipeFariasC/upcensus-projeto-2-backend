@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS usersystem.t_usersys (
     provider_id VARCHAR(255),
     provider VARCHAR(255),
     email VARCHAR(255) UNIQUE,
-    enabled BIT(1),
+    enabled BOOLEAN,
     creation_time TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT NOW(),
     CONSTRAINT pk_t_usersys PRIMARY KEY (id),
     CONSTRAINT nn_t_usersys_name CHECK (name IS NOT NULL),

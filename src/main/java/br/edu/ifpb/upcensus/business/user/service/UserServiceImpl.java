@@ -56,7 +56,7 @@ public class UserServiceImpl implements UserService{
 	}
 
 	@Override
-	@Transactional(value = "transactionManager")
+	//@Transactional(value = "transactionManager")
 	public User registerNewUser(final SignUpRequest signUpRequest) throws UserAlreadyExistAuthenticationException {
 		if (signUpRequest.getUserID() != null && userRepository.existsById(signUpRequest.getUserID())) {
 			throw new UserAlreadyExistAuthenticationException("User with User id " + signUpRequest.getUserID() + " already exist");
@@ -64,8 +64,10 @@ public class UserServiceImpl implements UserService{
 			throw new UserAlreadyExistAuthenticationException("User with email id " + signUpRequest.getEmail() + " already exist");
 		}
 		User user = buildUser(signUpRequest);
-		user = userRepository.save(user);
-		userRepository.flush();
+		register(user);
+		/*user = userRepository.save(user);
+		userRepository.flush();*/
+		//TODO ERRO SAVE USER
 		return user;
 	}
 	
@@ -94,14 +96,14 @@ public class UserServiceImpl implements UserService{
         if (StringUtils.isEmpty(oAuth2UserInfo.getName())) {
             throw new OAuth2AuthenticationProcessingException("Name not found from OAuth2 provider");
         } else if (StringUtils.isEmpty(oAuth2UserInfo.getEmail())) {
-            throw new OAuth2AuthenticationProcessingException("Email not found from OAuth2 provider");
+            throw new OAuth2AuthenticationProcessingException("Email not found");
         }
         SignUpRequest userDetails = toUserRegistrationObject(registrationId, oAuth2UserInfo);
         User user = findUserByEmail(oAuth2UserInfo.getEmail());
         if (user != null) {
             if (!user.getProvider().equals(registrationId) && !user.getProvider().equals(SocialProvider.LOCAL.getProviderType())) {
                 throw new OAuth2AuthenticationProcessingException(
-                        "Looks like you're signed up with " + user.getProvider() + " account. Please use your " + user.getProvider() + " account to login.");
+                        "Parece que você já se cadastrou com a conta  " + user.getProvider() + ". Por favor, utilize a conta " + user.getProvider() + "  para login.");
             }
             user = updateExistingUser(user, oAuth2UserInfo);
         } else {

@@ -9,10 +9,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import br.edu.ifpb.upcensus.domain.user.exception.UserAlreadyExistAuthenticationException;
 import br.edu.ifpb.upcensus.domain.user.model.LocalUser;
@@ -24,10 +21,14 @@ import br.edu.ifpb.upcensus.presentation.user.request.LoginRequest;
 import br.edu.ifpb.upcensus.presentation.user.request.SignUpRequest;
 import br.edu.ifpb.upcensus.presentation.user.response.ApiResponse;
 
- 
+import java.security.Principal;
+
+
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
+
+
  
     @Autowired
     AuthenticationManager authenticationManager;
@@ -45,6 +46,11 @@ public class AuthController {
         String jwt = tokenProvider.createToken(authentication);
         LocalUser localUser = (LocalUser) authentication.getPrincipal();
         return ResponseEntity.ok(new JwtAuthenticationResponse(jwt, GeneralUtils.buildUserInfo(localUser)));
+    }
+
+    @GetMapping
+    public String welcome(Principal principal){
+        return "Olá mundo! "+principal.getName();
     }
  
     @PostMapping("/signup")

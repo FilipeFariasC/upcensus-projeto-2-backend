@@ -3,11 +3,10 @@ spring:
     init:
       platform: postgres
   datasource:
-    driverClassName: org.postgresql.Driver
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://${DB_HOSTNAME:localhost}/upcensus
-    username: ${DB_USER}
-    password: ${DB_PWD}
+    username: ${DB_USER}#postgres
+    password: ${DB_PWD}#123456
   batch:
     jdbc:
       initialize-schema: always
@@ -21,15 +20,15 @@ spring:
       client:
         registration:
           google:
-            clientId: <your-client-id>
-            clientSecret: <your-client-secret>
+            clientId: 188652981902-3nn5bcm7m7ndfv9sfj63tsrh7u895u5o.apps.googleusercontent.com
+            clientSecret: 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
 
 app:
   auth:
     tokenSecret: 926D96C90030DD58429D2751AC1BDBBC
     tokenExpirationMsec: 864000000
     oauth2:
-      authorizedRedirectUris: http://localhost:8081/oauth2/redirect,myandroidapp://oauth2/redirect,myiosapp://oauth2/redirect
+      authorizedRedirectUris: http://localhost:4200/oauth2/redirect,myandroidapp://oauth2/redirect,myiosapp://oauth2/redirect
 
 
 server:

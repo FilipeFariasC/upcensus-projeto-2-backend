@@ -36,15 +36,15 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
     @Override
     @Transactional
     public void onApplicationEvent(final ContextRefreshedEvent event) {
-        if (alreadySetup) {
+        /*if (alreadySetup) {
             return;
-        }
+        }*/
         // Create initial roles
         /*Role userRole = createRoleIfNotFound(Role.ROLE_USER);*/
         /*Role adminRole = createRoleIfNotFound(Role.ROLE_ADMIN);*/
         /*Role modRole = createRoleIfNotFound(Role.ROLE_MODERATOR);*/
-        createUserIfNotFound("admin@upcensus.com", new HashSet<>(Arrays.asList(roleRepository.findByName(Role.ROLE_USER), roleRepository.findByName(Role.ROLE_ADMIN),roleRepository.findByName(Role.ROLE_MODERATOR))));
-        alreadySetup = true;
+        //createUserIfNotFound("admin@upcensus.com", new HashSet<>(Arrays.asList(roleRepository.findByName(Role.ROLE_USER), roleRepository.findByName(Role.ROLE_ADMIN),roleRepository.findByName(Role.ROLE_MODERATOR))));
+        //alreadySetup = true;
     }
  
     @Transactional
