@@ -48,6 +48,7 @@ CREATE TABLE form.t_configuration (
 	id SERIAL,
 	code VARCHAR(128) NOT NULL,
 	name VARCHAR(128) NOT NULL,
+    id_identifier_field BIGINT,
   	creation_time TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT NOW(),
   	
 
@@ -58,7 +59,8 @@ CREATE TABLE form.t_configuration (
   	CONSTRAINT uk_t_configuration_code UNIQUE (code),
   	CONSTRAINT min_t_configuration_name CHECK (char_length(name) >= 3),
   	CONSTRAINT ne_t_configuration_name CHECK (TRIM(BOTH FROM name) <> ''),
-  	CONSTRAINT max_t_configuration_name CHECK (char_length(name) <= 128)
+  	CONSTRAINT max_t_configuration_name CHECK (char_length(name) <= 128),
+    CONSTRAINT fk_t_configuration_id_identifier_field FOREIGN KEY (id_identifier_field) REFERENCES form.t_field (id)
 );
 
 CREATE TABLE form.t_configuration_field (

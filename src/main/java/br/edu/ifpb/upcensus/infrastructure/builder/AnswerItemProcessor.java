@@ -37,11 +37,11 @@ public class AnswerItemProcessor implements ItemProcessor<Map<String, String>, S
 	}
 	
 	private Set<Answer> mapToAnswers(Map<String, String> map) {
-		final String codeIdentifier = template.getFieldIdentifier().getCode();
+		final String codeIdentifier = module.getConfiguration().getIdentifierField().getCode();
 		final String identifierValue = map.get(codeIdentifier);
 		
 
-		final Answer identifier = module.getAnswer(template.getFieldIdentifier(), identifierValue)
+		final Answer identifier = module.getAnswer(null, template.getFieldFromCode(codeIdentifier), identifierValue)
 			.orElseGet(() -> mapToAnswer(null, codeIdentifier, identifierValue));
 		
 		final Stream<Answer> answers = map.entrySet()
@@ -53,7 +53,7 @@ public class AnswerItemProcessor implements ItemProcessor<Map<String, String>, S
 				Stream.of(identifier), 
 				answers
 			)
-			.filter(answer -> !(module.hasAnswer(template.getFieldFromCode(codeIdentifier), identifierValue)))
+			.filter(answer -> !(module.hasAnswer(answer)))
 			.collect(Collectors.toSet());
 	}
 	

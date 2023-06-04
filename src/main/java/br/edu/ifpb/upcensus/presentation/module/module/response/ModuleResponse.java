@@ -25,6 +25,7 @@ public class ModuleResponse extends DomainModelResponse{
     private Set<InputTemplateResponse> inputTemplates;
     @JsonProperty("output_template")
     private OutputTemplateResponse outputTemplate;
+    private boolean hasAnswers;
 
     
 	public String getCode() {
@@ -76,11 +77,19 @@ public class ModuleResponse extends DomainModelResponse{
 		this.outputTemplate = outputTemplate;
 	}
 
+	public boolean isHasAnswers() {
+		return hasAnswers;
+	}
+
+	public void setHasAnswers(boolean hasAnswers) {
+		this.hasAnswers = hasAnswers;
+	}
+
 	@Override
 	public String toString() {
 		return String.format(
-				"{id: %s, creation_time: %s, code: %s, name: %s, tags: %s, configuration: %s, inputTemplates: %s, outputTemplate: %s}",
-				getId(), getCreationTime(), code, name, tags, configuration, inputTemplates, outputTemplate);
+				"{id: %s, creation_time: %s, code: %s, name: %s, tags: %s, configuration: %s, inputTemplates: %s, outputTemplate: %s, hasAnswers: %s}",
+				getId(), getCreationTime(), code, name, tags, configuration, inputTemplates, outputTemplate, hasAnswers);
 	}
     
 }

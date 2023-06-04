@@ -67,4 +67,6 @@ hs_err_pid*
 .env
 postgres/
 bin/
+result/
+
 

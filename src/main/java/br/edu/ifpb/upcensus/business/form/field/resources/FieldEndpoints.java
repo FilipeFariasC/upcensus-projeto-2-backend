@@ -17,4 +17,7 @@ public interface FieldEndpoints {
 	public static final String FIELD_CHARACTERISTICS = FIELD + CharacteristicsEndpoints.PREFIX;
 	public static final String FIELD_CHARACTERISTICS_ADD = FIELD + CharacteristicsEndpoints.PREFIX + "/add";
 	public static final String FIELD_CHARACTERISTICS_REMOVE = FIELD + CharacteristicsEndpoints.PREFIX + "/remove";
+
+	public static final String FIELD_TYPES = "/types";
+	public static final String FIELD_TYPE = "/types/{type}";
 }

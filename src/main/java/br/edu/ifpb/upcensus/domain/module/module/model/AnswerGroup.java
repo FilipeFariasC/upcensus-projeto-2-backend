@@ -1,7 +1,10 @@
 package br.edu.ifpb.upcensus.domain.module.module.model;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import br.edu.ifpb.upcensus.infrastructure.annotation.DomainDescriptor;
 import br.edu.ifpb.upcensus.infrastructure.util.CollectionUtils;
@@ -42,7 +45,27 @@ public class AnswerGroup {
 		return findAnswerValue(fieldCode)
 			.orElse(null);
 	}
+	
+	public Collection<Answer> getAnswers(String fieldCode) {
+		if (CollectionUtils.isEmpty(getAnswers()))
+			return Collections.emptyList();
+		
+		return getAnswers()
+			.stream()
+			.filter(answer -> answer.isFieldCode(fieldCode))
+			.collect(Collectors.toList());
+	}
 
+	public Collection<String> getAnswerValues(String fieldCode) {
+		if (CollectionUtils.isEmpty(getAnswers()))
+			return Collections.emptyList();
+		
+		return getAnswers()
+			.stream()
+			.filter(answer -> answer.isFieldCode(fieldCode))
+			.map(Answer::getValue)
+			.collect(Collectors.toList());
+	}
 
 	public List<Answer> getAnswers() {
 		return answers;

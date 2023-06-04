@@ -8,24 +8,27 @@ import org.mapstruct.Mapping;
 
 import br.edu.ifpb.upcensus.domain.form.characteristic.service.CharacteristicService;
 import br.edu.ifpb.upcensus.domain.form.configuration.model.ConfigurationField;
-import br.edu.ifpb.upcensus.domain.form.field.service.FieldService;
+import br.edu.ifpb.upcensus.domain.form.field.service.PlainFieldService;
 import br.edu.ifpb.upcensus.infrastructure.mapper.BaseMapper;
 import br.edu.ifpb.upcensus.infrastructure.mapper.MapStructConfig;
 import br.edu.ifpb.upcensus.presentation.form.configuration.request.ConfigurationFieldRequest;
 import br.edu.ifpb.upcensus.presentation.form.configuration.response.ConfigurationConfigurationFieldResponse;
 import br.edu.ifpb.upcensus.presentation.form.configuration.response.ConfigurationFieldResponse;
+import br.edu.ifpb.upcensus.presentation.form.field.mapper.PlainFieldMapper;
 
 @Mapper(
 	config = MapStructConfig.class,
 	uses = {
-		FieldService.class,
-		CharacteristicService.class
+		PlainFieldService.class,
+		CharacteristicService.class,
+		PlainFieldMapper.class
 	}
 )
 public interface ConfigurationFieldMapper
 extends BaseMapper<ConfigurationField, ConfigurationFieldRequest, ConfigurationFieldResponse> 
 {
-	@Mapping(target = "field", source = "request.fieldCode")
+	
+	@Mapping(source = "request.fieldCode", target = "field")
 	ConfigurationField requestToModel(ConfigurationFieldRequest request);
 
 	ConfigurationConfigurationFieldResponse modelToConfigurationResponse(ConfigurationField field);

@@ -1,6 +1,6 @@
 package br.edu.ifpb.upcensus.infrastructure.util;
 
-public class StringUtils {
+public class StringUtils extends org.apache.commons.lang3.StringUtils {
 	private static StringUtils instance = new StringUtils();
 	private StringUtils() {}
 	

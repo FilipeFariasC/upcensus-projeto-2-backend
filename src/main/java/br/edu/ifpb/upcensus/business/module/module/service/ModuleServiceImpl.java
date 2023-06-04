@@ -76,8 +76,6 @@ public class ModuleServiceImpl implements ModuleService {
 	@Override
 	public void migrate(Long id) {
 		Module module = findById(id);
-		if (ObjectUtils.isNull(module.getOutputTemplate()))
-			throw new ModuleMigrationNotConfigured(module.getCode());
 		migrationService.migrate(module);
 	}
 }

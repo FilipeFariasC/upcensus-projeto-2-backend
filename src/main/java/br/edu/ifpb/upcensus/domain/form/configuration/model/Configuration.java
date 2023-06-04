@@ -13,6 +13,8 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
@@ -23,6 +25,7 @@ import br.edu.ifpb.upcensus.domain.form.characteristic.model.Characteristic;
 import br.edu.ifpb.upcensus.domain.form.characteristic.model.Characteristic.Attribute;
 import br.edu.ifpb.upcensus.domain.form.field.model.PlainField;
 import br.edu.ifpb.upcensus.domain.form.field.model.Type;
+import br.edu.ifpb.upcensus.domain.shared.exception.InvalidDomainModelException;
 import br.edu.ifpb.upcensus.domain.shared.model.DomainModel;
 import br.edu.ifpb.upcensus.infrastructure.annotation.DomainDescriptor;
 import br.edu.ifpb.upcensus.infrastructure.util.CollectionUtils;
@@ -56,6 +59,10 @@ public class Configuration extends DomainModel<Long> {
     	orphanRemoval = true
 	)
     private Set<ConfigurationField> fields;
+    
+    @ManyToOne(fetch = FetchType.EAGER, optional = true)
+    @JoinColumn(name = "id_identifier_field", nullable = true, referencedColumnName = "id")
+    private PlainField identifierField;
  
 	@Override
 	public void initialize() {
@@ -64,6 +71,12 @@ public class Configuration extends DomainModel<Long> {
 	private void initializeFields() {
 		if (CollectionUtils.isEmpty(getFields()))
 			this.fields = new HashSet<>();
+	}
+	
+	@Override
+	public void validate() throws InvalidDomainModelException {
+		super.validate();
+		
 	}
 	
 	@Override
@@ -165,6 +178,38 @@ public class Configuration extends DomainModel<Long> {
 	}
 	
 	
+	
+	
+	public boolean hasRequiredField() {
+		if (CollectionUtils.isEmpty(getFields()))
+			return false;
+		
+		return getFields()
+			.stream()
+			.anyMatch(ConfigurationField::isRequired);
+	}
+	
+	public Optional<ConfigurationField> getIdentifierConfigurationField() {
+		if (ObjectUtils.isNull(getIdentifierField()) || CollectionUtils.isEmpty(getFields()))
+			return Optional.empty();
+		
+		return getFields()
+			.stream()
+			.filter(field -> field.isField(getIdentifierField()))
+			.findFirst();
+	}
+	public boolean isIdentifierFieldRequired() {
+		return getIdentifierConfigurationField()
+			.map(ConfigurationField::isRequired)
+			.orElse(false);
+	}
+	
+	public PlainField getIdentifierField() {
+		return identifierField;
+	}
+	public void setIdentifierField(PlainField identifierField) {
+		this.identifierField = identifierField;
+	}
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -186,7 +231,8 @@ public class Configuration extends DomainModel<Long> {
 	}
 	@Override
 	public String toString() {
-		return String.format("{id: %s, code: %s, name: %s, fields: %s}", id, code, name, fields);
+		return String.format("{id: %s, code: %s, name: %s, fields: %s, identifierField: %s, creation_time: %s}", id,
+				code, name, fields, identifierField, getCreationTime());
 	}
 	
 

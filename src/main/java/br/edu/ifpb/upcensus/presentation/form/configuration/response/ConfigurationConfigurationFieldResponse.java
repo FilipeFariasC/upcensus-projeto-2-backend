@@ -5,14 +5,14 @@ import java.util.Set;
 
 import br.edu.ifpb.upcensus.domain.form.field.model.Type;
 import br.edu.ifpb.upcensus.presentation.form.characteristic.response.CharacteristicResponse;
-import br.edu.ifpb.upcensus.presentation.form.field.response.FieldResponse;
+import br.edu.ifpb.upcensus.presentation.form.field.response.PlainFieldResponse;
 
 public class ConfigurationConfigurationFieldResponse implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	private Long id;
-	private FieldResponse field;
+	private PlainFieldResponse field;
 	private Type type;
 	private Boolean required;
 	private Set<CharacteristicResponse> characteristics;
@@ -25,10 +25,10 @@ public class ConfigurationConfigurationFieldResponse implements Serializable {
 		this.id = id;
 	}
 	
-	public FieldResponse getField() {
+	public PlainFieldResponse getField() {
 		return field;
 	}
-	public void setField(FieldResponse field) {
+	public void setField(PlainFieldResponse field) {
 		this.field = field;
 	}
 

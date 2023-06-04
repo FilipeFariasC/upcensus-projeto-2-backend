@@ -11,7 +11,7 @@ import br.edu.ifpb.upcensus.domain.form.field.model.PlainField;
 import br.edu.ifpb.upcensus.domain.shared.service.DomainService;
 import br.edu.ifpb.upcensus.infrastructure.util.CollectionUtils;
 
-public interface FieldService extends DomainService<PlainField, Long> {
+public interface PlainFieldService extends DomainService<PlainField, Long> {
 	
 	CharacteristicService getCharacteristicService();
 	

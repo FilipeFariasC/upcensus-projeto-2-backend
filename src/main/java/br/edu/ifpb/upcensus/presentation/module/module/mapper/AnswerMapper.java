@@ -1,6 +1,5 @@
 package br.edu.ifpb.upcensus.presentation.module.module.mapper;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -29,24 +28,21 @@ public interface AnswerMapper {
 	default AnswerResponse modelsToResponse(Set<Answer> answers) {
 		if (CollectionUtils.isEmpty(answers))
 			return null;
-		Map<String, List<Answer>> ans = answers
-			.stream()
-			.collect(
-				Collectors.groupingBy(Answer::getIdentifierValue)
-			);
-		
+
 		AnswerResponse response = new AnswerResponse();
-		response.setAnswers(ans
-			.entrySet()
-			.stream()
-			.collect(Collectors.toMap(Map.Entry::getKey, value ->{
-				return  value.getValue()
-					.stream()
-					.collect(Collectors.toMap(answer -> answer.getField().getCode(), Answer::getValue));
-			})));
+		response.setAnswers(modelsToMap(answers));
 		
 		return response;
 	}
 	
+	default Map<String, Map<String, String>> modelsToMap(Set<Answer> answers) {
+		if (CollectionUtils.isEmpty(answers))
+			return null;
+		return answers
+			.stream()
+			.collect(
+				Collectors.groupingBy(Answer::getIdentifierValue, Collectors.toMap(answer -> answer.getField().getCode(), Answer::getValue))
+			);
+	}
 }
 	

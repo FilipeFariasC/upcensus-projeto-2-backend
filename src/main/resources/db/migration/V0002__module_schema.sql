@@ -5,12 +5,10 @@ CREATE TABLE module.t_input_template (
 	code VARCHAR(128) NOT NULL,
 	name VARCHAR(128) NOT NULL,
 	"type" VARCHAR(10) NOT NULL,
-    id_field_identifier BIGINT NOT NULL,
     creation_time TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT NOW(),
 	
   	CONSTRAINT pk_t_input_template PRIMARY KEY (id),
-  	CONSTRAINT uk_t_input_template_code UNIQUE (code),
-    CONSTRAINT fk_t_input_template_id_field FOREIGN KEY (id_field_identifier) REFERENCES form.t_field (id)
+  	CONSTRAINT uk_t_input_template_code UNIQUE (code)
 );
 
 CREATE TABLE module.t_output_template (
@@ -37,7 +35,7 @@ CREATE TABLE module.t_module (
 	id SERIAL,
 	code VARCHAR(128) NOT NULL,
 	name VARCHAR(128) NOT NULL,
-	id_configuration BIGINT NOT NULL,
+	id_configuration BIGINT DEFAULT NULL,
   	creation_time TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT NOW(),
 	id_output_template BIGINT,
 	

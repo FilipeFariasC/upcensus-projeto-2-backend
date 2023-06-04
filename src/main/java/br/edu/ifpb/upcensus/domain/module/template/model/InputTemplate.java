@@ -25,6 +25,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import br.edu.ifpb.upcensus.domain.form.field.model.PlainField;
+import br.edu.ifpb.upcensus.domain.shared.model.DomainEnum;
 import br.edu.ifpb.upcensus.domain.shared.model.DomainModel;
 import br.edu.ifpb.upcensus.infrastructure.annotation.DomainDescriptor;
 import br.edu.ifpb.upcensus.infrastructure.domain.FileType;
@@ -69,11 +70,6 @@ public class InputTemplate extends DomainModel<Long> {
 	@NotNull
 	@Column(name = "type")
 	private Type type;
-	
-	@NotNull
-	@ManyToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name = "id_field_identifier")
-	private PlainField fieldIdentifier;
 
 	public InputTemplate() { }
 	
@@ -128,13 +124,6 @@ public class InputTemplate extends DomainModel<Long> {
 		this.type = type;
 	}
 	
-	public PlainField getFieldIdentifier() {
-		return fieldIdentifier;
-	}
-	public void setFieldIdentifier(PlainField fieldIdentifier) {
-		this.fieldIdentifier = fieldIdentifier;
-	}
-	
 	public PlainField getFieldFromCode(String code) {
 		return getMappings()
 			.keySet()
@@ -152,12 +141,20 @@ public class InputTemplate extends DomainModel<Long> {
 			.map(typeFile -> typeFile.equals(fileType))
 			.orElse(false);
 	}
-
+	
+	public boolean hasField(final PlainField field) {
+		if (ObjectUtils.isNull(field))
+			return false;
+		return getMappings()
+			.keySet()
+			.stream()
+			.anyMatch(mappingField -> mappingField.equals(field));
+	}
 
 	@Override
 	public String toString() {
-		return String.format("{id: %s, code: \"%s\", name: \"%s\", mappings: %s, type: %s, field_identifier: \"%s\"}", id, code, name, JsonUtils.mapToString(mappings, PlainField::getCode),
-				type, fieldIdentifier);
+		return String.format("{id: %s, code: \"%s\", name: \"%s\", mappings: %s, type: %s}", id, code, name, JsonUtils.mapToString(mappings, PlainField::getCode),
+				type);
 	}
 	
 	public boolean isFileTemplate() {
@@ -169,7 +166,7 @@ public class InputTemplate extends DomainModel<Long> {
 	public int hashCode() {
 		final int prime = 31;
 		int result = super.hashCode();
-		result = prime * result + Objects.hash(code, fieldIdentifier, type, id, mappings, name);
+		result = prime * result + Objects.hash(code, type, id, mappings, name);
 		return result;
 	}
 
@@ -182,13 +179,13 @@ public class InputTemplate extends DomainModel<Long> {
 		if (getClass() != obj.getClass())
 			return false;
 		InputTemplate other = (InputTemplate) obj;
-		return Objects.equals(code, other.code) && Objects.equals(fieldIdentifier, other.fieldIdentifier)
+		return Objects.equals(code, other.code)
 				&& type == other.type && Objects.equals(id, other.id)
 				&& Objects.equals(mappings, other.mappings) && Objects.equals(name, other.name);
 	}
 
 
-	public static enum Type {
+	public static enum Type implements DomainEnum<Type>{
 		CSV(FileType.CSV), 
 		FORM,
 		GOOGLE,
@@ -211,6 +208,14 @@ public class InputTemplate extends DomainModel<Long> {
 		
 		public boolean isFileType() {
 			return ObjectUtils.nonNull(fileType);
+		}
+		@Override
+		public String getLabel() {
+			return isFileType() ? getFileType().getLabel() : name();
+		}
+		@Override
+		public Type getValue() {
+			return this;
 		}
 	}
 	

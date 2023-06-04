@@ -15,8 +15,6 @@ public class InputTemplateRequest implements Serializable{
 	private Type type;
 	private String code;
     private String name;
-    @JsonProperty("field_identifier")
-    private String fieldIdentifier;
 	private Map<String, String> mappings;
 	
 	
@@ -41,13 +39,6 @@ public class InputTemplateRequest implements Serializable{
 		this.name = name;
 	}
 	
-	public String getFieldIdentifier() {
-		return fieldIdentifier;
-	}
-	public void setFieldIdentifier(String fieldIdentifier) {
-		this.fieldIdentifier = fieldIdentifier;
-	}
-	
 	public Map<String, String> getMappings() {
 		return mappings;
 	}
@@ -57,8 +48,8 @@ public class InputTemplateRequest implements Serializable{
 	
 	@Override
 	public String toString() {
-		return String.format("{type: \"%s\", code: \"%s\", name: \"%s\", fieldIdentifier: \"%s\", mappings: %s}", type, code,
-				name, fieldIdentifier, JsonUtils.mapToString(mappings));
+		return String.format("{type: \"%s\", code: \"%s\", name: \"%s\", mappings: %s}", type, code,
+				name, JsonUtils.mapToString(mappings));
 	}
 
 }

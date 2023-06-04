@@ -21,7 +21,6 @@ import br.edu.ifpb.upcensus.infrastructure.util.TimeUtils;
 public class MigrationServiceImpl implements MigrationService {
 	
 	private final TemplateEngineService templateEngineService;
-	
 
 	public MigrationServiceImpl(final TemplateEngineService templateEngineService) {
 		super();
@@ -32,6 +31,7 @@ public class MigrationServiceImpl implements MigrationService {
 
 	@Override
 	public void migrate(Module module) {
+		module.migrate();
 		Map<String, Object> variables = getMigrationVariables(module);
 		
 		String result = templateEngineService.process(module.getOutputTemplate().getLayout(), variables);
@@ -54,6 +54,11 @@ public class MigrationServiceImpl implements MigrationService {
 	}
 	
 	private String buildFilename(Module module) {
-		return MessageFormat.format("{0}__{1}__{2}", module.getCode(), module.getOutputTemplate().getCode(), TimeUtils.toString(LocalDateTime.now(), TimeUtils.FILE_TIMESTAMP));
+		return MessageFormat.format("{0}__{1}__{2}",
+			module.getCode(), 
+			module.getOutputTemplate().getCode(),
+			TimeUtils.toString(LocalDateTime.now(), 
+			TimeUtils.FILE_TIMESTAMP)
+		);
 	}
 }

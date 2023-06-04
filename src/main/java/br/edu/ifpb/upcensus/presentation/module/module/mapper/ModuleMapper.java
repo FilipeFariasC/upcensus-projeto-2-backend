@@ -1,11 +1,11 @@
 package br.edu.ifpb.upcensus.presentation.module.module.mapper;
 
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
 import br.edu.ifpb.upcensus.domain.form.configuration.service.ConfigurationService;
 import br.edu.ifpb.upcensus.domain.module.module.model.Module;
 import br.edu.ifpb.upcensus.domain.module.module.service.ModuleService;
-import br.edu.ifpb.upcensus.domain.module.template.model.OutputTemplate;
 import br.edu.ifpb.upcensus.domain.module.template.service.InputTemplateService;
 import br.edu.ifpb.upcensus.domain.module.template.service.OutputTemplateService;
 import br.edu.ifpb.upcensus.infrastructure.mapper.BaseMapper;
@@ -28,5 +28,9 @@ import br.edu.ifpb.upcensus.presentation.module.template.mapper.OutputTemplateMa
 			OutputTemplateMapper.class
 		}
 	)
-public interface ModuleMapper extends BaseMapper<Module, ModuleRequest, ModuleResponse>{ }
+public interface ModuleMapper extends BaseMapper<Module, ModuleRequest, ModuleResponse>{
+	
+	@Mapping(target = "hasAnswers", expression = "java(model.hasAnswers())")
+	ModuleResponse modelToResponse(Module model);
+}
 	

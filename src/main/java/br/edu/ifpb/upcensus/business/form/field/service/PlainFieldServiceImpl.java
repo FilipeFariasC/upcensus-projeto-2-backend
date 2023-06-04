@@ -5,16 +5,16 @@ import org.springframework.stereotype.Service;
 import br.edu.ifpb.upcensus.business.form.characteristic.service.CharacteristicServiceImpl;
 import br.edu.ifpb.upcensus.domain.form.characteristic.service.CharacteristicService;
 import br.edu.ifpb.upcensus.domain.form.field.model.PlainField;
-import br.edu.ifpb.upcensus.domain.form.field.service.FieldService;
+import br.edu.ifpb.upcensus.domain.form.field.service.PlainFieldService;
 import br.edu.ifpb.upcensus.infrastructure.persistence.repository.form.FieldRepository;
 
 @Service
-public class FieldServiceImpl implements FieldService {
+public class PlainFieldServiceImpl implements PlainFieldService {
 
 	private final FieldRepository fieldRepository;
 	private final CharacteristicService characteristicService;
 	
-	public FieldServiceImpl(
+	public PlainFieldServiceImpl(
 		final FieldRepository fieldRepository,
 		final CharacteristicServiceImpl characteristicService
 		) {

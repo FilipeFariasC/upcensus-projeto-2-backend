@@ -10,6 +10,7 @@ public class ConfigurationResponse extends DomainModelResponse {
 
 	private String code;
 	private String name;
+	private String identifierField;
 	private Set<ConfigurationConfigurationFieldResponse> fields;
 	
 	
@@ -25,6 +26,13 @@ public class ConfigurationResponse extends DomainModelResponse {
 	public void setName(String name) {
 		this.name = name;
 	}
+	
+	public String getIdentifierField() {
+		return identifierField;
+	}
+	public void setIdentifierField(String identifierField) {
+		this.identifierField = identifierField;
+	}
 	public Set<ConfigurationConfigurationFieldResponse> getFields() {
 		return fields;
 	}
@@ -33,8 +41,8 @@ public class ConfigurationResponse extends DomainModelResponse {
 	}
 	@Override
 	public String toString() {
-		return String.format("{id: %s, code: %s, name: %s, fields: %s, creation_time: %s}",
-				getId(), code, name, fields, getCreationTime());
+		return String.format("{id: %s, code: %s, name: %s, identifier_field: %s, fields: %s, creation_time: %s}",
+				getId(), code, name, identifierField, fields, getCreationTime());
 	}
 	
 

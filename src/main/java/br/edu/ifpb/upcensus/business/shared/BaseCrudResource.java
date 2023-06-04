@@ -5,6 +5,7 @@ import static org.springframework.http.HttpStatus.NO_CONTENT;
 import static org.springframework.http.HttpStatus.OK;
 
 import java.io.Serializable;
+import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -52,6 +53,16 @@ public abstract class BaseCrudResource<M extends DomainModel<K>, K extends Seria
 		O response = getDomainMapper().modelToResponse(model);
 		
 		return getResponseService().buildResponse(response, OK);
+	}
+
+	
+	@GetMapping(ApiEndpoints.ALL)
+	@ResponseStatus(OK)
+	public Response<List<O>> getAll() {
+		List<M> model = getModelService().findAll();
+		List<O> responses = getDomainMapper().modelListToResponseList(model);
+		
+		return getResponseService().buildResponse(responses, OK);
 	}
 	
 	@PostMapping

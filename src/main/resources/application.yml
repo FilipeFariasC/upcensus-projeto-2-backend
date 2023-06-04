@@ -29,6 +29,9 @@ cors:
   allowedOrigins:
     - http://localhost:4200
   allowCredentials: true
+  allowedHeaders:
+    - Authorization
+    - Content-Type
   
 logging:
   runtimeException: true

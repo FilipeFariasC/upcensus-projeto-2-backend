@@ -14,8 +14,6 @@ public class InputTemplateResponse extends DomainModelResponse {
 	private Type type;
 	private String code;
 	private String name;
-    @JsonProperty("field_identifier")
-    private String fieldIdentifier;
 	private Map<String, String> mappings;
 	
 	public Type getType() {
@@ -36,12 +34,6 @@ public class InputTemplateResponse extends DomainModelResponse {
 	public void setName(String name) {
 		this.name = name;
 	}
-	public String getFieldIdentifier() {
-		return fieldIdentifier;
-	}
-	public void setFieldIdentifier(String fieldIdentifier) {
-		this.fieldIdentifier = fieldIdentifier;
-	}
 	public Map<String, String> getMappings() {
 		return mappings;
 	}
@@ -52,8 +44,8 @@ public class InputTemplateResponse extends DomainModelResponse {
 	@Override
 	public String toString() {
 		return String.format(
-				"{id: %s, creation_time: %s, type: %s, code: %s, name: %s, field_identifier: %s, mappings: %s}", getId(), getCreationTime(),
-				type, code, name, fieldIdentifier, mappings);
+				"{id: %s, creation_time: %s, type: %s, code: %s, name: %s, mappings: %s}", getId(), getCreationTime(),
+				type, code, name, mappings);
 	}
 	
 	

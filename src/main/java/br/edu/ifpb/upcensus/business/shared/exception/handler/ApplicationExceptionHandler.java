@@ -6,13 +6,11 @@ import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -25,9 +23,9 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import br.edu.ifpb.upcensus.infrastructure.annotation.DomainDescriptor;
 import br.edu.ifpb.upcensus.infrastructure.annotation.DomainException;
 import br.edu.ifpb.upcensus.infrastructure.http.response.internationalization.MessageSourceService;
+import br.edu.ifpb.upcensus.infrastructure.util.AnnotationUtils;
 import br.edu.ifpb.upcensus.infrastructure.util.MessageKeys;
 import br.edu.ifpb.upcensus.infrastructure.util.ObjectUtils;
 import br.edu.ifpb.upcensus.infrastructure.util.ServerUtils;
@@ -47,22 +45,23 @@ public class ApplicationExceptionHandler extends ResponseEntityExceptionHandler 
 	}
 	@ExceptionHandler({ br.edu.ifpb.upcensus.infrastructure.exception.DomainException.class })
     public ResponseEntity<Object> handleDomainModelException(br.edu.ifpb.upcensus.infrastructure.exception.DomainException exception, WebRequest request) {
-		DomainException domainException = AnnotationUtils.findAnnotation(exception.getClass(), DomainException.class);
+		Object[] params = Stream.concat(
+				Stream.of(exception.getClassObject()), 
+				Arrays.stream(exception.getParams())
+			)
+			.map(param -> {
+				if (param instanceof Class<?>)
+					return AnnotationUtils.getClassName((Class<?>) param);
+				return param;
+			})
+			.toArray();
 		
-		Class<?> domainClass = exception.getClassObject();
-		DomainDescriptor domainDescriptor = AnnotationUtils.findAnnotation(domainClass, DomainDescriptor.class);
-		String className = Optional.ofNullable(domainDescriptor)
-			.map(DomainDescriptor::name)
-			.orElse(domainClass.getSimpleName());
-		
-		Object[] params = Stream.concat(Stream.of(className), Arrays.stream(exception.getParams())).toArray();
-		
-		return handleDomainException(exception, request, domainException, params);
+		return handleDomainException(exception, request, AnnotationUtils.getDomainException(exception.getClass()), params);
 	}
 	
 	@ExceptionHandler({ RuntimeException.class })
     public ResponseEntity<Object> handleRuntimeException(RuntimeException exception, WebRequest request) {
-		DomainException domainException = AnnotationUtils.findAnnotation(exception.getClass(), DomainException.class);
+		DomainException domainException = AnnotationUtils.getDomainException(exception.getClass());
 		
 		if (ObjectUtils.nonNull(domainException)) {
 			return handleDomainException(exception, request, domainException);	

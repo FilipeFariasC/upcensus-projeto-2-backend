@@ -22,7 +22,8 @@ public class WebConfiguration implements WebMvcConfigurer {
 		registry.addMapping("/**")
 			.allowCredentials(corsProperties.getAllowCredentials())
 			.allowedMethods(HttpUtils.allHttpMethods())
-			.allowedOrigins(corsProperties.getAllowedOrigins().toArray(new String[] {}));
+			.allowedOrigins(corsProperties.getAllowedOrigins().toArray(new String[] {}))
+			.allowedHeaders(corsProperties.getAllowedHeaders().toArray(new String[] {}));
 	}
 	
 	

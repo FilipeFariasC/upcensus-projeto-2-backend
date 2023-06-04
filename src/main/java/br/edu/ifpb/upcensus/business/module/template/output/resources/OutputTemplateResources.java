@@ -1,4 +1,4 @@
-package br.edu.ifpb.upcensus.business.module.template.resources;
+package br.edu.ifpb.upcensus.business.module.template.output.resources;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;

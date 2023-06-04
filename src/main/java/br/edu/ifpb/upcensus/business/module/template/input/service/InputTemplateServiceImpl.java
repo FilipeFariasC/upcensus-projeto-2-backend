@@ -1,4 +1,4 @@
-package br.edu.ifpb.upcensus.business.module.template.service;
+package br.edu.ifpb.upcensus.business.module.template.input.service;
 
 import org.springframework.stereotype.Service;
 

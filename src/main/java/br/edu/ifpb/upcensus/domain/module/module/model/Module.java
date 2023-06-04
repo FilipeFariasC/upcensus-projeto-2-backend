@@ -31,6 +31,10 @@ import br.edu.ifpb.upcensus.domain.form.characteristic.model.Characteristic.Attr
 import br.edu.ifpb.upcensus.domain.form.configuration.model.Configuration;
 import br.edu.ifpb.upcensus.domain.form.field.model.PlainField;
 import br.edu.ifpb.upcensus.domain.form.field.model.Type;
+import br.edu.ifpb.upcensus.domain.module.module.exception.ModuleConfigurationIdentifierNotConfiguredException;
+import br.edu.ifpb.upcensus.domain.module.module.exception.ModuleConfigurationIdentifierNotRequiredException;
+import br.edu.ifpb.upcensus.domain.module.module.exception.ModuleConfigurationNotConfiguredException;
+import br.edu.ifpb.upcensus.domain.module.module.exception.ModuleOutputTemplateNotConfiguredException;
 import br.edu.ifpb.upcensus.domain.module.template.model.InputTemplate;
 import br.edu.ifpb.upcensus.domain.module.template.model.OutputTemplate;
 import br.edu.ifpb.upcensus.domain.shared.exception.ResourceNotFoundException;
@@ -39,6 +43,7 @@ import br.edu.ifpb.upcensus.infrastructure.annotation.DomainDescriptor;
 import br.edu.ifpb.upcensus.infrastructure.domain.FileType;
 import br.edu.ifpb.upcensus.infrastructure.util.CollectionUtils;
 import br.edu.ifpb.upcensus.infrastructure.util.ObjectUtils;
+import br.edu.ifpb.upcensus.infrastructure.util.StringUtils;
 
 @Entity
 @Table(name = "t_module", schema = "module")
@@ -72,8 +77,7 @@ public class Module extends DomainModel<Long> {
     private Set<String> tags;
     
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_configuration", referencedColumnName = "id")
-    @NotNull
+    @JoinColumn(name = "id_configuration", referencedColumnName = "id", nullable = true)
     private Configuration configuration;
     
     @OneToMany(cascade = CascadeType.ALL)
@@ -115,14 +119,20 @@ public class Module extends DomainModel<Long> {
     }
     
     public Optional<Characteristic> getCharacteristic(PlainField field, Attribute attribute) {
+    	if (ObjectUtils.isNull(getConfiguration()))
+    		return Optional.empty();
     	return getConfiguration().getAttribute(field, attribute);
     }
     
     public Optional<Type> getType(PlainField field) {
+    	if (ObjectUtils.isNull(getConfiguration()))
+    		return Optional.empty();
     	return getConfiguration().getType(field);
     }
     
     public Optional<Boolean> getRequired(PlainField field) {
+    	if (ObjectUtils.isNull(getConfiguration()))
+    		return Optional.empty();
     	return getConfiguration().getRequired(field);
     }
     
@@ -195,11 +205,14 @@ public class Module extends DomainModel<Long> {
 			throw new ResourceNotFoundException(InputTemplate.class, "file_type", fileType);
 		return getInputTemplates()
 			.stream()
-			.filter(template -> template.isFileType(fileType))
+			.filter(template -> template.isFileType(fileType) && template.hasField(getIdentifierField()))
 			.findFirst()
 			.orElseThrow(() -> new ResourceNotFoundException(InputTemplate.class, "file_type", fileType));
 	}
 	
+	public boolean hasAnswers() {
+		return CollectionUtils.notEmpty(getAnswers());
+	}
 	
 	public Set<Answer> getAnswers() {
 		return answers;
@@ -266,22 +279,21 @@ public class Module extends DomainModel<Long> {
 			.findFirst();
 	}
 
-
-	public boolean hasAnswer(PlainField fieldIdentifier, String identifierValue) {
+	public boolean hasAnswer(Answer answer) {
 		if (CollectionUtils.isEmpty(getAnswers()))
 			return false;
 		return getAnswers()
 			.stream()
-			.anyMatch(answer -> answer.isAnswer(fieldIdentifier, identifierValue));
+			.anyMatch(answerRegistered -> answerRegistered.isAnswer(answer));
 	}
 	
-	public Optional<Answer> getAnswer(PlainField fieldIdentifier, String value) {
+	public Optional<Answer> getAnswer(String identifierValue, PlainField fieldIdentifier, String value) {
 		if (CollectionUtils.isEmpty(getAnswers()))
 			return Optional.empty();
 		
 		return getAnswers()
 			.stream()
-			.filter(answer -> answer.isAnswer(fieldIdentifier, value))
+			.filter(answer -> answer.isAnswer(identifierValue, fieldIdentifier, value))
 			.findAny();
 	}
 	
@@ -293,6 +305,33 @@ public class Module extends DomainModel<Long> {
 			.stream()
 			.map(AnswerGroup::of)
 			.collect(Collectors.toList());
+	}
+	
+	public PlainField getIdentifierField() {
+		return Optional.ofNullable(getConfiguration())
+			.map(Configuration::getIdentifierField)
+			.orElse(null);
+	}
+	
+	public void fill() {
+		if (ObjectUtils.isNull(getConfiguration()))
+			throw new ModuleConfigurationNotConfiguredException(getCode());
+		if (ObjectUtils.isNull(getConfiguration().getIdentifierField()))
+			throw new ModuleConfigurationIdentifierNotConfiguredException(getCode());
+		if (!getConfiguration().isIdentifierFieldRequired())
+			throw new ModuleConfigurationIdentifierNotRequiredException(getCode());
+	}
+	
+	public void migrate() {
+		if (ObjectUtils.isNull(getConfiguration()))
+			throw new ModuleConfigurationNotConfiguredException(getCode());
+		if (ObjectUtils.isNull(getConfiguration().getIdentifierField()))
+			throw new ModuleConfigurationIdentifierNotConfiguredException(getCode());
+		if (!getConfiguration().isIdentifierFieldRequired())
+			throw new ModuleConfigurationIdentifierNotRequiredException(getCode());
+		if (ObjectUtils.nonNull(getOutputTemplate()) || StringUtils.notBlank(getOutputTemplate().getLayout()))
+			throw new ModuleOutputTemplateNotConfiguredException(getCode());
+		
 	}
 	
 	@Override

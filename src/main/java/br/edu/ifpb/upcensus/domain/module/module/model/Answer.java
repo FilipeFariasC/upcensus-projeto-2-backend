@@ -34,6 +34,7 @@ import br.edu.ifpb.upcensus.domain.module.template.model.InputTemplate;
 import br.edu.ifpb.upcensus.domain.shared.model.DomainModel;
 import br.edu.ifpb.upcensus.infrastructure.annotation.DomainDescriptor;
 import br.edu.ifpb.upcensus.infrastructure.util.CollectionUtils;
+import br.edu.ifpb.upcensus.infrastructure.util.ObjectUtils;
 
 @Entity
 @Table(name = "t_answer", schema = "module", uniqueConstraints = @UniqueConstraint(columnNames = { "id_module",
@@ -182,7 +183,7 @@ public class Answer extends DomainModel<Long> {
 	}
 
 	public boolean isRequired() {
-		Optional<Boolean> opt = getModule().getConfiguration().getRequired(getField());
+		Optional<Boolean> opt = getModule().getRequired(getField());
 		
 		return opt.orElseGet(() -> getField().isRequired());
 	}
@@ -234,8 +235,19 @@ public class Answer extends DomainModel<Long> {
 		return getMappedValue(BigDecimal::new);
 	}
 	
-	public boolean isAnswer(PlainField field, String value) {
-		return getField().equals(field) && getValue().equals(value);
+	public boolean isAnswer(Answer answer) {
+		return getIdentifierValue().equals(answer.getIdentifierValue()) 
+			&& getField().equals(answer.getField())
+			&& getValue().equals(answer.getValue());
+	}
+	
+	public boolean isAnswer(String identifierValue, PlainField field, String value) {
+		return getIdentifierValue().equals(identifierValue)
+			&& getField().equals(field)
+			&& getValue().equals(value);
+	}
+	public boolean isIdentifier() {
+		return ObjectUtils.isNull(getIdentifier());
 	}
 	
 	public boolean isFieldCode(String fieldCode) {

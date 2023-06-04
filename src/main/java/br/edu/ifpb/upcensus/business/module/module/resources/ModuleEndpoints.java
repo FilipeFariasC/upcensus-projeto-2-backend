@@ -1,6 +1,6 @@
 package br.edu.ifpb.upcensus.business.module.module.resources;
 
-import br.edu.ifpb.upcensus.business.module.template.resources.InputTemplateEndpoints;
+import br.edu.ifpb.upcensus.business.module.template.input.resources.InputTemplateEndpoints;
 import br.edu.ifpb.upcensus.business.shared.ApiEndpoints;
 
 public interface ModuleEndpoints {
