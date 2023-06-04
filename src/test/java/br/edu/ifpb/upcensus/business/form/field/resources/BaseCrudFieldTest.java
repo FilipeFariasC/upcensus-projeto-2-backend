@@ -22,7 +22,6 @@ import org.springframework.test.web.servlet.MvcResult;
 
 import br.edu.ifpb.upcensus.business.form.TestAplicationBaseCrud;
 import br.edu.ifpb.upcensus.business.form.characteristic.resources.CharacteristicsEndpoints;
-import br.edu.ifpb.upcensus.domain.form.characteristic.model.Attribute;
 import br.edu.ifpb.upcensus.infrastructure.util.SeveralUtilities;
 import br.edu.ifpb.upcensus.presentation.form.characteristic.request.CharacteristicRequest;
 import br.edu.ifpb.upcensus.presentation.form.field.request.FieldRequest;
@@ -40,7 +39,7 @@ public class BaseCrudFieldTest extends TestAplicationBaseCrud{
 	public void setup() throws Exception{
 		
 		CharacteristicRequest characteristicRequest= new CharacteristicRequest();
-		characteristicRequest.setAttribute(Attribute.MIN_VALUE);
+		characteristicRequest.setAttribute(br.edu.ifpb.upcensus.domain.form.characteristic.model.Characteristic.Attribute.MAX_VALUE);
 		characteristicRequest.setValue("10");
 		MvcResult resultado = mockMvc.perform(post(CharacteristicsEndpoints.CHARACTERISTICS)
 				.contentType("application/json")
@@ -288,7 +287,7 @@ public class BaseCrudFieldTest extends TestAplicationBaseCrud{
 	public void add_not_exist_characteristic() throws Exception{
 		
 		CharacteristicRequest characteristicRequest= new CharacteristicRequest();
-		characteristicRequest.setAttribute(Attribute.MIN_VALUE);
+		characteristicRequest.setAttribute(br.edu.ifpb.upcensus.domain.form.characteristic.model.Characteristic.Attribute.MIN_VALUE);
 		characteristicRequest.setValue("10");
 		MvcResult resultado = mockMvc.perform(post(CharacteristicsEndpoints.CHARACTERISTICS)
 				.contentType("application/json")

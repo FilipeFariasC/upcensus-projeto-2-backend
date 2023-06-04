@@ -18,7 +18,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MvcResult;
 
 import br.edu.ifpb.upcensus.business.form.TestAplicationBaseCrud;
-import br.edu.ifpb.upcensus.domain.form.characteristic.model.Attribute;
 import br.edu.ifpb.upcensus.infrastructure.util.SeveralUtilities;
 import br.edu.ifpb.upcensus.presentation.form.characteristic.request.CharacteristicRequest;
 
@@ -34,7 +33,7 @@ public class BaseCrudCharacteristicTest extends TestAplicationBaseCrud{
 	@BeforeEach
 	public void reset() throws Exception{
 		
-		characteristicRequest.setAttribute(Attribute.MIN_VALUE);
+		characteristicRequest.setAttribute(br.edu.ifpb.upcensus.domain.form.characteristic.model.Characteristic.Attribute.MAX_LENGTH);
 		characteristicRequest.setValue(""+random.nextInt(11));
 		characteristicRequest.setDescription("valor teste");
 	}
@@ -82,7 +81,7 @@ public class BaseCrudCharacteristicTest extends TestAplicationBaseCrud{
 				.andExpect(status().isCreated())
 				.andReturn();
 		
-		characteristicRequest.setAttribute(Attribute.TYPE);
+		characteristicRequest.setAttribute(br.edu.ifpb.upcensus.domain.form.characteristic.model.Characteristic.Attribute.PATTERN);
 		characteristicRequest.setValue("5");
 		characteristicRequest.setDescription("valor teste update");
 		
@@ -122,7 +121,7 @@ public class BaseCrudCharacteristicTest extends TestAplicationBaseCrud{
 	@Test
 	public void atribute_max_value_test() throws Exception{
 		
-		characteristicRequest.setAttribute(Attribute.MAX_VALUE);
+		characteristicRequest.setAttribute(br.edu.ifpb.upcensus.domain.form.characteristic.model.Characteristic.Attribute.MAX_VALUE);
 		
 		mockMvc.perform(post(CharacteristicsEndpoints.CHARACTERISTICS)
 				.contentType("application/json")
@@ -133,7 +132,7 @@ public class BaseCrudCharacteristicTest extends TestAplicationBaseCrud{
 	@Test
 	public void atribute_min_length_test() throws Exception{
 		
-		characteristicRequest.setAttribute(Attribute.MIN_LENGTH);
+		characteristicRequest.setAttribute(br.edu.ifpb.upcensus.domain.form.characteristic.model.Characteristic.Attribute.MAX_LENGTH);
 		
 		mockMvc.perform(post(CharacteristicsEndpoints.CHARACTERISTICS)
 				.contentType("application/json")
@@ -144,7 +143,7 @@ public class BaseCrudCharacteristicTest extends TestAplicationBaseCrud{
 	@Test
 	public void atribute_max_length_test() throws Exception{
 		
-		characteristicRequest.setAttribute(Attribute.MAX_LENGTH);
+		characteristicRequest.setAttribute(br.edu.ifpb.upcensus.domain.form.characteristic.model.Characteristic.Attribute.MAX_LENGTH);
 		
 		mockMvc.perform(post(CharacteristicsEndpoints.CHARACTERISTICS)
 				.contentType("application/json")
@@ -155,7 +154,7 @@ public class BaseCrudCharacteristicTest extends TestAplicationBaseCrud{
 	@Test
 	public void atribute_type_test() throws Exception{
 		
-		characteristicRequest.setAttribute(Attribute.TYPE);
+		characteristicRequest.setAttribute(br.edu.ifpb.upcensus.domain.form.characteristic.model.Characteristic.Attribute.PATTERN);
 		
 		mockMvc.perform(post(CharacteristicsEndpoints.CHARACTERISTICS)
 				.contentType("application/json")
@@ -166,20 +165,19 @@ public class BaseCrudCharacteristicTest extends TestAplicationBaseCrud{
 	@Test
 	public void atribute_required_test() throws Exception{
 		
-		characteristicRequest.setAttribute(Attribute.REQUIRED);
+		characteristicRequest.setAttribute(br.edu.ifpb.upcensus.domain.form.characteristic.model.Characteristic.Attribute.PATTERN);
 		characteristicRequest.setValue("true");
 		
 		mockMvc.perform(post(CharacteristicsEndpoints.CHARACTERISTICS)
 				.contentType("application/json")
 				.content(objectMapper.writeValueAsString(characteristicRequest)))
 				.andExpect(status().isCreated());
-		//perguntar se precisa de bloqueio no value para true ou false
 	}
 	
 	@Test
 	public void atribute_pattern_test() throws Exception{
 		
-		characteristicRequest.setAttribute(Attribute.PATTERN);
+		characteristicRequest.setAttribute(br.edu.ifpb.upcensus.domain.form.characteristic.model.Characteristic.Attribute.PATTERN);
 		
 		mockMvc.perform(post(CharacteristicsEndpoints.CHARACTERISTICS)
 				.contentType("application/json")
