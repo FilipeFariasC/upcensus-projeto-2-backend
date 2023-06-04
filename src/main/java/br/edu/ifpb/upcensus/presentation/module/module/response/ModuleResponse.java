@@ -2,8 +2,11 @@ package br.edu.ifpb.upcensus.presentation.module.module.response;
 
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import br.edu.ifpb.upcensus.presentation.form.configuration.response.ConfigurationResponse;
-import br.edu.ifpb.upcensus.presentation.module.template.response.TemplateResponse;
+import br.edu.ifpb.upcensus.presentation.module.template.response.InputTemplateResponse;
+import br.edu.ifpb.upcensus.presentation.module.template.response.OutputTemplateResponse;
 import br.edu.ifpb.upcensus.presentation.shared.response.DomainModelResponse;
 
 public class ModuleResponse extends DomainModelResponse{
@@ -18,11 +21,12 @@ public class ModuleResponse extends DomainModelResponse{
     private Set<String> tags;
     
     private ConfigurationResponse configuration;
-    
-    private Set<TemplateResponse> templates;
+    @JsonProperty("input_templates")
+    private Set<InputTemplateResponse> inputTemplates;
+    @JsonProperty("output_template")
+    private OutputTemplateResponse outputTemplate;
+    private boolean hasAnswers;
 
-    
-    
     
 	public String getCode() {
 		return code;
@@ -57,21 +61,35 @@ public class ModuleResponse extends DomainModelResponse{
 		this.configuration = configuration;
 	}
 
-	public Set<TemplateResponse> getTemplates() {
-		return templates;
+	public Set<InputTemplateResponse> getInputTemplates() {
+		return inputTemplates;
 	}
 
-	public void setTemplates(Set<TemplateResponse> templates) {
-		this.templates = templates;
+	public void setInputTemplates(Set<InputTemplateResponse> inputTemplates) {
+		this.inputTemplates = inputTemplates;
+	}
+
+	public OutputTemplateResponse getOutputTemplate() {
+		return outputTemplate;
+	}
+
+	public void setOutputTemplate(OutputTemplateResponse outputTemplate) {
+		this.outputTemplate = outputTemplate;
+	}
+
+	public boolean isHasAnswers() {
+		return hasAnswers;
+	}
+
+	public void setHasAnswers(boolean hasAnswers) {
+		this.hasAnswers = hasAnswers;
 	}
 
 	@Override
 	public String toString() {
-		return String.format("{id: %s, creation_time: %s, code: %s, name: %s, tags: %s, configuration: %s, templates: %s}", code, name,
-				tags, configuration, templates, getId(), getCreationTime());
+		return String.format(
+				"{id: %s, creation_time: %s, code: %s, name: %s, tags: %s, configuration: %s, inputTemplates: %s, outputTemplate: %s, hasAnswers: %s}",
+				getId(), getCreationTime(), code, name, tags, configuration, inputTemplates, outputTemplate, hasAnswers);
 	}
-    
-    
-    
     
 }

@@ -130,7 +130,8 @@ public class ConfigurationField implements Serializable, Field {
 	private Stream<Characteristic> filterCharacteristics(Set<Characteristic> characteristics) {
 		return characteristics
 			.stream()
-			.collect(Collectors.groupingBy(Characteristic::getAttribute))
+			.sorted(Comparator.comparingLong(Characteristic::getId).reversed())
+			.collect(Collectors.groupingBy(Characteristic::getAttribute, Collectors.toList()))
 			.values()
 			.stream()
 			.map(list -> list.get(0));
@@ -144,13 +145,17 @@ public class ConfigurationField implements Serializable, Field {
 	}
 	
 	public boolean isRequired() {
-		return Boolean.TRUE.equals(required);
+		return Boolean.TRUE.equals(getRequired());
 	}
 	
 	public Boolean getRequired() {
 		return required;
 	}
-	public void setRequired(Boolean required) {
+	public boolean required() {
+		return Optional.ofNullable(getRequired())
+			.orElseGet(()->getField().isRequired());
+	}
+	public void required(Boolean required) {
 		this.required = required;
 	}
 	
@@ -162,27 +167,21 @@ public class ConfigurationField implements Serializable, Field {
 		this.type = type;
 	}
 	
+	public Type type() {
+		return Optional.ofNullable(getType())
+			.orElseGet(()->getField().getType());
+	}
+	
 	public Optional<Characteristic> getCharacteristic(Attribute attribute) {
 		return getAllCharacteristics()
 			.stream()
 			.filter(characteristic -> characteristic.getAttribute().equals(attribute))
-			.min(Comparator.comparingLong(Characteristic::getId));
+			.max(Comparator.comparingLong(Characteristic::getId));
 	}
 	
-//	public Type getType() {
-//		return getAllCharacteristics()
-//			.stream()
-//			.filter(characteristic -> characteristic.getAttribute().equals(Attribute.TYPE))
-//			.findFirst()
-//			.map(characteristic ->{
-//				try {
-//					return Enum.valueOf(Type.class, characteristic.getValue());
-//				} catch (IllegalArgumentException exception) {
-//					throw new FieldTypeBadConfiguredException(characteristic.getDescription());
-//				}
-//			})
-//			.orElseThrow(()-> new FieldTypeNotConfiguredException());
-//	}
+	public boolean isField(PlainField field) {
+		return getField().equals(field);
+	}
 	
 	
 	@Override

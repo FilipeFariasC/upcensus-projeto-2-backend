@@ -2,9 +2,13 @@ package br.edu.ifpb.upcensus.domain.form.field.model;
 
 import java.util.Arrays;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
 
 import br.edu.ifpb.upcensus.domain.shared.model.DomainEnum;
 import br.edu.ifpb.upcensus.infrastructure.annotation.DomainDescriptor;
+import br.edu.ifpb.upcensus.infrastructure.exception.ElementNotFoundException;
 
 @DomainDescriptor(name = "Tipo de campo")
 public enum Type implements DomainEnum<Type>{
@@ -67,5 +71,13 @@ public enum Type implements DomainEnum<Type>{
 	@Override
 	public String getLabel() {
 		return label;
+	}
+	
+	@JsonCreator
+	public static Type from(String attribute) {
+		return Stream.of(values())
+			.filter(attr-> attr.name().equals(attribute))
+			.findFirst()
+			.orElseThrow(()-> new ElementNotFoundException(Type.class, attribute));
 	}
 }

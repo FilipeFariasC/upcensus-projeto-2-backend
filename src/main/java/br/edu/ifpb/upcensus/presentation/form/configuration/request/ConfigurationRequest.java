@@ -9,6 +9,7 @@ public class ConfigurationRequest implements Serializable {
 	
 	private String code;
 	private String name;
+	private String identifierField;
 	private Set<ConfigurationFieldRequest> fields;
 	
 	
@@ -33,9 +34,16 @@ public class ConfigurationRequest implements Serializable {
 		this.fields = fields;
 	}
 	
+	public String getIdentifierField() {
+		return identifierField;
+	}
+	public void setIdentifierField(String identifierField) {
+		this.identifierField = identifierField;
+	}
+	
 	@Override
 	public String toString() {
-		return String.format("{code: %s, name: %s, fields: %s}", code, name, fields);
+		return String.format("{code: %s, name: %s, identifier_field: %s, fields: %s}", code, name, identifierField, fields);
 	}
 	
 	

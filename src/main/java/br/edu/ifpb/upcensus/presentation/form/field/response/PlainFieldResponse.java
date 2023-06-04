@@ -1,24 +1,22 @@
-package br.edu.ifpb.upcensus.presentation.form.field.request;
+package br.edu.ifpb.upcensus.presentation.form.field.response;
 
 import java.io.Serializable;
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
-
 import br.edu.ifpb.upcensus.domain.form.field.model.Type;
+import br.edu.ifpb.upcensus.presentation.form.characteristic.response.CharacteristicResponse;
+import br.edu.ifpb.upcensus.presentation.shared.response.DomainModelResponse;
 
-@JsonInclude(Include.NON_NULL)
-public class FieldRequest implements Serializable {
+public class PlainFieldResponse extends DomainModelResponse implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-
+	
 	private String code;
 	private String name;
 	private String description;
 	private Type type;
 	private boolean required;
-	private List<Long> characteristics;
+	private List<CharacteristicResponse> characteristics;
 	
 	public String getCode() {
 		return code;
@@ -40,6 +38,7 @@ public class FieldRequest implements Serializable {
 	public void setDescription(String description) {
 		this.description = description;
 	}
+
 	
 	public Type getType() {
 		return type;
@@ -47,7 +46,6 @@ public class FieldRequest implements Serializable {
 	public void setType(Type type) {
 		this.type = type;
 	}
-	
 	public boolean isRequired() {
 		return required;
 	}
@@ -55,18 +53,21 @@ public class FieldRequest implements Serializable {
 		this.required = required;
 	}
 	
-	public List<Long> getCharacteristics() {
+	
+	public List<CharacteristicResponse> getCharacteristics() {
 		return characteristics;
 	}
-	public void setCharacteristics(List<Long> characteristics) {
+	public void setCharacteristics(List<CharacteristicResponse> characteristics) {
 		this.characteristics = characteristics;
 	}
 	
+	
 	@Override
 	public String toString() {
-		return String.format("{code: %s, name: %s, description: %s, type: %s, required: %s, characteristics: %s}", code,
-				name, description, type, required, characteristics);
+		return String.format(
+				"{id: %s, code: %s, name: %s, description: %s, type: %s, required: %s, characteristics: %s, creation_time: %s}", 
+				getId(), code, name, description, type, required, characteristics, getCreationTime());
 	}
-	
 
+	
 }

@@ -2,6 +2,7 @@ package br.edu.ifpb.upcensus.domain.module.module.model;
 
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -30,14 +31,19 @@ import br.edu.ifpb.upcensus.domain.form.characteristic.model.Characteristic.Attr
 import br.edu.ifpb.upcensus.domain.form.configuration.model.Configuration;
 import br.edu.ifpb.upcensus.domain.form.field.model.PlainField;
 import br.edu.ifpb.upcensus.domain.form.field.model.Type;
-import br.edu.ifpb.upcensus.domain.module.template.model.Template;
+import br.edu.ifpb.upcensus.domain.module.module.exception.ModuleConfigurationIdentifierNotConfiguredException;
+import br.edu.ifpb.upcensus.domain.module.module.exception.ModuleConfigurationIdentifierNotRequiredException;
+import br.edu.ifpb.upcensus.domain.module.module.exception.ModuleConfigurationNotConfiguredException;
+import br.edu.ifpb.upcensus.domain.module.module.exception.ModuleOutputTemplateNotConfiguredException;
+import br.edu.ifpb.upcensus.domain.module.template.model.InputTemplate;
+import br.edu.ifpb.upcensus.domain.module.template.model.OutputTemplate;
 import br.edu.ifpb.upcensus.domain.shared.exception.ResourceNotFoundException;
 import br.edu.ifpb.upcensus.domain.shared.model.DomainModel;
 import br.edu.ifpb.upcensus.infrastructure.annotation.DomainDescriptor;
 import br.edu.ifpb.upcensus.infrastructure.domain.FileType;
 import br.edu.ifpb.upcensus.infrastructure.util.CollectionUtils;
-import br.edu.ifpb.upcensus.infrastructure.util.JsonUtils;
 import br.edu.ifpb.upcensus.infrastructure.util.ObjectUtils;
+import br.edu.ifpb.upcensus.infrastructure.util.StringUtils;
 
 @Entity
 @Table(name = "t_module", schema = "module")
@@ -71,8 +77,7 @@ public class Module extends DomainModel<Long> {
     private Set<String> tags;
     
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_configuration", referencedColumnName = "id")
-    @NotNull
+    @JoinColumn(name = "id_configuration", referencedColumnName = "id", nullable = true)
     private Configuration configuration;
     
     @OneToMany(cascade = CascadeType.ALL)
@@ -82,7 +87,11 @@ public class Module extends DomainModel<Long> {
         	joinColumns = @JoinColumn(name = "id_module"),
         	inverseJoinColumns = @JoinColumn(name = "id_template")
     )
-    private Set<Template> templates;
+    private Set<InputTemplate> inputTemplates;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_output_template", referencedColumnName = "id")
+    private OutputTemplate outputTemplate;
 
     @OneToMany(mappedBy = "module", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Answer> answers;
@@ -95,9 +104,10 @@ public class Module extends DomainModel<Long> {
     	initializeAnswers();
     }
     
+    
     private void initializeTemplates() {
-    	if (CollectionUtils.isEmpty(getTemplates()))
-    		this.templates = new HashSet<>();
+    	if (CollectionUtils.isEmpty(getInputTemplates()))
+    		this.inputTemplates = new HashSet<>();
     }
     private void initializeTags() {
     	if (CollectionUtils.isEmpty(getTags()))
@@ -109,14 +119,20 @@ public class Module extends DomainModel<Long> {
     }
     
     public Optional<Characteristic> getCharacteristic(PlainField field, Attribute attribute) {
+    	if (ObjectUtils.isNull(getConfiguration()))
+    		return Optional.empty();
     	return getConfiguration().getAttribute(field, attribute);
     }
     
     public Optional<Type> getType(PlainField field) {
+    	if (ObjectUtils.isNull(getConfiguration()))
+    		return Optional.empty();
     	return getConfiguration().getType(field);
     }
     
     public Optional<Boolean> getRequired(PlainField field) {
+    	if (ObjectUtils.isNull(getConfiguration()))
+    		return Optional.empty();
     	return getConfiguration().getRequired(field);
     }
     
@@ -152,6 +168,8 @@ public class Module extends DomainModel<Long> {
 	public void setTags(Set<String> tags) {
 		this.tags = tags;
 	}
+	
+	
 
     public Configuration getConfiguration() {
 		return configuration;
@@ -159,31 +177,42 @@ public class Module extends DomainModel<Long> {
 	public void setConfiguration(Configuration configuration) {
 		this.configuration = configuration;
 	}
-	public Set<Template> getTemplates() {
-		return templates;
+	public Set<InputTemplate> getInputTemplates() {
+		return inputTemplates;
 	}
-	public void setTemplates(Set<Template> templates) {
-		if (CollectionUtils.isEmpty(getTemplates())) {
-			this.templates = templates;
+	public void setInputTemplates(Set<InputTemplate> templates) {
+		if (CollectionUtils.isEmpty(getInputTemplates())) {
+			this.inputTemplates = templates;
 			return;
 		}
-		getTemplates().clear();
+		getInputTemplates().clear();
 		if (CollectionUtils.notEmpty(templates)) {
-			getTemplates().retainAll(templates);
-			getTemplates().addAll(templates);
+			getInputTemplates().retainAll(templates);
+			getInputTemplates().addAll(templates);
 		}
 	}
 	
-	public Template getTemplateByFileType(final FileType fileType) {
-		if (CollectionUtils.isEmpty(getTemplates()))
-			throw new ResourceNotFoundException(Template.class, "file_type", fileType);
-		return getTemplates()
+	public OutputTemplate getOutputTemplate() {
+		return outputTemplate;
+	}
+
+	public void setOutputTemplate(OutputTemplate outputTemplate) {
+		this.outputTemplate = outputTemplate;
+	}
+
+	public InputTemplate getTemplateByFileType(final FileType fileType) {
+		if (CollectionUtils.isEmpty(getInputTemplates()))
+			throw new ResourceNotFoundException(InputTemplate.class, "file_type", fileType);
+		return getInputTemplates()
 			.stream()
-			.filter(template -> template.getFileType().equals(fileType))
+			.filter(template -> template.isFileType(fileType) && template.hasField(getIdentifierField()))
 			.findFirst()
-			.orElseThrow(() -> new ResourceNotFoundException(Template.class, "file_type", fileType));
+			.orElseThrow(() -> new ResourceNotFoundException(InputTemplate.class, "file_type", fileType));
 	}
 	
+	public boolean hasAnswers() {
+		return CollectionUtils.notEmpty(getAnswers());
+	}
 	
 	public Set<Answer> getAnswers() {
 		return answers;
@@ -202,7 +231,7 @@ public class Module extends DomainModel<Long> {
 		setAnswers(new HashSet<>());
 	}
 	
-	public void removeAnswers(Template template) {
+	public void removeAnswers(InputTemplate template) {
 		Set<Answer> remove = getAnswers()
 			.stream()
 			.filter(answer -> answer.getTemplate().equals(template))
@@ -241,21 +270,75 @@ public class Module extends DomainModel<Long> {
 	}
 	
 	
-	public Optional<Template> getTemplateById(Long id) {
-		if (CollectionUtils.isEmpty(getTemplates()))
+	public Optional<InputTemplate> getTemplateById(Long id) {
+		if (CollectionUtils.isEmpty(getInputTemplates()))
 			return Optional.empty();
-		return getTemplates()
+		return getInputTemplates()
 			.stream()
 			.filter(template -> template.getId().equals(id))
 			.findFirst();
 	}
+
+	public boolean hasAnswer(Answer answer) {
+		if (CollectionUtils.isEmpty(getAnswers()))
+			return false;
+		return getAnswers()
+			.stream()
+			.anyMatch(answerRegistered -> answerRegistered.isAnswer(answer));
+	}
 	
+	public Optional<Answer> getAnswer(String identifierValue, PlainField fieldIdentifier, String value) {
+		if (CollectionUtils.isEmpty(getAnswers()))
+			return Optional.empty();
+		
+		return getAnswers()
+			.stream()
+			.filter(answer -> answer.isAnswer(identifierValue, fieldIdentifier, value))
+			.findAny();
+	}
 	
+	public List<AnswerGroup> groupedAnswers() {
+		return getAnswers()
+			.stream()
+			.collect(Collectors.groupingBy(Answer::getIdentifierValue, Collectors.toList()))
+			.values()
+			.stream()
+			.map(AnswerGroup::of)
+			.collect(Collectors.toList());
+	}
+	
+	public PlainField getIdentifierField() {
+		return Optional.ofNullable(getConfiguration())
+			.map(Configuration::getIdentifierField)
+			.orElse(null);
+	}
+	
+	public void fill() {
+		if (ObjectUtils.isNull(getConfiguration()))
+			throw new ModuleConfigurationNotConfiguredException(getCode());
+		if (ObjectUtils.isNull(getConfiguration().getIdentifierField()))
+			throw new ModuleConfigurationIdentifierNotConfiguredException(getCode());
+		if (!getConfiguration().isIdentifierFieldRequired())
+			throw new ModuleConfigurationIdentifierNotRequiredException(getCode());
+	}
+	
+	public void migrate() {
+		if (ObjectUtils.isNull(getConfiguration()))
+			throw new ModuleConfigurationNotConfiguredException(getCode());
+		if (ObjectUtils.isNull(getConfiguration().getIdentifierField()))
+			throw new ModuleConfigurationIdentifierNotConfiguredException(getCode());
+		if (!getConfiguration().isIdentifierFieldRequired())
+			throw new ModuleConfigurationIdentifierNotRequiredException(getCode());
+		if (ObjectUtils.nonNull(getOutputTemplate()) || StringUtils.notBlank(getOutputTemplate().getLayout()))
+			throw new ModuleOutputTemplateNotConfiguredException(getCode());
+		
+	}
 	
 	@Override
 	public String toString() {
-		return String.format("{id: %s, code: \"%s\", name: \"%s\", tags: %s, configuration: %s, templates: %s, answer: \"%s\"}", id,
-				code, name, JsonUtils.stringListToJsonString(tags), configuration, templates, answers);
+		return String.format(
+				"{id: %s, code: %s, name: %s, tags: %s, configuration: %s, input_templates: %s, output_template: %s, answers: %s, creation_time: %s}",
+				id, code, name, tags, configuration, inputTemplates, outputTemplate, answers, getCreationTime());
 	}
 	
 	

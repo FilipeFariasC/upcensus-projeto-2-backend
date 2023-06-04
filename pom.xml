@@ -24,6 +24,7 @@
     	<maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
     	<spring-batch-excel.version>0.1.1</spring-batch-excel.version>
     	<apache-poi.version>5.2.3</apache-poi.version>
+    	<apache-commons.version>3.12.0</apache-commons.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -163,6 +164,13 @@
 		    <artifactId>poi</artifactId>
 		    <version>${apache-poi.version}</version>
 		</dependency>
+		
+		<dependency>
+		    <groupId>org.apache.commons</groupId>
+		    <artifactId>commons-lang3</artifactId>
+		    <version>${apache-commons.version}</version>
+		</dependency>
+
 	</dependencies>
 	<dependencyManagement>
 		<dependencies>

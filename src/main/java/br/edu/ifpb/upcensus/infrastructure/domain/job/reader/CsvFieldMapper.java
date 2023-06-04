@@ -7,12 +7,12 @@ import org.springframework.batch.item.file.mapping.FieldSetMapper;
 import org.springframework.batch.item.file.transform.FieldSet;
 import org.springframework.validation.BindException;
 
-import br.edu.ifpb.upcensus.domain.module.template.model.Template;
+import br.edu.ifpb.upcensus.domain.module.template.model.InputTemplate;
 import br.edu.ifpb.upcensus.infrastructure.util.NumberUtils;
 
 public class CsvFieldMapper extends FieldMappingReader<Integer> implements FieldSetMapper<Map<String,String>>{
 
-	public CsvFieldMapper(final Template template) {
+	public CsvFieldMapper(final InputTemplate template) {
 		super(template, NumberUtils::convertToInteger);
 	}
 

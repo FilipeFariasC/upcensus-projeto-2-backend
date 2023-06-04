@@ -3,6 +3,8 @@ package br.edu.ifpb.upcensus.presentation.module.module.request;
 import java.io.Serializable;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class ModuleRequest implements Serializable{
 
 	private static final long serialVersionUID = 1L;
@@ -14,11 +16,11 @@ public class ModuleRequest implements Serializable{
     private Set<String> tags;
     
     private String configuration;
-    
-    private Set<String> templates;
 
-    
-    
+    @JsonProperty("input_templates")
+    private Set<String> inputTemplates;
+    @JsonProperty("output_template")
+    private String outputTemplate;
     
 	public String getCode() {
 		return code;
@@ -53,20 +55,27 @@ public class ModuleRequest implements Serializable{
 		this.configuration = configuration;
 	}
 
-	public Set<String> getTemplates() {
-		return templates;
+	public Set<String> getInputTemplates() {
+		return inputTemplates;
 	}
 
-	public void setTemplates(Set<String> templates) {
-		this.templates = templates;
+	public void setInputTemplates(Set<String> inputTemplates) {
+		this.inputTemplates = inputTemplates;
+	}
+	
+	public String getOutputTemplate() {
+		return outputTemplate;
+	}
+
+	public void setOutputTemplate(String outputTemplate) {
+		this.outputTemplate = outputTemplate;
 	}
 
 	@Override
 	public String toString() {
-		return String.format("{code: %s, name: %s, tags: %s, configuration: %s, templates: %s}", code, name,
-				tags, configuration, templates);
+		return String.format(
+				"{code: %s, name: %s, tags: %s, configuration: %s, inputTemplates: %s, outputTemplate: %s}", code, name,
+				tags, configuration, inputTemplates, outputTemplate);
 	}
-    
-    
 
 }

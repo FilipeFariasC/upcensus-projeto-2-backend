@@ -11,6 +11,7 @@ import java.util.function.Function;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -20,8 +21,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -31,10 +30,11 @@ import br.edu.ifpb.upcensus.domain.form.field.model.PlainField;
 import br.edu.ifpb.upcensus.domain.form.field.model.Type;
 import br.edu.ifpb.upcensus.domain.module.error.model.AnswerError;
 import br.edu.ifpb.upcensus.domain.module.error.model.AnswerError.Motive;
-import br.edu.ifpb.upcensus.domain.module.template.model.Template;
+import br.edu.ifpb.upcensus.domain.module.template.model.InputTemplate;
 import br.edu.ifpb.upcensus.domain.shared.model.DomainModel;
 import br.edu.ifpb.upcensus.infrastructure.annotation.DomainDescriptor;
 import br.edu.ifpb.upcensus.infrastructure.util.CollectionUtils;
+import br.edu.ifpb.upcensus.infrastructure.util.ObjectUtils;
 
 @Entity
 @Table(name = "t_answer", schema = "module", uniqueConstraints = @UniqueConstraint(columnNames = { "id_module",
@@ -57,17 +57,16 @@ public class Answer extends DomainModel<Long> {
 	@ManyToOne
 	@JoinColumn(name = "id_template")
 	@NotNull
-	private Template template;
+	private InputTemplate template;
 
 	@ManyToOne
 	@JoinColumn(name = "id_field")
 	@NotNull
 	private PlainField field;
 
-	@NotNull
-	@NotEmpty
-	@NotBlank
-	private String identifier;
+	@ManyToOne(fetch = FetchType.LAZY, optional = true, cascade = CascadeType.ALL)
+	@JoinColumn(name = "id_answer_identifier", nullable = true)
+	private Answer identifier;
 
 	@NotNull
 	@Size(max = 2048)
@@ -76,8 +75,8 @@ public class Answer extends DomainModel<Long> {
 	@OneToMany(mappedBy = "answer", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<AnswerError> errors;
 
-	public static Answer of(final Module module, final Template template, final PlainField field,
-			final String identifier, final String value) {
+	public static Answer of(final Module module, final InputTemplate template, final PlainField field,
+			final Answer identifier, final String value) {
 		final Answer answer = new Answer();
 
 		answer.setModule(module);
@@ -117,11 +116,11 @@ public class Answer extends DomainModel<Long> {
 		this.module = module;
 	}
 
-	public Template getTemplate() {
+	public InputTemplate getTemplate() {
 		return template;
 	}
 
-	public void setTemplate(Template template) {
+	public void setTemplate(InputTemplate template) {
 		this.template = template;
 	}
 
@@ -133,11 +132,17 @@ public class Answer extends DomainModel<Long> {
 		this.field = field;
 	}
 
-	public String getIdentifier() {
+	public Answer getIdentifier() {
 		return identifier;
 	}
+	
+	public String getIdentifierValue() {
+		return Optional.ofNullable(getIdentifier())
+			.map(Answer::getValue)
+			.orElse(getValue());
+	}
 
-	public void setIdentifier(String identifier) {
+	public void setIdentifier(Answer identifier) {
 		this.identifier = identifier;
 	}
 
@@ -178,7 +183,7 @@ public class Answer extends DomainModel<Long> {
 	}
 
 	public boolean isRequired() {
-		Optional<Boolean> opt = getModule().getConfiguration().getRequired(getField());
+		Optional<Boolean> opt = getModule().getRequired(getField());
 		
 		return opt.orElseGet(() -> getField().isRequired());
 	}
@@ -228,6 +233,25 @@ public class Answer extends DomainModel<Long> {
 
 	public BigDecimal getValueAsBigDecimal() {
 		return getMappedValue(BigDecimal::new);
+	}
+	
+	public boolean isAnswer(Answer answer) {
+		return getIdentifierValue().equals(answer.getIdentifierValue()) 
+			&& getField().equals(answer.getField())
+			&& getValue().equals(answer.getValue());
+	}
+	
+	public boolean isAnswer(String identifierValue, PlainField field, String value) {
+		return getIdentifierValue().equals(identifierValue)
+			&& getField().equals(field)
+			&& getValue().equals(value);
+	}
+	public boolean isIdentifier() {
+		return ObjectUtils.isNull(getIdentifier());
+	}
+	
+	public boolean isFieldCode(String fieldCode) {
+		return getField().isFieldCode(fieldCode);
 	}
 
 	@Override
