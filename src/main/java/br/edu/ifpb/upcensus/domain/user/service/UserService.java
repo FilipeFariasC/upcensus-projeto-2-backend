@@ -10,11 +10,11 @@ import br.edu.ifpb.upcensus.domain.shared.service.DomainService;
 import br.edu.ifpb.upcensus.domain.user.exception.UserAlreadyExistAuthenticationException;
 import br.edu.ifpb.upcensus.domain.user.model.LocalUser;
 import br.edu.ifpb.upcensus.domain.user.model.User;
-import br.edu.ifpb.upcensus.presentation.user.request.SignUpRequest;
+import br.edu.ifpb.upcensus.presentation.user.request.UserRequest;
 
 public interface UserService extends DomainService<User, Long>{
 	
-	 public User registerNewUser(SignUpRequest signUpRequest) throws UserAlreadyExistAuthenticationException;
+	 public User registerNewUser(User user) throws UserAlreadyExistAuthenticationException;
 	 
 	    User findUserByEmail(String email);
 	 

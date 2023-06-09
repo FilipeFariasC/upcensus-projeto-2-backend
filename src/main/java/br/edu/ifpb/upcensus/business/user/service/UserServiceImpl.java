@@ -24,7 +24,7 @@ import br.edu.ifpb.upcensus.infrastructure.util.security.GeneralUtils;
 import br.edu.ifpb.upcensus.presentation.user.SocialProvider;
 import br.edu.ifpb.upcensus.presentation.user.info.OAuth2UserInfo;
 import br.edu.ifpb.upcensus.presentation.user.info.OAuth2UserInfoFactory;
-import br.edu.ifpb.upcensus.presentation.user.request.SignUpRequest;
+import br.edu.ifpb.upcensus.presentation.user.request.UserRequest;
 
 @Service
 public class UserServiceImpl implements UserService{
@@ -57,21 +57,20 @@ public class UserServiceImpl implements UserService{
 
 	@Override
 	//@Transactional(value = "transactionManager")
-	public User registerNewUser(final SignUpRequest signUpRequest) throws UserAlreadyExistAuthenticationException {
-		if (signUpRequest.getUserID() != null && userRepository.existsById(signUpRequest.getUserID())) {
-			throw new UserAlreadyExistAuthenticationException("User with User id " + signUpRequest.getUserID() + " already exist");
+	public User registerNewUser(final User signUpRequest) throws UserAlreadyExistAuthenticationException {
+		if (signUpRequest.getId() != null && userRepository.existsById(signUpRequest.getId())) {
+			throw new UserAlreadyExistAuthenticationException("User with User id " + signUpRequest.getId() + " already exist");
 		} else if (userRepository.existsByEmail(signUpRequest.getEmail())) {
 			throw new UserAlreadyExistAuthenticationException("User with email id " + signUpRequest.getEmail() + " already exist");
 		}
-		User user = buildUser(signUpRequest);
-		register(user);
+		register(signUpRequest);
 		/*user = userRepository.save(user);
 		userRepository.flush();*/
 		//TODO ERRO SAVE USER
-		return user;
+		return signUpRequest;
 	}
 	
-	private User buildUser(final SignUpRequest formDTO) {
+	public User buildUser(final UserRequest formDTO) {
         User user = new User();
         user.setName(formDTO.getName());
         user.setEmail(formDTO.getEmail());
@@ -98,7 +97,7 @@ public class UserServiceImpl implements UserService{
         } else if (StringUtils.isEmpty(oAuth2UserInfo.getEmail())) {
             throw new OAuth2AuthenticationProcessingException("Email not found");
         }
-        SignUpRequest userDetails = toUserRegistrationObject(registrationId, oAuth2UserInfo);
+        UserRequest userDetails = toUserRegistrationObject(registrationId, oAuth2UserInfo);
         User user = findUserByEmail(oAuth2UserInfo.getEmail());
         if (user != null) {
             if (!user.getProvider().equals(registrationId) && !user.getProvider().equals(SocialProvider.LOCAL.getProviderType())) {
@@ -107,7 +106,8 @@ public class UserServiceImpl implements UserService{
             }
             user = updateExistingUser(user, oAuth2UserInfo);
         } else {
-            user = registerNewUser(userDetails);
+        	User details = buildUser(userDetails);
+            user = registerNewUser(details);
         }
  
         return LocalUser.create(user, attributes, idToken, userInfo);
@@ -119,8 +119,8 @@ public class UserServiceImpl implements UserService{
         return userRepository.save(existingUser);
     }
  
-    private SignUpRequest toUserRegistrationObject(String registrationId, OAuth2UserInfo oAuth2UserInfo) {
-        return SignUpRequest.getBuilder().addProviderUserID(oAuth2UserInfo.getId()).addDisplayName(oAuth2UserInfo.getName()).addEmail(oAuth2UserInfo.getEmail())
+    private UserRequest toUserRegistrationObject(String registrationId, OAuth2UserInfo oAuth2UserInfo) {
+        return UserRequest.getBuilder().addProviderUserID(oAuth2UserInfo.getId()).addDisplayName(oAuth2UserInfo.getName()).addEmail(oAuth2UserInfo.getEmail())
                 .addSocialProvider(GeneralUtils.toSocialProvider(registrationId)).addPassword("changeit").build();
     }
  

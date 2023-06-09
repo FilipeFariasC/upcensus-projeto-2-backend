@@ -1,15 +1,16 @@
 package br.edu.ifpb.upcensus.infrastructure.security.springsec.response;
 
-import br.edu.ifpb.upcensus.presentation.user.info.UserInfo;
 import java.util.Objects;
 
+import br.edu.ifpb.upcensus.presentation.user.response.UserResponse;
 
 
-public class JwtAuthenticationResponse {
+
+public class AuthenticationResponse {
     private String accessToken;
-    private UserInfo user;
+    private UserResponse user;
 
-    public JwtAuthenticationResponse(String accessToken, UserInfo user) {
+    public AuthenticationResponse(String accessToken, UserResponse user) {
         this.accessToken = accessToken;
         this.user = user;
     }
@@ -18,7 +19,7 @@ public class JwtAuthenticationResponse {
         return accessToken;
     }
 
-    public UserInfo getUser() {
+    public UserResponse getUser() {
         return user;
     }
 
@@ -26,7 +27,7 @@ public class JwtAuthenticationResponse {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        JwtAuthenticationResponse that = (JwtAuthenticationResponse) o;
+        AuthenticationResponse that = (AuthenticationResponse) o;
         return Objects.equals(accessToken, that.accessToken) &&
                 Objects.equals(user, that.user);
     }

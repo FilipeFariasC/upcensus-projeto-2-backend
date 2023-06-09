@@ -7,12 +7,12 @@ import javax.validation.ConstraintValidatorContext;
  
 
 import br.edu.ifpb.upcensus.infrastructure.annotation.user.PasswordMatches;
-import br.edu.ifpb.upcensus.presentation.user.request.SignUpRequest;
+import br.edu.ifpb.upcensus.presentation.user.request.UserRequest;
  
-public class PasswordMatchesValidator implements ConstraintValidator<PasswordMatches, SignUpRequest> {
+public class PasswordMatchesValidator implements ConstraintValidator<PasswordMatches, UserRequest> {
  
     @Override
-    public boolean isValid(final SignUpRequest user, final ConstraintValidatorContext context) {
+    public boolean isValid(final UserRequest user, final ConstraintValidatorContext context) {
         return user.getPassword().equals(user.getMatchingPassword());
     }
 }

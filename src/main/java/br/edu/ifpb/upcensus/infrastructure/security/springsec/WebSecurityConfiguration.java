@@ -73,23 +73,24 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter{
     protected void configure(HttpSecurity http) throws Exception {
  
         http
-            //.cors()
-                //.and()
-            //.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                //.and()
-            //.csrf().disable()
-            //.formLogin().disable()
-            //.httpBasic().disable()
-            //.exceptionHandling()
-                //.authenticationEntryPoint(new RestAuthenticationEntryPoint())
-                //.and()
+            .cors()
+                .and()
+            .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
+            .csrf().disable()
+            .formLogin().disable()
+            .httpBasic().disable()
+            .exceptionHandling()
+                .authenticationEntryPoint(new RestAuthenticationEntryPoint())
+                .and()
+                .authorizeRequests().antMatchers("/auth/signup").anonymous().and()
             .authorizeRequests()
-                //.antMatchers("/", "/error", "", "/api/auth/**", "/oauth2/**").permitAll()
+                .antMatchers("/", "/error", "/auth/**", "/oauth2/**").permitAll()
             .anyRequest()
                 .authenticated()
                 .and()
             .oauth2Login()
-                /*.authorizationEndpoint()
+                .authorizationEndpoint()
                     .authorizationRequestRepository(cookieAuthorizationRequestRepository())
                     .and()
                 .redirectionEndpoint()
@@ -102,10 +103,11 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter{
                     .accessTokenResponseClient(authorizationCodeTokenResponseClient())
                     .and()
                 .successHandler(oAuth2AuthenticationSuccessHandler)
-                .failureHandler(oAuth2AuthenticationFailureHandler)*/;
+                .failureHandler(oAuth2AuthenticationFailureHandler)
+                ;
  
-        // Add our custom Token based authentication filter
-        //http.addFilterBefore(tokenAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+         //Add our custom Token based authentication filter
+        http.addFilterBefore(tokenAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
     }
 
     /*protected void configure(HttpSecurity http) throws Exception {

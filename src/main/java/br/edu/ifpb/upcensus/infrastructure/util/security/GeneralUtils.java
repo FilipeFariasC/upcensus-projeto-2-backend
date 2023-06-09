@@ -11,7 +11,7 @@ import br.edu.ifpb.upcensus.domain.user.model.LocalUser;
 import br.edu.ifpb.upcensus.domain.user.model.User;
 import br.edu.ifpb.upcensus.domain.user.role.model.Role;
 import br.edu.ifpb.upcensus.presentation.user.SocialProvider;
-import br.edu.ifpb.upcensus.presentation.user.info.UserInfo;
+import br.edu.ifpb.upcensus.presentation.user.response.UserResponse;
 
 public class GeneralUtils {
 	
@@ -32,10 +32,10 @@ public class GeneralUtils {
         return SocialProvider.LOCAL;
     }
  
-    public static UserInfo buildUserInfo(LocalUser localUser) {
+    /*public static UserResponse buildUserInfo(LocalUser localUser) {
         List<String> roles = localUser.getAuthorities().stream().map(item -> item.getAuthority()).collect(Collectors.toList());
         User user = localUser.getUser();
-        return new UserInfo(user.getId().toString(), user.getName(), user.getEmail(), roles);
-    }
+        return new UserResponse(user.getId().toString(), user.getName(), user.getEmail(), roles);
+    }*/
 
 }

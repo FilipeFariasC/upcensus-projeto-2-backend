@@ -4,11 +4,11 @@ import java.util.Objects;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
-import br.edu.ifpb.upcensus.infrastructure.annotation.user.PasswordMatches;
+import br.edu.ifpb.upcensus.presentation.user.PasswordMatchable;
 import br.edu.ifpb.upcensus.presentation.user.SocialProvider;
 
-@PasswordMatches
-public class SignUpRequest {
+
+public class UserRequest implements PasswordMatchable{
 
 	private Long userID;
 
@@ -94,12 +94,15 @@ public class SignUpRequest {
 		this.name = name;
 	}
 
-	public SignUpRequest(String providerUserId, String displayName, String email, String password, SocialProvider socialProvider) {
+	public UserRequest(String providerUserId, String displayName, String email, String password, SocialProvider socialProvider) {
 		this.providerUserId = providerUserId;
 		this.name = displayName;
 		this.email = email;
 		this.password = password;
 		this.socialProvider = socialProvider;
+	}
+	public UserRequest() {
+		
 	}
 
 	public static Builder getBuilder() {
@@ -121,7 +124,7 @@ public class SignUpRequest {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		SignUpRequest other = (SignUpRequest) obj;
+		UserRequest other = (UserRequest) obj;
 		return Objects.equals(email, other.email) && Objects.equals(matchingPassword, other.matchingPassword)
 				&& Objects.equals(name, other.name) && Objects.equals(password, other.password)
 				&& Objects.equals(providerUserId, other.providerUserId) && socialProvider == other.socialProvider
@@ -162,8 +165,8 @@ public class SignUpRequest {
 			return this;
 		}
 
-		public SignUpRequest build() {
-			return new SignUpRequest(providerUserID, displayName, email, password, socialProvider);
+		public UserRequest build() {
+			return new UserRequest(providerUserID, displayName, email, password, socialProvider);
 		}
 	}
 }

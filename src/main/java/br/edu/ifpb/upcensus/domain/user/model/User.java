@@ -15,6 +15,7 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -28,7 +29,7 @@ import br.edu.ifpb.upcensus.infrastructure.annotation.DomainDescriptor;
 @SequenceGenerator(name = "t_usersys_id_seq", schema = "usersystem", sequenceName = "t_usersys_id_seq", allocationSize = 1)
 @DomainDescriptor(name = "Usuário")
 
-public class User extends DomainModel<Long>{
+public class User extends DomainModel<Long> implements UserDetails{
 
 	private static final long serialVersionUID = 1L;
 
@@ -183,6 +184,34 @@ public class User extends DomainModel<Long>{
 
 	public void setEnabled(boolean enabled) {
 		this.enabled = enabled;
+	}
+
+	@Override
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		return roles;
+	}
+
+	@Override
+	public String getUsername() {
+		return name;
+	}
+
+	@Override
+	public boolean isAccountNonExpired() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean isAccountNonLocked() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean isCredentialsNonExpired() {
+		// TODO Auto-generated method stub
+		return false;
 	}
 	
 	

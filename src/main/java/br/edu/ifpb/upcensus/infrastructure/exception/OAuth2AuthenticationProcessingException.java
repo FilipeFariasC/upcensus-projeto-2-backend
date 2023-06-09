@@ -2,6 +2,11 @@ package br.edu.ifpb.upcensus.infrastructure.exception;
 
 import org.springframework.security.core.AuthenticationException;
 
+
+@br.edu.ifpb.upcensus.infrastructure.annotation.DomainException(
+		key = "oauth.authentication-processing",
+		append = true
+	)
 public class OAuth2AuthenticationProcessingException extends AuthenticationException{
 
 	/**

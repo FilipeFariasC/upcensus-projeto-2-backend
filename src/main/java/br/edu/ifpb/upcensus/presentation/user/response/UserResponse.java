@@ -1,19 +1,22 @@
-package br.edu.ifpb.upcensus.presentation.user.info;
+package br.edu.ifpb.upcensus.presentation.user.response;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
-public class UserInfo {
+import br.edu.ifpb.upcensus.domain.user.role.model.Role;
+
+public class UserResponse {
     private String id;
     private String displayName;
     private String email;
-    private List<String> roles;
+    private Set<Role> roles;
     
     
     
     
     
-	public UserInfo(String id, String displayName, String email, List<String> roles) {
+	public UserResponse(String id, String displayName, String email, Set<Role> roles) {
 		this.id = id;
 		this.displayName = displayName;
 		this.email = email;
@@ -37,10 +40,10 @@ public class UserInfo {
 	public void setEmail(String email) {
 		this.email = email;
 	}
-	public List<String> getRoles() {
+	public Set<Role> getRoles() {
 		return roles;
 	}
-	public void setRoles(List<String> roles) {
+	public void setRoles(Set<Role> roles) {
 		this.roles = roles;
 	}
 	@Override
@@ -59,7 +62,7 @@ public class UserInfo {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		UserInfo other = (UserInfo) obj;
+		UserResponse other = (UserResponse) obj;
 		return Objects.equals(displayName, other.displayName) && Objects.equals(email, other.email)
 				&& Objects.equals(id, other.id) && Objects.equals(roles, other.roles);
 	}
