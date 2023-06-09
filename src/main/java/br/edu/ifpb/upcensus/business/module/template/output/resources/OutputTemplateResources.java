@@ -7,9 +7,9 @@ import br.edu.ifpb.upcensus.business.shared.BaseCrudResource;
 import br.edu.ifpb.upcensus.domain.module.template.model.OutputTemplate;
 import br.edu.ifpb.upcensus.domain.module.template.service.OutputTemplateService;
 import br.edu.ifpb.upcensus.infrastructure.http.response.service.ResponseService;
-import br.edu.ifpb.upcensus.presentation.module.template.mapper.OutputTemplateMapper;
-import br.edu.ifpb.upcensus.presentation.module.template.request.OutputTemplateRequest;
-import br.edu.ifpb.upcensus.presentation.module.template.response.OutputTemplateResponse;
+import br.edu.ifpb.upcensus.presentation.module.template.output.mapper.OutputTemplateMapper;
+import br.edu.ifpb.upcensus.presentation.module.template.output.request.OutputTemplateRequest;
+import br.edu.ifpb.upcensus.presentation.module.template.output.response.OutputTemplateResponse;
 
 @RestController
 @RequestMapping(OutputTemplateEndpoints.TEMPLATES)

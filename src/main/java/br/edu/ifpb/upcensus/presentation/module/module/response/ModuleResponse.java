@@ -5,11 +5,11 @@ import java.util.Set;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import br.edu.ifpb.upcensus.presentation.form.configuration.response.ConfigurationResponse;
-import br.edu.ifpb.upcensus.presentation.module.template.response.InputTemplateResponse;
-import br.edu.ifpb.upcensus.presentation.module.template.response.OutputTemplateResponse;
+import br.edu.ifpb.upcensus.presentation.module.template.input.response.InputTemplateResponse;
+import br.edu.ifpb.upcensus.presentation.module.template.output.response.OutputTemplateResponse;
 import br.edu.ifpb.upcensus.presentation.shared.response.DomainModelResponse;
 
-public class ModuleResponse extends DomainModelResponse{
+public class ModuleResponse extends DomainModelResponse {
 
 	
 	private static final long serialVersionUID = 1L;
@@ -25,7 +25,10 @@ public class ModuleResponse extends DomainModelResponse{
     private Set<InputTemplateResponse> inputTemplates;
     @JsonProperty("output_template")
     private OutputTemplateResponse outputTemplate;
+    @JsonProperty("has_answers")
     private boolean hasAnswers;
+    @JsonProperty("file_input_template_types")
+    private Set<FileTypeResponse> fileInputTemplateTypes;
 
     
 	public String getCode() {
@@ -84,12 +87,23 @@ public class ModuleResponse extends DomainModelResponse{
 	public void setHasAnswers(boolean hasAnswers) {
 		this.hasAnswers = hasAnswers;
 	}
+	
+
+	public Set<FileTypeResponse> getFileInputTemplateTypes() {
+		return fileInputTemplateTypes;
+	}
+
+	public void setFileInputTemplateTypes(Set<FileTypeResponse> fileInputTemplateTypes) {
+		this.fileInputTemplateTypes = fileInputTemplateTypes;
+	}
 
 	@Override
 	public String toString() {
 		return String.format(
-				"{id: %s, creation_time: %s, code: %s, name: %s, tags: %s, configuration: %s, inputTemplates: %s, outputTemplate: %s, hasAnswers: %s}",
-				getId(), getCreationTime(), code, name, tags, configuration, inputTemplates, outputTemplate, hasAnswers);
+				"{code: %s, name: %s, tags: %s, configuration: %s, input_templates: %s, output_template: %s, has_answers: %s, file_input_template_types: %s}",
+				code, name, tags, configuration, inputTemplates, outputTemplate, hasAnswers, fileInputTemplateTypes);
 	}
+
+	
     
 }

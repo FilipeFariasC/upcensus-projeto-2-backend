@@ -1,8 +1,6 @@
 package br.edu.ifpb.upcensus.infrastructure.domain;
 
 import java.util.Arrays;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -12,45 +10,51 @@ import br.edu.ifpb.upcensus.infrastructure.annotation.DomainDescriptor;
 import br.edu.ifpb.upcensus.infrastructure.exception.ElementNotFoundException;
 import br.edu.ifpb.upcensus.infrastructure.exception.UnsupportedFileFormatException;
 import br.edu.ifpb.upcensus.infrastructure.util.StringUtils;
+import br.edu.ifpb.upcensus.presentation.module.module.response.FileTypeResponse;
 
 
 @DomainDescriptor(name = "Tipo de Arquivo")
 public enum FileType implements DomainEnum<FileType> {
-	CSV("\\.csv", "text/csv"),
-	JSON("\\.json", "application/json"), 
-	ODS("\\.ods", "application/vnd.oasis.opendocument.spreadsheet"),
-	TEXT("(\\.[a-zA-Z]{3})?", "text/plain", "Texto"),
-	XLS("\\.xls", "application/vnd.ms-excel"),
-	XLSX("\\.xlsx", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"),
-	YAML("\\.ya?ml", "text/yaml");
+	CSV(".csv", "text/csv", true),
+	JSON(".json", "application/json"), 
+	ODS(".ods", "application/vnd.oasis.opendocument.spreadsheet", true),
+	TEXT(".txt", "text/plain", "Texto", true),
+	XLS(".xls", "application/vnd.ms-excel", true),
+	XLSX(".xlsx", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", true),
+	YAML(".yaml", "text/yaml");
 
-	private final Pattern extensionPattern;
+	private final String extension;
 	private final String mimeType;
 	private final String label;
+	private final boolean tabularData;
 
-	public static final String FILE_PREFIX = "^[\\w\\s,-]+%s$";
-
-	private FileType(String extensionPattern, String mimeType) {
-		this(extensionPattern, mimeType, "");
+	private FileType(String extension, String mimeType) {
+		this(extension, mimeType, "", false);
+	}
+	private FileType(String extension, String mimeType, boolean tabularData) {
+		this(extension, mimeType, "", tabularData);
 	}
 	
-	private FileType(String extensionPattern, String mimeType, String label) {
-		this.extensionPattern = Pattern.compile(String.format(FILE_PREFIX, extensionPattern));
+	private FileType(String extension, String mimeType, String label, boolean tabularData) {
+		this.extension = extension;
 		this.mimeType = mimeType;
 		this.label = StringUtils.isEmpty(label) ? this.name() : label;
+		this.tabularData = tabularData;
 	}
 
-	public Pattern getExtensionPattern() {
-		return extensionPattern;
+	public String getExtension() {
+		return extension;
 	}
 
 	public String getMimeType() {
 		return mimeType;
 	}
 
-	public static Boolean isSupportedFileExtension(String extension) {
+	public static boolean isSupportedFileExtension(String extension) {
+		if (StringUtils.isEmpty(extension))
+			return false;
 		return Stream.of(FileType.values())
-				.anyMatch(filetype -> filetype.getExtensionPattern().matcher(extension).matches());
+				.anyMatch(fileType -> extension.endsWith(fileType.extension));
 	}
 
 	public static Boolean isSupportedMimeType(String mimeType) {
@@ -62,10 +66,8 @@ public enum FileType implements DomainEnum<FileType> {
 				.orElseThrow(() -> new UnsupportedFileFormatException(filename, mimeType));
 	}
 
-	public Boolean equals(String extension, String mimeType) {
-		Matcher matcher = extensionPattern.matcher(extension);
-
-		return matcher.matches() || this.mimeType.equals(mimeType);
+	public boolean equals(String extension, String mimeType) {
+		return this.extension.equals(extension) || this.mimeType.equals(mimeType);
 	}
 
 	@Override
@@ -76,6 +78,14 @@ public enum FileType implements DomainEnum<FileType> {
 	@Override
 	public FileType getValue() {
 		return this;
+	}
+	
+	public FileTypeResponse getResponseModel() {
+		return new FileTypeResponse(this);
+	}
+	
+	public boolean isTabularData() {
+		return tabularData;
 	}
 	
 	@JsonCreator

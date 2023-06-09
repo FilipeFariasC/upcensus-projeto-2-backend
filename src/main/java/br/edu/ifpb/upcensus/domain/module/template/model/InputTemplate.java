@@ -60,7 +60,7 @@ public class InputTemplate extends DomainModel<Long> {
 	@CollectionTable(
 		name = "t_input_template_mapping",
 		schema = "module",
-		joinColumns = @JoinColumn(name = "id_template", referencedColumnName = "id")
+		joinColumns = @JoinColumn(name = "id_input_template", referencedColumnName = "id")
 	)
 	@MapKeyJoinColumn(name = "id_field")
 	@Column(name = "config")

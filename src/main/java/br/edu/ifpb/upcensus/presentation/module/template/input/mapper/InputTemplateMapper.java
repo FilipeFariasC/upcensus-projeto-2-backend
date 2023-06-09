@@ -1,4 +1,4 @@
-package br.edu.ifpb.upcensus.presentation.module.template.mapper;
+package br.edu.ifpb.upcensus.presentation.module.template.input.mapper;
 
 import java.util.Map;
 
@@ -10,8 +10,8 @@ import br.edu.ifpb.upcensus.domain.module.template.model.InputTemplate;
 import br.edu.ifpb.upcensus.infrastructure.mapper.BaseMapper;
 import br.edu.ifpb.upcensus.infrastructure.mapper.MapStructConfig;
 import br.edu.ifpb.upcensus.presentation.form.field.mapper.PlainFieldMapper;
-import br.edu.ifpb.upcensus.presentation.module.template.request.InputTemplateRequest;
-import br.edu.ifpb.upcensus.presentation.module.template.response.InputTemplateResponse;
+import br.edu.ifpb.upcensus.presentation.module.template.input.request.InputTemplateRequest;
+import br.edu.ifpb.upcensus.presentation.module.template.input.response.InputTemplateResponse;
 @Mapper(
 	config = MapStructConfig.class,
 	uses = {

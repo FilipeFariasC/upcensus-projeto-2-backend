@@ -1,8 +1,10 @@
-package br.edu.ifpb.upcensus.presentation.module.template.response;
+package br.edu.ifpb.upcensus.presentation.module.template.output.request;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import br.edu.ifpb.upcensus.presentation.shared.response.DomainModelResponse;
 
-public class OutputTemplateResponse extends DomainModelResponse{
+public class OutputTemplateRequest extends DomainModelResponse{
 
 	private static final long serialVersionUID = 1L;
 	

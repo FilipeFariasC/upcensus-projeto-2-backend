@@ -23,11 +23,11 @@ CREATE TABLE module.t_output_template (
 );
 
 CREATE TABLE module.t_input_template_mapping (
-	id_template BIGINT,
+	id_input_template BIGINT,
 	id_field BIGINT,
 	config VARCHAR(128),
 	
-  	CONSTRAINT fk_t_input_template_mapping_id_template FOREIGN KEY (id_template) REFERENCES module.t_input_template (id),
+  	CONSTRAINT fk_t_input_template_mapping_id_input_template FOREIGN KEY (id_input_template) REFERENCES module.t_input_template (id),
   	CONSTRAINT fk_t_input_template_mapping_id_field FOREIGN KEY (id_field) REFERENCES form.t_field (id)
 );
 
@@ -52,18 +52,18 @@ CREATE TABLE module.t_module_tags (
 	CONSTRAINT fk_t_module_tags_id_module FOREIGN KEY (id_module) REFERENCES module.t_module (id)
 );
 
-CREATE TABLE module.t_module_template(
+CREATE TABLE module.t_module_input_template(
 	id_module BIGINT,
-	id_template BIGINT,
+	id_input_template BIGINT,
 	
 	CONSTRAINT fk_t_module_template_id_module FOREIGN KEY (id_module) REFERENCES module.t_module (id),
-	CONSTRAINT fk_t_module_template_id_template FOREIGN KEY (id_template) REFERENCES module.t_input_template (id)
+	CONSTRAINT fk_t_module_template_id_input_template FOREIGN KEY (id_input_template) REFERENCES module.t_input_template (id)
 );
 
 CREATE TABLE module.t_answer (
     id SERIAL,
     id_module BIGINT NOT NULL,
-    id_template BIGINT NOT NULL,
+    id_input_template BIGINT NOT NULL,
     id_field BIGINT NOT NULL,
     creation_time TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT NOW(),
     id_answer_identifier BIGINT DEFAULT NULL,
@@ -71,9 +71,9 @@ CREATE TABLE module.t_answer (
     
     CONSTRAINT pk_t_answer PRIMARY KEY (id),
     CONSTRAINT fk_t_answer_id_module FOREIGN KEY (id_module) REFERENCES module.t_module (id),
-    CONSTRAINT fk_t_answer_id_template FOREIGN KEY (id_template) REFERENCES module.t_input_template (id),
+    CONSTRAINT fk_t_answer_id_input_template FOREIGN KEY (id_input_template) REFERENCES module.t_input_template (id),
     CONSTRAINT fk_t_answer_id_field FOREIGN KEY (id_field) REFERENCES form.t_field (id),
-    CONSTRAINT uk_t_answer_id_module_id_template_id_field_identifier_value UNIQUE (id_module, id_template, id_field, id_answer_identifier, value),
+    CONSTRAINT uk_t_answer_id_module_id_input_template_id_field_identifier_value UNIQUE (id_module, id_input_template, id_field, id_answer_identifier, value),
     CONSTRAINT fk_t_answer_id_answer_identifier FOREIGN KEY (id_answer_identifier) REFERENCES module.t_answer(id)
 );
 

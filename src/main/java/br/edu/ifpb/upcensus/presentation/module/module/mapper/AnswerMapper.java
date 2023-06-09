@@ -12,7 +12,7 @@ import br.edu.ifpb.upcensus.domain.module.template.service.InputTemplateService;
 import br.edu.ifpb.upcensus.infrastructure.mapper.MapStructConfig;
 import br.edu.ifpb.upcensus.infrastructure.util.CollectionUtils;
 import br.edu.ifpb.upcensus.presentation.module.module.response.AnswerResponse;
-import br.edu.ifpb.upcensus.presentation.module.template.mapper.InputTemplateMapper;
+import br.edu.ifpb.upcensus.presentation.module.template.input.mapper.InputTemplateMapper;
 
 @Mapper(
 		config = MapStructConfig.class,

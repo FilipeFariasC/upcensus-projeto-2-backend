@@ -38,7 +38,7 @@ import br.edu.ifpb.upcensus.infrastructure.util.ObjectUtils;
 
 @Entity
 @Table(name = "t_answer", schema = "module", uniqueConstraints = @UniqueConstraint(columnNames = { "id_module",
-		"id_template", "id_field" }))
+		"id_input_template", "id_field" }))
 @SequenceGenerator(name = "t_answer_id_seq", schema = "module", sequenceName = "t_answer_id_seq", allocationSize = 1)
 @DomainDescriptor(name = "Resposta")
 public class Answer extends DomainModel<Long> {
@@ -55,7 +55,7 @@ public class Answer extends DomainModel<Long> {
 	private Module module;
 
 	@ManyToOne
-	@JoinColumn(name = "id_template")
+	@JoinColumn(name = "id_input_template")
 	@NotNull
 	private InputTemplate template;
 

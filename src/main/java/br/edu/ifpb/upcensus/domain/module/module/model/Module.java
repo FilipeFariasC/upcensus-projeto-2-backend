@@ -82,10 +82,10 @@ public class Module extends DomainModel<Long> {
     
     @OneToMany(cascade = CascadeType.ALL)
     @JoinTable(
-        	name = "t_module_template",
+        	name = "t_module_input_template",
         	schema = "module",
         	joinColumns = @JoinColumn(name = "id_module"),
-        	inverseJoinColumns = @JoinColumn(name = "id_template")
+        	inverseJoinColumns = @JoinColumn(name = "id_input_template")
     )
     private Set<InputTemplate> inputTemplates;
 
@@ -311,6 +311,17 @@ public class Module extends DomainModel<Long> {
 		return Optional.ofNullable(getConfiguration())
 			.map(Configuration::getIdentifierField)
 			.orElse(null);
+	}
+	
+	public Set<FileType> obtainFileInputTemplateTypes() {
+		if (CollectionUtils.isEmpty(getInputTemplates()))
+			return Collections.emptySet();
+		return getInputTemplates()
+			.stream()
+			.map(InputTemplate::getType)
+			.filter(type -> type.isFileType())
+			.map(type -> type.getFileType())
+			.collect(Collectors.toSet());
 	}
 	
 	public void fill() {

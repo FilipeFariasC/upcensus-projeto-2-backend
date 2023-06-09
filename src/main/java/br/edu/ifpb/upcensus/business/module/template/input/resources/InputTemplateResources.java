@@ -21,9 +21,9 @@ import br.edu.ifpb.upcensus.domain.module.template.model.InputTemplate.Type;
 import br.edu.ifpb.upcensus.domain.module.template.service.InputTemplateService;
 import br.edu.ifpb.upcensus.infrastructure.domain.EnumOption;
 import br.edu.ifpb.upcensus.infrastructure.http.response.service.ResponseService;
-import br.edu.ifpb.upcensus.presentation.module.template.mapper.InputTemplateMapper;
-import br.edu.ifpb.upcensus.presentation.module.template.request.InputTemplateRequest;
-import br.edu.ifpb.upcensus.presentation.module.template.response.InputTemplateResponse;
+import br.edu.ifpb.upcensus.presentation.module.template.input.mapper.InputTemplateMapper;
+import br.edu.ifpb.upcensus.presentation.module.template.input.request.InputTemplateRequest;
+import br.edu.ifpb.upcensus.presentation.module.template.input.response.InputTemplateResponse;
 import br.edu.ifpb.upcensus.presentation.shared.response.Response;
 
 @RestController
