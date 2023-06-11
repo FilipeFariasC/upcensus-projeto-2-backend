@@ -21,6 +21,8 @@ public class ModuleRequest implements Serializable{
     private Set<String> inputTemplates;
     @JsonProperty("output_template")
     private String outputTemplate;
+
+    private Set<String> metadata;
     
 	public String getCode() {
 		return code;
@@ -70,12 +72,20 @@ public class ModuleRequest implements Serializable{
 	public void setOutputTemplate(String outputTemplate) {
 		this.outputTemplate = outputTemplate;
 	}
+	
+	public Set<String> getMetadata() {
+		return metadata;
+	}
+
+	public void setMetadata(Set<String> metadata) {
+		this.metadata = metadata;
+	}
 
 	@Override
 	public String toString() {
 		return String.format(
-				"{code: %s, name: %s, tags: %s, configuration: %s, inputTemplates: %s, outputTemplate: %s}", code, name,
-				tags, configuration, inputTemplates, outputTemplate);
+				"{code: %s, name: %s, tags: %s, configuration: %s, inputTemplates: %s, outputTemplate: %s, metadata: %s}", code, name,
+				tags, configuration, inputTemplates, outputTemplate, metadata);
 	}
 
 }

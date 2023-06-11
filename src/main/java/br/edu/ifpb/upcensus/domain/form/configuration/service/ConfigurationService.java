@@ -9,12 +9,13 @@ import br.edu.ifpb.upcensus.domain.form.characteristic.model.Characteristic;
 import br.edu.ifpb.upcensus.domain.form.characteristic.service.CharacteristicService;
 import br.edu.ifpb.upcensus.domain.form.configuration.model.Configuration;
 import br.edu.ifpb.upcensus.domain.form.configuration.model.ConfigurationField;
+import br.edu.ifpb.upcensus.domain.shared.service.DomainCodeableService;
 import br.edu.ifpb.upcensus.domain.shared.service.DomainService;
 import br.edu.ifpb.upcensus.infrastructure.exception.ElementNotFoundException;
 import br.edu.ifpb.upcensus.infrastructure.persistence.repository.form.ConfigurationFieldRepository;
 import br.edu.ifpb.upcensus.infrastructure.util.CollectionUtils;
 
-public interface ConfigurationService extends DomainService<Configuration, Long> {
+public interface ConfigurationService extends DomainCodeableService<Configuration, Long> {
 
 	ConfigurationFieldRepository getConfigurationFieldRepository();
 	CharacteristicService getCharacteristicService();
@@ -83,12 +84,5 @@ public interface ConfigurationService extends DomainService<Configuration, Long>
 		CollectionUtils.forEach(characteristics, field::removeCharacteristic);
 		
 		return getConfigurationFieldRepository().saveAndFlush(field).getCharacteristics();
-	}
-
-	default Configuration findByCode(String code) {
-		return findByProperty("code", code);
-	}
-	default List<Configuration> findAllByCode(Collection<String> codes) {
-		return findAllByProperty("code", codes);
 	}
 }

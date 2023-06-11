@@ -47,8 +47,9 @@ public class MigrationServiceImpl implements MigrationService {
 	
 	private Map<String, Object> getMigrationVariables(Module module) {
 		Map<String, Object> variables = new HashMap<>();
-		
+
 		variables.put("registros", module.groupedAnswers());
+		variables.put("metadados", module.obtainMetadataGroup());
 		
 		return variables;
 	}

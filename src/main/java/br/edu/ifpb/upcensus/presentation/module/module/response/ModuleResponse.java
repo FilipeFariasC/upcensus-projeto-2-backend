@@ -29,6 +29,7 @@ public class ModuleResponse extends DomainModelResponse {
     private boolean hasAnswers;
     @JsonProperty("file_input_template_types")
     private Set<FileTypeResponse> fileInputTemplateTypes;
+    private Set<MetadataResponse> metadata;
 
     
 	public String getCode() {
@@ -96,14 +97,20 @@ public class ModuleResponse extends DomainModelResponse {
 	public void setFileInputTemplateTypes(Set<FileTypeResponse> fileInputTemplateTypes) {
 		this.fileInputTemplateTypes = fileInputTemplateTypes;
 	}
+	
+	public Set<MetadataResponse> getMetadata() {
+		return metadata;
+	}
+
+	public void setMetadata(Set<MetadataResponse> metadata) {
+		this.metadata = metadata;
+	}
 
 	@Override
 	public String toString() {
 		return String.format(
-				"{code: %s, name: %s, tags: %s, configuration: %s, input_templates: %s, output_template: %s, has_answers: %s, file_input_template_types: %s}",
-				code, name, tags, configuration, inputTemplates, outputTemplate, hasAnswers, fileInputTemplateTypes);
+				"{code: %s, name: %s, tags: %s, configuration: %s, input_templates: %s, output_template: %s, has_answers: %s, file_input_template_types: %s, metadata: %s}",
+				code, name, tags, configuration, inputTemplates, outputTemplate, hasAnswers, fileInputTemplateTypes, metadata);
 	}
-
-	
     
 }

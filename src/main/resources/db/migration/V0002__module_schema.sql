@@ -88,3 +88,24 @@ CREATE TABLE module.t_error (
     CONSTRAINT fk_t_error_id_answer FOREIGN KEY (id_answer) REFERENCES module.t_answer (id)
 );
 
+
+
+CREATE TABLE module.t_metadata (
+    id SERIAL,
+    code VARCHAR(128) NOT NULL,
+    name VARCHAR(256) NOT NULL,
+    value VARCHAR(2048) NOT NULL,
+    creation_time TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT NOW(),
+    
+    CONSTRAINT pk_t_metadata PRIMARY KEY (id),
+    CONSTRAINT uk_t_metadata_code UNIQUE (code)
+);
+
+CREATE TABLE module.t_module_metadata (
+    id_module BIGINT,
+    id_metadata BIGINT,
+    
+    CONSTRAINT fk_t_module_metadata_id_module FOREIGN KEY (id_module) REFERENCES module.t_module (id),
+    CONSTRAINT fk_t_module_metadata_id_metadata FOREIGN KEY (id_metadata) REFERENCES module.t_metadata (id)
+);
+

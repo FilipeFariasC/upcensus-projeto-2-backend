@@ -21,6 +21,7 @@ import org.springframework.batch.core.repository.JobRestartException;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemWriter;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -29,9 +30,11 @@ import br.edu.ifpb.upcensus.domain.module.module.model.Answer;
 import br.edu.ifpb.upcensus.domain.module.module.model.Module;
 import br.edu.ifpb.upcensus.domain.module.module.service.ModuleService;
 import br.edu.ifpb.upcensus.domain.module.template.model.InputTemplate;
-import br.edu.ifpb.upcensus.infrastructure.builder.AnswerItemProcessor;
-import br.edu.ifpb.upcensus.infrastructure.builder.AnswerItemReader;
-import br.edu.ifpb.upcensus.infrastructure.builder.ItemReaderBuilder;
+import br.edu.ifpb.upcensus.infrastructure.batch.processor.AnswerItemProcessor;
+import br.edu.ifpb.upcensus.infrastructure.batch.reader.AnswerItemReader;
+import br.edu.ifpb.upcensus.infrastructure.batch.reader.CsvItemReader;
+import br.edu.ifpb.upcensus.infrastructure.batch.reader.OdsItemReader;
+import br.edu.ifpb.upcensus.infrastructure.batch.reader.XlsxItemReader;
 import br.edu.ifpb.upcensus.infrastructure.domain.FileType;
 import br.edu.ifpb.upcensus.infrastructure.exception.UnsupportedFileFormatException;
 import br.edu.ifpb.upcensus.infrastructure.util.FileUtils;
@@ -44,20 +47,22 @@ public class JobService {
 	private final StepBuilderFactory stepBuilderFactory;
 
 	private final JobLauncher jobLauncher;
-	private ModuleService moduleService;
+	private final ModuleService moduleService;
 	private final ValidationPipeline pipeline;
 
 	public JobService(
 		final JobBuilderFactory jobFactory, 
 		final StepBuilderFactory stepBuilderFactory,
 		final JobLauncher jobLauncher,
-		final ValidationPipeline pipeline
+		final ValidationPipeline pipeline,
+		@Lazy ModuleService moduleService
 	) {
 		super();
 		this.jobFactory = jobFactory;
 		this.stepBuilderFactory = stepBuilderFactory;
 		this.jobLauncher = jobLauncher;
 		this.pipeline = pipeline;
+		this.moduleService = moduleService;
 	}
 
 	public void runFileJob(MultipartFile file, Module module, boolean ignoreHeaderRow, FileType fileType,
@@ -72,6 +77,8 @@ public class JobService {
 			jobLauncher.run(job, new JobParameters());
 		} catch (IOException | JobExecutionAlreadyRunningException | JobRestartException
 				| JobInstanceAlreadyCompleteException | JobParametersInvalidException e) {
+			System.out.println(e);
+			System.out.println(e.getCause());
 			throw new RuntimeException(e);
 		}
 	}
@@ -111,9 +118,11 @@ public class JobService {
 			boolean ignoreHeaderRow, String delimiter) throws IOException {
 		switch (template.getType().getFileType()) {
 		case CSV:
-			return new ItemReaderBuilder().buildCsvReader(file, template, ignoreHeaderRow, delimiter);
+			return new CsvItemReader(file, template, ignoreHeaderRow, delimiter);
 		case XLSX:
-			return new ItemReaderBuilder().buildXlsxReader(file, template, ignoreHeaderRow);
+			return new XlsxItemReader(file, template, ignoreHeaderRow);
+		case ODS:
+			return new OdsItemReader(file, template, ignoreHeaderRow);
 		default:
 			throw new UnsupportedFileFormatException(file.getOriginalFilename(), FileUtils.getMimeType(file));
 		}
@@ -126,15 +135,11 @@ public class JobService {
 	private ItemWriter<Set<Answer>> writeToDatabase(Module module, InputTemplate template) {
 		return (item) -> {
 			Set<Answer> answers = item.stream()
-				.flatMap(answer -> answer.stream())
+				.flatMap(Set::stream)
 				.collect(Collectors.toSet());
 			module.addAllAnswers(answers);
 			moduleService.save(module);
 		};
-	}
-
-	public void setModuleService(ModuleService moduleService) {
-		this.moduleService = moduleService;
 	}
 
 	private ItemProcessor<Map<String, String>, Set<Answer>> validator(final Module module, final InputTemplate template) {

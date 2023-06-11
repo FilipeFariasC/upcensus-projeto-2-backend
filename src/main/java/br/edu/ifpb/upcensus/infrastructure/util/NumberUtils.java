@@ -56,4 +56,7 @@ public class NumberUtils {
         return convertToNumber(num, BigInteger::new);
     }
 
+    public static int booleanToInt(boolean bool) {
+    	return bool ? 1 : 0;
+    }
 }

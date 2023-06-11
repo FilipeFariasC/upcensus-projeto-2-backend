@@ -96,6 +96,16 @@ public class Module extends DomainModel<Long> {
     @OneToMany(mappedBy = "module", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Answer> answers;
     
+
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinTable(
+    	name = "t_module_metadata",
+    	schema = "module",
+    	joinColumns = @JoinColumn(name = "id_module"),
+    	inverseJoinColumns = @JoinColumn(name = "id_metadata")
+    )
+	private Set<Metadata> metadata;
+    
     
     @Override
     public void initialize() {
@@ -116,28 +126,6 @@ public class Module extends DomainModel<Long> {
     private void initializeAnswers() {
     	if (CollectionUtils.isEmpty(getAnswers()))
     		this.answers = new HashSet<>();
-    }
-    
-    public Optional<Characteristic> getCharacteristic(PlainField field, Attribute attribute) {
-    	if (ObjectUtils.isNull(getConfiguration()))
-    		return Optional.empty();
-    	return getConfiguration().getAttribute(field, attribute);
-    }
-    
-    public Optional<Type> getType(PlainField field) {
-    	if (ObjectUtils.isNull(getConfiguration()))
-    		return Optional.empty();
-    	return getConfiguration().getType(field);
-    }
-    
-    public Optional<Boolean> getRequired(PlainField field) {
-    	if (ObjectUtils.isNull(getConfiguration()))
-    		return Optional.empty();
-    	return getConfiguration().getRequired(field);
-    }
-    
-    public boolean hasCharacteristic(PlainField field, Attribute attribute) {
-		return getConfiguration().hasCharacteristic(field, attribute);
     }
     
 	@Override
@@ -231,6 +219,28 @@ public class Module extends DomainModel<Long> {
 		setAnswers(new HashSet<>());
 	}
 	
+	public Set<Metadata> getMetadata() {
+		return metadata;
+	}
+
+
+	public void setMetadata(Set<Metadata> metadata) {
+		if (CollectionUtils.isEmpty(getMetadata())) {
+			this.metadata = metadata;
+			return;
+		}
+		getMetadata().clear();
+		if (CollectionUtils.notEmpty(metadata)) {
+			getMetadata().retainAll(metadata);
+			getMetadata().addAll(metadata);
+		}
+	}
+	
+	public MetadataGroup obtainMetadataGroup() {
+		return new MetadataGroup(getMetadata());
+	}
+
+
 	public void removeAnswers(InputTemplate template) {
 		Set<Answer> remove = getAnswers()
 			.stream()
@@ -268,7 +278,28 @@ public class Module extends DomainModel<Long> {
 		setupRemoveAnswers(answers);
 		getAnswers().removeAll(answers);
 	}
-	
+    
+    public Optional<Characteristic> getCharacteristic(PlainField field, Attribute attribute) {
+    	if (ObjectUtils.isNull(getConfiguration()))
+    		return Optional.empty();
+    	return getConfiguration().getAttribute(field, attribute);
+    }
+    
+    public Optional<Type> getType(PlainField field) {
+    	if (ObjectUtils.isNull(getConfiguration()))
+    		return Optional.empty();
+    	return getConfiguration().getType(field);
+    }
+    
+    public Optional<Boolean> getRequired(PlainField field) {
+    	if (ObjectUtils.isNull(getConfiguration()))
+    		return Optional.empty();
+    	return getConfiguration().getRequired(field);
+    }
+    
+    public boolean hasCharacteristic(PlainField field, Attribute attribute) {
+		return getConfiguration().hasCharacteristic(field, attribute);
+    }
 	
 	public Optional<InputTemplate> getTemplateById(Long id) {
 		if (CollectionUtils.isEmpty(getInputTemplates()))
@@ -340,7 +371,7 @@ public class Module extends DomainModel<Long> {
 			throw new ModuleConfigurationIdentifierNotConfiguredException(getCode());
 		if (!getConfiguration().isIdentifierFieldRequired())
 			throw new ModuleConfigurationIdentifierNotRequiredException(getCode());
-		if (ObjectUtils.nonNull(getOutputTemplate()) || StringUtils.notBlank(getOutputTemplate().getLayout()))
+		if (ObjectUtils.isNull(getOutputTemplate()) || StringUtils.isBlank(getOutputTemplate().getLayout()))
 			throw new ModuleOutputTemplateNotConfiguredException(getCode());
 		
 	}
@@ -348,8 +379,8 @@ public class Module extends DomainModel<Long> {
 	@Override
 	public String toString() {
 		return String.format(
-				"{id: %s, code: %s, name: %s, tags: %s, configuration: %s, input_templates: %s, output_template: %s, answers: %s, creation_time: %s}",
-				id, code, name, tags, configuration, inputTemplates, outputTemplate, answers, getCreationTime());
+				"{id: %s, code: %s, name: %s, tags: %s, configuration: %s, input_templates: %s, output_template: %s, metadata: %s, answers: %s, creation_time: %s}",
+				id, code, name, tags, configuration, inputTemplates, outputTemplate, metadata, answers, getCreationTime());
 	}
 	
 	

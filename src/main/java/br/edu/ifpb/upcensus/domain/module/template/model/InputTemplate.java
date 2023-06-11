@@ -4,8 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
-import javax.persistence.CascadeType;
 import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
@@ -17,7 +17,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.MapKeyJoinColumn;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
@@ -32,6 +31,7 @@ import br.edu.ifpb.upcensus.infrastructure.domain.FileType;
 import br.edu.ifpb.upcensus.infrastructure.exception.ElementNotFoundException;
 import br.edu.ifpb.upcensus.infrastructure.util.CollectionUtils;
 import br.edu.ifpb.upcensus.infrastructure.util.JsonUtils;
+import br.edu.ifpb.upcensus.infrastructure.util.NumberUtils;
 import br.edu.ifpb.upcensus.infrastructure.util.ObjectUtils;
 
 
@@ -159,6 +159,18 @@ public class InputTemplate extends DomainModel<Long> {
 	
 	public boolean isFileTemplate() {
 		return type.isFileType();
+	}
+	
+	public Map<PlainField, Integer> obtainIndexMappings() {
+		return getMappings()
+			.entrySet()
+			.stream()
+			.collect(
+				Collectors.toMap(
+					entry -> entry.getKey(),
+					entry -> NumberUtils.convertToInteger(entry.getValue())
+				)
+			);
 	}
 	
 

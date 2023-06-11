@@ -1,4 +1,4 @@
-package br.edu.ifpb.upcensus.infrastructure.builder;
+package br.edu.ifpb.upcensus.infrastructure.batch.processor;
 
 import java.util.Map;
 import java.util.Set;

@@ -8,10 +8,10 @@ import java.util.stream.Collectors;
 import br.edu.ifpb.upcensus.domain.form.characteristic.model.Characteristic;
 import br.edu.ifpb.upcensus.domain.form.characteristic.service.CharacteristicService;
 import br.edu.ifpb.upcensus.domain.form.field.model.PlainField;
-import br.edu.ifpb.upcensus.domain.shared.service.DomainService;
+import br.edu.ifpb.upcensus.domain.shared.service.DomainCodeableService;
 import br.edu.ifpb.upcensus.infrastructure.util.CollectionUtils;
 
-public interface PlainFieldService extends DomainService<PlainField, Long> {
+public interface PlainFieldService extends DomainCodeableService<PlainField, Long> {
 	
 	CharacteristicService getCharacteristicService();
 	
@@ -41,12 +41,5 @@ public interface PlainFieldService extends DomainService<PlainField, Long> {
 		save(field);
 		
 		return field.getCharacteristics();
-	}
-	
-	default PlainField findByCode(String code) {
-		return findByProperty("code", code);
-	}
-	default List<PlainField> findAllByCode(Collection<String> codes) {
-		return findAllByProperty("code", codes);
 	}
 }

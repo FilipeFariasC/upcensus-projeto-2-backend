@@ -25,6 +25,7 @@
     	<spring-batch-excel.version>0.1.1</spring-batch-excel.version>
     	<apache-poi.version>5.2.3</apache-poi.version>
     	<apache-commons.version>3.12.0</apache-commons.version>
+    	<miachm-sods.version>1.5.4</miachm-sods.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -163,6 +164,12 @@
 		    <groupId>org.apache.poi</groupId>
 		    <artifactId>poi</artifactId>
 		    <version>${apache-poi.version}</version>
+		</dependency>
+		<!-- ODS Reader -->
+		<dependency>
+		    <groupId>com.github.miachm.sods</groupId>
+		    <artifactId>SODS</artifactId>
+		    <version>${miachm-sods.version}</version>
 		</dependency>
 		
 		<dependency>

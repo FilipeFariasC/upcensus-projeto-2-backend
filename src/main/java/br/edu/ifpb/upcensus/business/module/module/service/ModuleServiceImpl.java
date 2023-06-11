@@ -4,13 +4,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import javax.annotation.PostConstruct;
-
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import br.edu.ifpb.upcensus.business.job.JobService;
-import br.edu.ifpb.upcensus.business.module.module.exception.ModuleMigrationNotConfigured;
 import br.edu.ifpb.upcensus.domain.module.module.model.Module;
 import br.edu.ifpb.upcensus.domain.module.module.service.MigrationService;
 import br.edu.ifpb.upcensus.domain.module.module.service.ModuleService;
@@ -18,7 +15,6 @@ import br.edu.ifpb.upcensus.domain.module.template.model.InputTemplate;
 import br.edu.ifpb.upcensus.infrastructure.domain.FileType;
 import br.edu.ifpb.upcensus.infrastructure.exception.ElementNotFoundException;
 import br.edu.ifpb.upcensus.infrastructure.persistence.repository.module.ModuleRepository;
-import br.edu.ifpb.upcensus.infrastructure.util.ObjectUtils;
 
 @Service
 public class ModuleServiceImpl implements ModuleService {
@@ -46,11 +42,6 @@ public class ModuleServiceImpl implements ModuleService {
 	@Override
 	public Class<Module> getDomainClass() {
 		return Module.class;
-	}
-
-	@PostConstruct
-	private void setup() {
-		this.jobService.setModuleService(this);
 	}
 	
 	@Override

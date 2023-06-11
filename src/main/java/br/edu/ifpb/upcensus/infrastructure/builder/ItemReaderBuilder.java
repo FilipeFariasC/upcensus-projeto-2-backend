@@ -1,72 +1,30 @@
 package br.edu.ifpb.upcensus.infrastructure.builder;
 
 import java.io.IOException;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.batch.extensions.excel.poi.PoiItemReader;
 import org.springframework.batch.item.ItemReader;
-import org.springframework.batch.item.file.FlatFileItemReader;
-import org.springframework.batch.item.file.mapping.DefaultLineMapper;
-import org.springframework.batch.item.file.transform.DelimitedLineTokenizer;
-import org.springframework.core.io.InputStreamResource;
 import org.springframework.web.multipart.MultipartFile;
 
 import br.edu.ifpb.upcensus.domain.module.template.model.InputTemplate;
-import br.edu.ifpb.upcensus.infrastructure.domain.job.reader.CsvFieldMapper;
-import br.edu.ifpb.upcensus.infrastructure.domain.job.reader.XlsxFieldMapper;
-import br.edu.ifpb.upcensus.infrastructure.util.NumberUtils;
-import br.edu.ifpb.upcensus.infrastructure.util.StringUtils;
+import br.edu.ifpb.upcensus.infrastructure.batch.reader.AnswerItemReader;
+import br.edu.ifpb.upcensus.infrastructure.batch.reader.CsvItemReader;
+import br.edu.ifpb.upcensus.infrastructure.batch.reader.XlsxItemReader;
 
 public class ItemReaderBuilder {
 	
-	private static final String CSV_DELIMITER = ",";
 	
-	public ItemReader<Map<String, String>> buildCsvReader(MultipartFile file, InputTemplate template, boolean hasHeaderRows, String csvDelimiter) throws IOException {
-		if (StringUtils.isEmpty(csvDelimiter))
-			csvDelimiter = CSV_DELIMITER;
-		
-		FlatFileItemReader<Map<String, String>> reader = new FlatFileItemReader<>();
-		reader.setResource(new InputStreamResource(file.getInputStream()));
-		reader.setLinesToSkip(hasHeaderRows ? 1 : 0);
-		
-		DelimitedLineTokenizer tokenizer = new DelimitedLineTokenizer();
-		tokenizer.setNames(getTokens(template));
-		tokenizer.setDelimiter(csvDelimiter);
-		
-        DefaultLineMapper<Map<String, String>> lineMapper = new DefaultLineMapper<>();
-        
-        lineMapper.setFieldSetMapper(new CsvFieldMapper(template));
-        lineMapper.setLineTokenizer(tokenizer);
-		
-		reader.setLineMapper(lineMapper);
-		
-		return reader;
+	public CsvItemReader buildCsvReader(MultipartFile file, InputTemplate template, boolean ignoreHeaderRows, String delimiter) throws IOException {	
+		return new CsvItemReader(file, template, ignoreHeaderRows, delimiter);
 	}
 	
-	public ItemReader<Map<String, String>> buildXlsxReader(MultipartFile file, InputTemplate template, boolean hasHeaderRows) throws IOException {
-		PoiItemReader<Map<String, String>> reader = new PoiItemReader<>();
-		reader.setResource(new InputStreamResource(file.getInputStream()));
-		reader.setLinesToSkip(hasHeaderRows ? 1 : 0);
-		reader.setRowMapper(new XlsxFieldMapper(template));
-		
-		return reader;
+	public ItemReader<Map<String, String>> buildXlsxReader(MultipartFile file, InputTemplate template, boolean ignoreHeaderRows) throws IOException {
+		return new XlsxItemReader(file, template, ignoreHeaderRows);
 	}
 	
 	public ItemReader<Map<String, String>> buildAnswerReader(List<Map<String, String>> answers) throws IOException {
 		return new AnswerItemReader(answers);
 	}
 	
-	
-	
-	private String[] getTokens(InputTemplate template) {
-		
-		return template.getMappings()
-			.entrySet()
-			.stream()
-			.sorted(Comparator.comparingInt(mapping -> NumberUtils.convertToInteger(mapping.getValue())))
-			.map(entry -> entry.getKey().getCode())
-			.toArray(String[]::new);
-	}
 }

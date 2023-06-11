@@ -43,7 +43,7 @@ public class AnswerGroup {
 	
 	public String getAnswerValue(String fieldCode) {
 		return findAnswerValue(fieldCode)
-			.orElse(null);
+			.orElse("");
 	}
 	
 	public Collection<Answer> getAnswers(String fieldCode) {
